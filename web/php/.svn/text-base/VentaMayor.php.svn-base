@@ -1,0 +1,153 @@
+<?php 
+session_name("balderrama");
+session_start();
+include("bd/bd.php");
+include("impl/VentaMayor.php");
+require_once("impl/Marca.php");
+require_once("impl/Cliente.php");
+require_once("impl/Empleado.php");
+
+include("impl/Utils.php");
+require_once("impl/JSON.php");
+
+if(permitido("fun1001", $_SESSION['codigo'])==true)
+{
+    $funcion = $_GET['funcion'];
+    if($funcion == "ListarVentaMayor")
+    {
+        $band = false;
+        if($_GET['buscarfecha'] != null)
+        {
+            $fechafin=$_GET['buscarfecha'];
+            $formatear = explode( '-' , $fechafin);
+$fecha = $formatear[2].'-'.$formatear[1].'-' .$formatear[0];
+
+if($band == false) {
+                $extras .= " ved.fecha LIKE '%".$fecha."%'";
+              //  echo $extras;
+                $band = true;
+            }
+            else {
+                $extras .= " AND ved.fecha  LIKE '%".$fecha."%'";
+            }
+        }
+        if($_GET['buscarcliente'] != null)
+        {
+            if($band == false) {
+                $extras .= " ved.nombrecliente LIKE '%".$_GET['buscarcliente']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND ved.nombrecliente LIKE '%".$_GET['buscarcliente']."%'";
+            }
+        }
+        ListarVentaMayor($_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], $extras, false);
+    }
+else  if($funcion == "txSaveVenta"){
+
+
+    $resultado = $_GET['resultado'];
+    $json = new Services_JSON();
+    $datos = $json->decode($resultado);
+    //insertarventa($datos,false);
+    txSaveVenta($datos,false);
+}
+
+    else if($funcion =="BuscarMarcaColeccionLinea"){
+
+        BuscarMarcaColeccionLinea(false);
+    }
+    else if($funcion =="BuscarMarcaColeccion"){
+
+        BuscarMarcaColeccion(false);
+    }
+    else if($funcion =="BuscarModeloPorMarcaColeccion"){
+        BuscarModeloPorMarcaColeccion($_GET['idmarca'],$_GET['idcoleccion'],false);
+    }
+    else if($funcion == "ClienteVendedorMarcaRecibo"){
+        ClienteVendedorMarcaRecibo(false);
+    }
+     else if($funcion == "finddatosentregas")
+    {
+        finddatosentrega();
+    }else
+      if($funcion == "listartallas")
+    {
+        $band = false;
+        if($_GET['buscarfecha'] != null)
+        {
+            $fechafin=$_GET['buscarfecha'];
+            $formatear = explode( '-' , $fechafin);
+$fecha = $formatear[2].'-'.$formatear[1].'-' .$formatear[0];
+
+if($band == false) {
+                $extras .= " ved.fecha LIKE '%".$fecha."%'";
+              //  echo $extras;
+                $band = true;
+            }
+            else {
+                $extras .= " AND ved.fecha  LIKE '%".$fecha."%'";
+            }
+        }
+        if($_GET['buscarcliente'] != null)
+        {
+            if($band == false) {
+                $extras .= " ved.nombrecliente LIKE '%".$_GET['buscarcliente']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND ved.nombrecliente LIKE '%".$_GET['buscarcliente']."%'";
+            }
+        }
+        ListarTallasMarca($_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], $extras, false);
+    }
+else if($funcion =="BuscarDatosClienteSaldo"){
+        $idcliente = $_GET['idcliente'];
+        $idmarca = $_GET['idmarca'];
+        BuscarDatosClienteSaldo($idcliente,$idmarca, false);
+    }else if($funcion == "BuscarCodigoBarra"){
+
+        BuscarCodigoBarra($_GET['codigo'],$_GET['idmarca'],$_GET['idtalla'],$_GET['callback'], $$_GET['dc'],'');
+    } else if($funcion =="RegistrarEntrega"){
+
+        $resultado = $_GET['resultado'];
+        $json = new Services_JSON();
+        $datos = $json->decode($resultado);
+        //insertarventa($datos,false);
+        RegistrarEntrega($datos,false);
+    } else
+     if($funcion =="RegistrarConfirmarEntrega"){
+
+        $resultado = $_GET['resultado'];
+        $json = new Services_JSON();
+        $datos = $json->decode($resultado);
+        //insertarventa($datos,false);
+        RegistrarConfirmarEntrega($datos,false);
+    } else
+    if($funcion =="BuscarDatosEntrega")
+    {
+        $numerofactura = $_GET['numerorecibo'];
+      //  BuscarDatosEntrega($numerofactura, false);
+         BuscarDatosEntrega($numerofactura, false);
+    }
+    else
+    if($funcion == "ListarDetalleEntrega"){
+        $idpedido = $_GET['idventamayor'];
+
+        ListarDetalleEntrega($_GET['star'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'],$idpedido, false);
+    }else
+    {
+        echo "else";
+    }
+
+
+}
+else
+{
+    $dev['mensaje'] = "Ud no tiene privilegios para esta funcion";
+    $dev['error'] = "false";
+    $json = new Services_JSON();
+    $output = $json->encode($dev);
+    print($output);
+}
+?>

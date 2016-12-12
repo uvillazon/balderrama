@@ -1,0 +1,38 @@
+Ok	admin	Haydee	10:25:09	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='no',fallado='0' where idalmacen='alm-3' and saldocantidad='1' ; -- 
+
+Ok	admin	Haydee	10:46:08	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='no',fallado='0' where idalmacen='alm-3' and saldocantidad='1' ; -- 
+
+Ok	admin	Haydee	11:40:12	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='no',fallado='0' where idalmacen='alm-3' and saldocantidad='1' ; -- 
+
+Ok	admin	Haydee	11:45:01	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='no',fallado='0' where idalmacen='alm-3' and saldocantidad='1' ; -- 
+
+Ok	admin	Haydee	12:02:54	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='no',fallado='0' where idalmacen='alm-3' and saldocantidad='1' ; -- 
+
+Error	admin	Haydee	12:03:18	/mayorgeneral/php/IngresoAlmacen.phpINSERT INTO pareshabilitados (idkardexunico , fecha , idkardex , idmodelo , talla , idmarca , idvendedor , preciounitario ) VALUES('3' , '2015-12-15' , 'kar-1' , 'm-1' , '40' , 'mar-32' , 'emp-41' , '61.25' ); -- UPDATE kardexdetallepar SET saldocantidad='1',idoperacion='no' WHERE codigobarra = '3210000002400';  -- -->
+
+Error	admin	Haydee	12:03:24	/mayorgeneral/php/IngresoAlmacen.phpINSERT INTO pareshabilitados (idkardexunico , fecha , idkardex , idmodelo , talla , idmarca , idvendedor , preciounitario ) VALUES('3' , '2015-12-15' , 'kar-1' , 'm-1' , '40' , 'mar-32' , 'emp-41' , '61.25' ); -- UPDATE kardexdetallepar SET saldocantidad='1',idoperacion='no' WHERE codigobarra = '3210000002400';  -- -->
+
+Error	admin	Haydee	12:03:51	/mayorgeneral/php/IngresoAlmacen.phpINSERT INTO pareshabilitados (idkardexunico , fecha , idkardex , idmodelo , talla , idmarca , idvendedor , preciounitario ) VALUES('3' , '2015-12-15' , 'kar-1' , 'm-1' , '40' , 'mar-32' , 'emp-41' , '61.25' ); -- UPDATE kardexdetallepar SET saldocantidad='1',idoperacion='no' WHERE codigobarra = '3210000002400';  -- -->
+
+Error	admin	Haydee	15:26:31	/mayorgeneral/php/IngresoAlmacen.phpINSERT INTO pareshabilitados (idkardexunico , fecha , idkardex , idmodelo , talla , idmarca , idvendedor , pares , preciounitario ) VALUES('3' , '2015-12-15' , 'kar-1' , 'm-1' , 'M' , 'mar-32' , 'emp-41' , '1' , '61.25' ); -- UPDATE kardexdetallepar kp,modelo m SET kp.saldocantidad='1',kp.idoperacion='no' WHERE kp.idmodelo=m.idmodelo and m.idvendedor='emp-41' and kp.codigobarra='3210000002400' and kp.saldocantidad='0';  -- -->
+
+Ok	admin	Haydee	16:49:43	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='no',fallado='0' where idalmacen='alm-3' and saldocantidad='1' ; -- 
+
+Ok	admin	Haydee	16:51:24	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='leido'  where idkardex='kar-25'; -- 
+
+Ok	admin	Haydee	16:51:34	/mayorgeneral/php/Traspaso.phpINSERT INTO traspasodetallepar (idkardexunico , idkardex , iddetalletraspaso , idmodelo , saldocantidad , talla , numero , preciounitario , unido , fallado , idimpresion , idmodeloorigen ) VALUES('159' , 'kar-25' , 'tra-1011' , 'm-45931' , '1' , '41' , 'tra-1011' , '35.00' , 'no' , '0' , 'alm-2' , 'm-14' ); -- UPDATE kardexdetallepar SET idmodelo='m-45931',idalmacen='alm-2' where idkardexunico='159' and idmodelo='m-14'; -- 
+
+Ok	admin	Haydee	16:51:34	/mayorgeneral/php/Traspaso.phpINSERT INTO traspasodetallepar (idkardexunico , idkardex , iddetalletraspaso , idmodelo , saldocantidad , talla , numero , preciounitario , unido , fallado , idimpresion , idmodeloorigen ) VALUES('160' , 'kar-25' , 'tra-1011' , 'm-45931' , '1' , '41' , 'tra-1011' , '35.00' , 'no' , '0' , 'alm-2' , 'm-14' ); -- UPDATE kardexdetallepar SET idmodelo='m-45931',idalmacen='alm-2' where idkardexunico='160' and idmodelo='m-14'; -- 
+
+Ok	admin	Haydee	16:51:34	/mayorgeneral/php/Traspaso.phpINSERT INTO traspasodetallepar (idkardexunico , idkardex , iddetalletraspaso , idmodelo , saldocantidad , talla , numero , preciounitario , unido , fallado , idimpresion , idmodeloorigen ) VALUES('161' , 'kar-25' , 'tra-1011' , 'm-45931' , '1' , '42' , 'tra-1011' , '35.00' , 'no' , '0' , 'alm-2' , 'm-14' ); -- UPDATE kardexdetallepar SET idmodelo='m-45931',idalmacen='alm-2' where idkardexunico='161' and idmodelo='m-14'; -- 
+
+Ok	admin	Haydee	16:51:34	/mayorgeneral/php/Traspaso.phpINSERT INTO traspasodetallepar (idkardexunico , idkardex , iddetalletraspaso , idmodelo , saldocantidad , talla , numero , preciounitario , unido , fallado , idimpresion , idmodeloorigen ) VALUES('162' , 'kar-25' , 'tra-1011' , 'm-45931' , '1' , '42' , 'tra-1011' , '35.00' , 'no' , '0' , 'alm-2' , 'm-14' ); -- UPDATE kardexdetallepar SET idmodelo='m-45931',idalmacen='alm-2' where idkardexunico='162' and idmodelo='m-14'; -- 
+
+Ok	admin	Haydee	16:51:34	/mayorgeneral/php/Traspaso.phpINSERT INTO traspasodetallepar (idkardexunico , idkardex , iddetalletraspaso , idmodelo , saldocantidad , talla , numero , preciounitario , unido , fallado , idimpresion , idmodeloorigen ) VALUES('166' , 'kar-25' , 'tra-1011' , 'm-45931' , '1' , '43' , 'tra-1011' , '35.00' , 'no' , '0' , 'alm-2' , 'm-14' ); -- UPDATE kardexdetallepar SET idmodelo='m-45931',idalmacen='alm-2' where idkardexunico='166' and idmodelo='m-14'; -- 
+
+Ok	admin	Haydee	16:51:34	/mayorgeneral/php/Traspaso.phpINSERT INTO traspasodetallepar (idkardexunico , idkardex , iddetalletraspaso , idmodelo , saldocantidad , talla , numero , preciounitario , unido , fallado , idimpresion , idmodeloorigen ) VALUES('167' , 'kar-25' , 'tra-1011' , 'm-45931' , '1' , '43' , 'tra-1011' , '35.00' , 'no' , '0' , 'alm-2' , 'm-14' ); -- UPDATE kardexdetallepar SET idmodelo='m-45931',idalmacen='alm-2' where idkardexunico='167' and idmodelo='m-14'; -- 
+
+Ok	admin	Haydee	16:51:34	/mayorgeneral/php/Traspaso.phpUPDATE traspaso SET totalcajas='0.5000',totalpares='6',totalsus='210.00' where idtraspaso='tra-1011'; -- 
+
+Ok	admin	Haydee	16:51:34	/mayorgeneral/php/Traspaso.phpINSERT INTO traspaso (idtraspaso , idalmacen , idusuario , fecha , hora , estado , numero , totalpares , totalbs , totalsus , boleta , responsable , idmarca , idalmacendestino ) VALUES('tra-1011' , 'alm-3' , 'usr-1000' , '2015-12-15' , '15:51:33' , 'pendiente' , '1011' , '1' , '1461.6' , '210' , '209' , 'emp-69' , 'mar-32' , 'alm-2' ); -- INSERT INTO traspasomodelo (idtraspasomodelo , idmodelo , idmodelodetalle , cliente , numero , idtraspaso , idcliente , precioventa , preciounitario , numeroparesfila , idalmacen , estadotraspaso ) VALUES('dtra-22163' , 'm-14' , 'm-45931' , 'SCOF/SCZ' , '22163' , 'tra-1011' , 'alm-2' , '520.00' , '43.33' , '12' , 'alm-3' , 'ninguno' ); -- INSERT INTO modelo (idmodelo , idmodelodetalle , idmarca , idvendedor , codigo , color , material , linea , cliente , numero , fecha , hora , estado , idcoleccion , idcliente , precioventa , preciounitario , numerocajas , numeroparesfila , totalparescaja , talla , idalmacen , estadotraspaso , fechaingreso ) VALUES('m-45931' , 'mod-14' , 'mar-32' , 'emp-69' , '361571414413' , 'BLACK/DK.BLUE' , 'TRAINING SHOES' , '-' , 'SCOF/SCZ' , '45931' , '2015-12-15' , '15:51:33' , 'Activo' , 'col-37' , 'alm-2' , '520.00' , '43.33' , '1' , '12' , '12' , 'M' , 'alm-2' , 'ninguno' , '08-2014' ); -- UPDATE modelo SET estadotraspaso='m-45931' where idmodelo='m-14'; -- UPDATE kardexdetalle SET cantidad='-1' where idmodelo = 'm-14' and tallakardex=''; -- 
+

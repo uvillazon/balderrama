@@ -1,0 +1,239 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.emergentes;
+
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Position;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.form.Label;
+import com.gwtext.client.widgets.grid.CheckboxSelectionModel;
+import com.gwtext.client.widgets.TabPanel;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import org.balderrama.client.util.Conector;
+import org.balderrama.client.util.Utils;
+import org.balderrama.client.MainEntryPoint;
+import org.balderrama.client.util.KMenu;
+import com.gwtext.client.widgets.MessageBox;
+import com.gwtext.client.widgets.form.TextField;
+import org.balderrama.client.cliente.Cliente;
+import org.balderrama.client.VentaMayor.Entregas;
+import org.balderrama.client.cliente.ClienteDetalle;
+import org.balderrama.client.pedido.PanelPedido;
+import org.balderrama.client.pedido.Pedido;
+//import org.balderrama.client.VentaMayor;
+
+
+/**
+ *
+ * @author buggy
+ */
+public class SeleccionEntrega extends Window {
+
+    private final int ANCHO = 300;
+    private final int ALTO = 90;
+    private final AnchorLayoutData ANCHO_LAYOUT_DATA = new AnchorLayoutData("90%");
+    private final int WINDOW_PADDING = 5;
+    private FormPanel formPanel;
+    private ComboBox com_cliente;
+    private Button but_aceptarP;
+    private Button but_cancelarP;
+    private String[] clienteM;
+    CheckboxSelectionModel cbSelectionModel;
+    public TabPanel tap_panel;
+    public KMenu padre;
+    public MainEntryPoint panel;
+    Pedido ped;
+  private String codigo;
+  	private TextField tex_codigo;
+
+    public SeleccionEntrega(KMenu kmenu) {
+        //public IngresoAlmacenForm(KMenu kmenu,MainEntryPoint pan) {
+        //com.google.gwt.user.client.Window.alert("Cuantas veces");
+
+        // this.padre = padre
+        padre = kmenu;
+        //  panel=pan;
+
+        //this.clienteM = new String[]{"CLIENTE MAYOR", "CLIENTE DETALLE"};
+        String tituloTabla = "Seleccion Recibo entrega";
+        this.setClosable(true);
+        this.setId("TPfun6005");
+        setIconCls("tab-icon");
+        setAutoScroll(false);
+        setTitle(tituloTabla);
+        setAutoWidth(true);
+        setAutoHeight(true);
+        setLayout(new FitLayout());
+        setPaddings(WINDOW_PADDING);
+        setButtonAlign(Position.CENTER);
+
+        setCloseAction(Window.CLOSE);
+        //setPlain(true);
+        onModuleLoad();
+
+    }
+
+    public void onModuleLoad() {
+
+        //setId("win-Clientes");
+
+        String nombreBoton1 = "Buscar";
+        String nombreBoton2 = "Cancelar";
+
+        formPanel = new FormPanel();
+        formPanel.setBaseCls("x-plain");
+        //formPanel.setLabelWidth(ANCHO - 400);
+
+        but_aceptarP = new Button(nombreBoton1, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                GuardarEditarCliente(e);
+//                            IngresoAlmacen ing=new IngresoAlmacen(IngresoAlmacenForm.this);
+//                            padre.seleccionarOpcion(null,"fun5099",e, ing);
+//
+//                            IngresoAlmacenForm.this.close();
+//                            IngresoAlmacenForm.this.setModal(false);
+            }
+        });
+        but_cancelarP = new Button(nombreBoton2, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                SeleccionEntrega.this.destroy();
+                SeleccionEntrega.this.close();
+
+            }
+        });
+//        formpanel1 = new Panel();
+//        formpanel1.setWidth(50);
+//        formpanel1.setHeight(50);
+//        label.setHeight(50);
+//        label.setWidth(50);
+        //formpanel1.add(label);
+
+ tex_codigo = new TextField("Numero Recibo", "codigo");
+
+       // com_cliente = new ComboBox("Cliente", "cliente", 200);
+       // com_cliente.setValue("CLIENTE MAYOR");
+       // com_cliente.setReadOnly(true);
+        //com_tipoC.setPosition(50, 50);
+
+        // formPanel.setLabelWidth(ANCHO - 400 - 5);
+
+
+        //formPanel.add(formpanel1);
+        formPanel.add(tex_codigo);
+        addButton(but_aceptarP);
+        addButton(but_cancelarP);
+        add(formPanel);
+        //initCombos();
+
+    }
+
+
+    public Button getBut_aceptar() {
+        return but_aceptarP;
+    }
+
+    public Button getBut_cancelar() {
+        return but_cancelarP;
+    }
+
+     public void GuardarEditarCliente(EventObject e) {
+
+        String idmarca = tex_codigo.getText();
+
+      //  String cadena = "php/IngresoAlmacen.php?funcion=BuscarModeloDetallePorMarca&idtienda=" +idtienda+"&idmarca="+idmarca;
+      String cadena = "php/VentaMayor.php?funcion=BuscarDatosEntrega&numerorecibo=" + idmarca;
+
+        Utils.setErrorPrincipal("Cargando parametros de para ingreso almacen", "cargar");
+        final Conector conec = new Conector(cadena, false);
+        {
+            try {
+                conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+                    private EventObject e;
+
+                    public void onResponseReceived(Request request, Response response) {
+                        String data = response.getText();
+                        JSONValue jsonValue = JSONParser.parse(data);
+                        JSONObject jsonObject;
+                        if ((jsonObject = jsonValue.isObject()) != null) {
+                            String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                            String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                            if (errorR.equalsIgnoreCase("true")) {
+                                Utils.setErrorPrincipal(mensajeR, "mensaje");
+
+                                JSONValue marcaV = jsonObject.get("resultado");
+                                JSONObject marcaO;
+                                if ((marcaO = marcaV.isObject()) != null) {
+   String idventamayor = Utils.getStringOfJSONObject(marcaO, "idventamayor");
+                                   String recibo = Utils.getStringOfJSONObject(marcaO, "recibo");
+                                    String fechaentrega = Utils.getStringOfJSONObject(marcaO, "fechaentrega");
+                                    String tipocambio = Utils.getStringOfJSONObject(marcaO, "tipocambio");
+                                    String marca = Utils.getStringOfJSONObject(marcaO, "marca");
+                                    String cliente = Utils.getStringOfJSONObject(marcaO, "cliente");
+                                    String opcion = Utils.getStringOfJSONObject(marcaO, "opcion");
+                                    String totalpares = Utils.getStringOfJSONObject(marcaO, "totalpares");
+                                    String totalcajas = Utils.getStringOfJSONObject(marcaO, "totalcajas");
+                                    String totalsus = Utils.getStringOfJSONObject(marcaO, "totalsus");
+                                    String rebajapor = Utils.getStringOfJSONObject(marcaO, "rebajapor");
+                                    String rebajasus = Utils.getStringOfJSONObject(marcaO, "rebajasus");
+                                    String totalpagar = Utils.getStringOfJSONObject(marcaO, "totalpagar");
+                                    String saldoactual = Utils.getStringOfJSONObject(marcaO, "saldoactual");
+                                    String observacion = Utils.getStringOfJSONObject(marcaO, "observacion");
+                                String dato = Utils.getStringOfJSONObject(marcaO, "dato");
+
+ Entregas ing = new Entregas(idventamayor,recibo,fechaentrega,tipocambio,marca,cliente,opcion,totalpares,totalcajas,totalsus,rebajapor,rebajasus,totalpagar,saldoactual,observacion,dato, SeleccionEntrega.this);
+
+                     //           IngresoAlmacen ing = new IngresoAlmacen(idmarca,marca,numerodoc,opcion,modelos,IngresoAlmacenForm.this);
+                                    //IngresoAlmacen ing=new IngresoAlmacen(IngresoAlmacenForm.this);
+                                    padre.seleccionarOpcion(null,"fun60051",e, ing);
+                                    Utils.setErrorPrincipal("Se cargaron los parametros Correctamente"+opcion, "mensaje");
+                                } else {
+                                    MessageBox.alert("No Hay datos en la consulta");
+                                }
+                            }
+                        } else {
+                        }
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+
+                    public void onError(Request request, Throwable exception) {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+                });
+
+            } catch (RequestException ex) {
+                ex.getMessage();
+                MessageBox.alert("Ocurrio un error al conectarse con el SERVIDOR");
+            }
+
+        }
+
+
+    }
+    public int redondedo(float f) {
+        int aux = (int) f;
+        if (aux < f) {
+            aux = aux + 1;
+        }
+        return aux;
+    }
+}

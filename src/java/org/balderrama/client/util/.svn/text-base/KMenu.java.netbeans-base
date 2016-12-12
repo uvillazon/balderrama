@@ -1,0 +1,2468 @@
+package org.balderrama.client.util;
+
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.TabPanel;
+import com.gwtext.client.widgets.menu.BaseItem;
+import com.gwtext.client.widgets.menu.Item;
+import com.gwtext.client.widgets.menu.Menu;
+import com.gwtext.client.widgets.menu.MenuItem;
+import com.gwtext.client.widgets.menu.event.MenuListener;
+import com.gwtext.client.widgets.MessageBox;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import org.balderrama.client.MainEntryPoint;
+import org.balderrama.client.marca.Marca;
+import org.balderrama.client.proveedor.Proveedor;
+import org.balderrama.client.configuracion.ConfiguracionColor;
+import org.balderrama.client.configuracion.Material;
+import org.balderrama.client.linea.Linea;
+import org.balderrama.client.cliente.Cliente;
+import org.balderrama.client.almacen.Almacen;
+//import org.balderrama.client.empresa.Empresa;
+import org.balderrama.client.cliente.ClienteDetalle;
+import org.balderrama.client.configuracion.Coleccion;
+import org.balderrama.client.tienda.Vendedores;
+import org.balderrama.client.modelo.Modelo;
+import org.balderrama.client.system.CargarDatos;
+import org.balderrama.client.system.Rol;
+import org.balderrama.client.system.Usuario;
+import org.balderrama.client.muestra.Muestra;
+import org.balderrama.client.muestra.PanelPedidoMuestra;
+import org.balderrama.client.muestra.ListaRecibidos;
+
+import org.balderrama.client.configuracion.Estilo;
+import org.balderrama.client.pedido.Pedido;
+import org.balderrama.client.pedido.PanelPedido;
+import org.balderrama.client.pedido.PedidoConfirmado;
+
+import org.balderrama.client.pedido.PanelPedidoConfirmado;
+import org.balderrama.client.pedido.PanelPedidoFacturado;
+import org.balderrama.client.pedido.PanelPedidoRegistrado;
+
+import org.balderrama.client.pedido.IngresoPedidoFacturado;
+import org.balderrama.client.pedido.IngresoPedidoAlmacen;
+
+import org.balderrama.client.system.ListarCalzados;
+import org.balderrama.client.configuracion.Empresa;
+import org.balderrama.client.configuracion.ConfiguracionParametro;
+import org.balderrama.client.reportes.ReporteAlmacen;
+import org.balderrama.client.system.Tienda;
+import org.balderrama.client.sistemadetalle.Gasto;
+import org.balderrama.client.sistemadetalle.IngresoAlmacenForm;
+import org.balderrama.client.sistemadetalle.MarcaDetalle;
+import org.balderrama.client.sistemadetalle.ModeloDetalle;
+import org.balderrama.client.sistemadetalle.PanelPedidoE;
+
+import org.balderrama.client.system.Empleado;
+import org.balderrama.client.sistemadetalle.IngresoAlmacen;
+import org.balderrama.client.sistemadetalle.IngresoTienda;
+import org.balderrama.client.sistemadetalle.IngresoTiendaMarca;
+
+import org.balderrama.client.configuracion.ConfiguracionArticulos;
+import org.balderrama.client.configuracion.LineaLocal;
+import org.balderrama.client.emergentes.SeleccionMarca;
+import org.balderrama.client.emergentes.SeleccionMarcaTienda;
+
+import org.balderrama.client.emergentes.SeleccionMarcaOficina;
+import org.balderrama.client.emergentes.SeleccionMarcaColeccion;
+
+import org.balderrama.client.emergentes.SeleccionMarcaCodigo;
+import org.balderrama.client.emergentes.SeleccionMarcaKardex;
+
+import org.balderrama.client.parametros.Cargos;
+import org.balderrama.client.parametros.Ciudades;
+import org.balderrama.client.emergentes.SeleccionCliente;
+import org.balderrama.client.emergentes.SeleccionEmpresa;
+import org.balderrama.client.emergentes.ConsultaEmpresa;
+import org.balderrama.client.emergentes.EmisionPlanilla;
+import org.balderrama.client.emergentes.ModificarPlanilla;
+import org.balderrama.client.emergentes.RevertirPlanilla;
+import org.balderrama.client.emergentes.ReimpresionPlanilla;
+import org.balderrama.client.emergentes.ConsultaPlanilla;
+
+import org.balderrama.client.emergentes.SeleccionEmpresaCliente;
+import org.balderrama.client.emergentes.SeleccionPorEmpresaCliente;
+import org.balderrama.client.emergentes.VentasEmpresaCliente;
+import org.balderrama.client.emergentes.SaldosEmpresaCliente;
+import org.balderrama.client.emergentes.CambiarEmpresaCliente;
+
+import org.balderrama.client.emergentes.SeleccionTiposGastos;
+import org.balderrama.client.emergentes.SeleccionProforma;
+import org.balderrama.client.emergentes.SeleccionEntrega;
+import org.balderrama.client.emergentes.SeleccionMarcaEstilo;
+
+import org.balderrama.client.Etapas.Control;
+
+import org.balderrama.client.Cobros.*;
+import org.balderrama.client.Cobros.VentasCredito;
+import org.balderrama.client.Cobros.ListaPagos;
+import org.balderrama.client.Cobros.Consultas;
+import org.balderrama.client.Cobros.PanelCobrosEmpresa;
+import org.balderrama.client.Consulta.PanelCobrosEmpresaCliente;
+import org.balderrama.client.Ventas.PanelModificarVentas;
+import org.balderrama.client.Ventas.PanelModificarSaldos;
+import org.balderrama.client.Planilla.PanelModificarPlanilla;
+import org.balderrama.client.Planilla.PanelConsultaPlanilla;
+import org.balderrama.client.Consulta.ConsultaDeEmpresa;
+
+import org.balderrama.client.Cobros.Credito;
+
+import org.balderrama.client.procesos.Periodo;
+
+import org.balderrama.client.emergentes.ControlPrecioForm;
+import org.balderrama.client.emergentes.ControlPrecioPedidoForm;
+import org.balderrama.client.pedido.ControlPreciosPedido;
+
+import org.balderrama.client.tiposgastos.TiposGastos;
+import org.balderrama.client.tiposgastos.TiposGastosDetalle;
+import org.balderrama.client.Almacenes.KardexAlmacen;
+import org.balderrama.client.VentaMayor.Entrega;
+import org.balderrama.client.VentaMayor.ListaVenta;
+import org.balderrama.client.VentaMayor.PanelVenta;
+import org.balderrama.client.VentaMayor.Entregas;
+import org.balderrama.client.CobroMayor.CobrosMayor;
+
+/**
+ *
+ * @author FOREGROUND
+ */
+public class KMenu implements MenuListener {
+
+    Button button = null;
+    MainEntryPoint panel;
+    PanelPedido panelpedido;
+    PanelPedidoE panelpedidoe;
+    IngresoPedidoAlmacen ingresopedidoalmacen;
+
+    PanelPedidoConfirmado panelpedidoconfirmado;
+ PanelPedidoFacturado panelpedidofacturado;
+PanelPedidoRegistrado panelpedidoregistrado;
+
+    PanelCobrosEmpresa panelcobrosempresa;
+    PanelCobrosEmpresaCliente panelcobrosempresacliente;
+    PanelModificarVentas panelmodificarventas;
+ PanelModificarSaldos panelmodificarsaldos;
+
+    PanelModificarPlanilla panelmodificarplanilla;
+    PanelConsultaPlanilla panelconsultaplanilla;
+
+    IngresoAlmacenForm ped;
+    ControlPrecioForm controlp;
+    ControlPrecioPedidoForm controlpp;
+    SeleccionMarca formM;
+    SeleccionMarcaTienda formMT;
+ SeleccionMarcaEstilo formMTE;
+    SeleccionMarcaOficina formMofi;
+    CobrosMayor formMCM;
+
+    SeleccionMarcaColeccion formMofic;
+
+    SeleccionMarcaCodigo formMCo;
+SeleccionMarcaKardex formMKar;
+
+    SeleccionEmpresa formE;
+    ConsultaEmpresa formJ;
+    EmisionPlanilla formEE;
+    RevertirPlanilla formFF;
+    ModificarPlanilla formGG;
+    ConsultaPlanilla formGGG;
+
+    ReimpresionPlanilla formHH;
+
+    SeleccionEmpresaCliente formEC;
+      SeleccionPorEmpresaCliente formPEC;
+    VentasEmpresaCliente formVE;
+    SaldosEmpresaCliente formSA;
+    CambiarEmpresaCliente formCA;
+
+    SeleccionCliente formC;
+    SeleccionProforma formProforma;
+    SeleccionEntrega formEntrega;
+
+    SeleccionTiposGastos formG;
+    ConfiguracionArticulos conf;
+    Cobros cob;
+public Number tipoCambio;
+
+    public KMenu(MainEntryPoint p) {
+        this.panel = p;
+    }
+
+    public void onModuleLoad(JSONObject conec) {
+
+        button = new Button();
+        button.setText("Sistema Inventario");
+//        button.setWidth("150px");
+
+        button.setIconCls("user-icon");
+        Menu menu = new Menu();
+        Object[][] categorias = Utils.getArrayOfJSONObject(conec, "resultado", new String[]{"idcategoriafuncion", "nombre"});
+        for (int i = 0; i < categorias.length; i++) {
+            String cadNom = categorias[i][1].toString();
+            String cadID = categorias[i][0].toString();
+            cadID = "CatFunc" + cadID;
+            cadNom = cadNom;
+            Menu subMenu = new Menu();
+            subMenu.setId(cadID);
+            subMenu.addListener(this);
+            Object[][] func = Utils.getArrayOfJSONObject(conec, cadNom, new String[]{"idfuncion", "descripcion"});
+//            com.google.gwt.user.client.Window.alert("nombre: "+cadNom+"id: "+cadID);
+            for (int ii = 0; ii < func.length; ii++) {
+                Item csharpItem = new Item(func[ii][1].toString());
+                csharpItem.setId(func[ii][0].toString());
+                csharpItem.setIconCls("settings-icon");
+                subMenu.addItem(csharpItem);
+            }
+            MenuItem vsItem = new MenuItem(cadNom, subMenu);
+            vsItem.setIconCls("plugins-nav-icon");
+            menu.addItem(vsItem);
+
+        }
+        button.setMenu(menu);
+        button.setMenuAlign("tl-bl?");
+
+    }
+
+    public KMenu getKmenu() {
+        return this;
+    }
+
+    public Button getButton() {
+        return button;
+    }
+
+    public void setButton(Button button) {
+        this.button = button;
+    }
+
+    public void doBeforeHide(Menu menu) {
+        //Window.alert("csharpItem8");
+    }
+
+    public void doBeforeShow(Menu menu) {
+        //Window.alert("csharpItem7");
+    }
+
+    public void onClick(Menu menu, String menuItemId, EventObject e) {
+        //Window.alert(menuItemId);
+        try {
+            //Widget temp = panel.getCuerpoP().getWidget(0);
+            Panel temp = panel.getTabPanel().getItem("TP" + menuItemId);
+            //Window.alert("Title::::: "+temp.getTitle());
+            if (temp != null) {
+                //Window.alert(temp.toString());
+                panel.getTabPanel().activate(temp.getId());
+                panel.getTabPanel().scrollToTab(temp, true);
+            //panel.getCuerpoP().remove(temp);
+            } else {
+//                Window.alert("asdf");
+                seleccionarOpcion(menu, menuItemId, e, null);
+            }
+        } catch (Exception ee) {
+//            Window.alert("asdfasdfasdfasdfasdfasdf");
+            seleccionarOpcion(menu, menuItemId, e, null);
+        }
+
+
+    }
+
+    public void onHide(Menu menu) {
+        //Window.alert("csharpItem1");
+    }
+
+    public void onItemClick(BaseItem item, EventObject e) {
+        //Window.alert("csharpItem2");
+    }
+
+    public void onMouseOut(Menu menu, BaseItem menuItem, EventObject e) {
+        //Window.alert("csharpItem3");
+    }
+
+    public void onMouseOver(Menu menu, BaseItem menuItem, EventObject e) {
+        //Window.alert("csharpItem4");
+    }
+
+    public void onShow(Menu menu) {
+        //Window.alert("csharpItem5");
+    }
+
+    public void seleccionarOpcion(Menu menu, String menuItemId, EventObject e, Object object) {
+        if (object == null) {
+
+            if (menuItemId.equalsIgnoreCase("fun1504")) {
+                Marca mar = new Marca(this, panel);
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(mar);
+                    panel.getTabPanel().activate(mar.getId());
+                    panel.getTabPanel().scrollToTab(mar, true);
+                }
+
+
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun1000")) {
+                Proveedor proveedor = new Proveedor();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador Proveedor", "mensaje");
+                    panel.getTabPanel().add(proveedor);
+                    panel.getTabPanel().activate(proveedor.getId());
+                    panel.getTabPanel().scrollToTab(proveedor, true);
+                }
+            }
+//            if (menuItemId.equalsIgnoreCase("fun1002")) {
+//                Cliente proveedor = new Cliente();
+//                if (panel.getTabPanel() == null) {
+//                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+//                } else {
+//                    Utils.setErrorPrincipal("Se cargo el manejador Cliente", "mensaje");
+//                    panel.getTabPanel().add(proveedor);
+//                    panel.getTabPanel().activate(proveedor.getId());
+//                    panel.getTabPanel().scrollToTab(proveedor, true);
+//                }
+//            }
+            if (menuItemId.equalsIgnoreCase("fun1002")) {
+                formC = new SeleccionCliente(KMenu.this);
+                formC.show();
+            }
+            if (menuItemId.equalsIgnoreCase("fun1005")) {
+                Usuario proveedor = new Usuario();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(proveedor);
+                    panel.getTabPanel().activate(proveedor.getId());
+                    panel.getTabPanel().scrollToTab(proveedor, true);
+                }
+            }
+            if (menuItemId.equalsIgnoreCase("fun1007")) {
+                Rol proveedor = new Rol();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(proveedor);
+                    panel.getTabPanel().activate(proveedor.getId());
+                    panel.getTabPanel().scrollToTab(proveedor, true);
+                }
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun1008")) {
+                CargarDatos proveedor = new CargarDatos();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(proveedor);
+                    panel.getTabPanel().activate(proveedor.getId());
+                    panel.getTabPanel().scrollToTab(proveedor, true);
+                }
+            }
+            if (menuItemId.equalsIgnoreCase("fun1507")) {
+                ListarCalzados proveedor = new ListarCalzados();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(proveedor);
+                    panel.getTabPanel().activate(proveedor.getId());
+                    panel.getTabPanel().scrollToTab(proveedor, true);
+                }
+            }
+            if (menuItemId.equalsIgnoreCase("fun1510")) {
+                LineaLocal proveedor = new LineaLocal();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(proveedor);
+                    panel.getTabPanel().activate(proveedor.getId());
+                    panel.getTabPanel().scrollToTab(proveedor, true);
+                }
+            }
+//            if (menuItemId.equalsIgnoreCase("fun1011")) {
+//                Tienda proveedor = new Tienda();
+//                if (panel.getTabPanel() == null) {
+//                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+//                } else {
+//                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+//                    panel.getTabPanel().add(proveedor);
+//                    panel.getTabPanel().activate(proveedor.getId());
+//                    panel.getTabPanel().scrollToTab(proveedor, true);
+//                }
+//            }
+            if (menuItemId.equalsIgnoreCase("fun1012")) {
+                Empleado proveedor = new Empleado();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(proveedor);
+                    panel.getTabPanel().activate(proveedor.getId());
+                    panel.getTabPanel().scrollToTab(proveedor, true);
+                }
+            }
+            if (menuItemId.equalsIgnoreCase("fun1013")) {
+                Cargos proveedor = new Cargos();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(proveedor);
+                    panel.getTabPanel().activate(proveedor.getId());
+                    panel.getTabPanel().scrollToTab(proveedor, true);
+                }
+            }
+            if (menuItemId.equalsIgnoreCase("fun1014")) {
+                Ciudades proveedor = new Ciudades();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(proveedor);
+                    panel.getTabPanel().activate(proveedor.getId());
+                    panel.getTabPanel().scrollToTab(proveedor, true);
+                }
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun1020")) {
+                ConfiguracionArticulos Configuracion = new ConfiguracionArticulos();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(Configuracion);
+                    panel.getTabPanel().activate(Configuracion.getId());
+                    panel.getTabPanel().scrollToTab(Configuracion, true);
+                }
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun1503")) {
+                Estilo proveedor = new Estilo();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(proveedor);
+                    panel.getTabPanel().activate(proveedor.getId());
+                    panel.getTabPanel().scrollToTab(proveedor, true);
+                }
+            }
+
+
+
+
+
+            if (menuItemId.equalsIgnoreCase("fun1501")) {
+                Linea linea = new Linea();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador de Linea", "mensaje");
+                    panel.getTabPanel().add(linea);
+                    panel.getTabPanel().activate(linea.getId());
+                    panel.getTabPanel().scrollToTab(linea, true);
+                }
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun1004")) {
+                Almacen linea = new Almacen();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador ", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador de Almacen", "mensaje");
+                    panel.getTabPanel().add(linea);
+                    panel.getTabPanel().activate(linea.getId());
+                    panel.getTabPanel().scrollToTab(linea, true);
+                }
+            }
+            if (menuItemId.equalsIgnoreCase("fun1015")) {
+                Empresa linea = new Empresa();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador de Empresa", "mensaje");
+                    panel.getTabPanel().add(linea);
+                    panel.getTabPanel().activate(linea.getId());
+                    panel.getTabPanel().scrollToTab(linea, true);
+                }
+            }
+//  if (menuItemId.equalsIgnoreCase("fun1030")) {
+//                KardexAlmacen linea = new KardexAlmacen();
+//                if (panel.getTabPanel() == null) {
+//                    Utils.setErrorPrincipal("No existe el manejador ", "error");
+//                } else {
+//                    Utils.setErrorPrincipal("Se cargo el manejador de Almacen", "mensaje");
+//                    panel.getTabPanel().add(linea);
+//                    panel.getTabPanel().activate(linea.getId());
+//                    panel.getTabPanel().scrollToTab(linea, true);
+//                }
+//            }
+            if (menuItemId.equalsIgnoreCase("fun1500")) {
+                Coleccion linea = new Coleccion();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador de Coleccion", "mensaje");
+                    panel.getTabPanel().add(linea);
+                    panel.getTabPanel().activate(linea.getId());
+                    panel.getTabPanel().scrollToTab(linea, true);
+                }
+            }
+           
+            if (menuItemId.equalsIgnoreCase("fun1502")) {
+                Modelo linea = new Modelo();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador de Coleccion", "mensaje");
+                    panel.getTabPanel().add(linea);
+                    panel.getTabPanel().activate(linea.getId());
+                    panel.getTabPanel().scrollToTab(linea, true);
+                }
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun3001")) {
+                Pedido linea = new Pedido(this, panel);
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador de Coleccion", "mensaje");
+                    panel.getTabPanel().add(linea);
+                    panel.getTabPanel().activate(linea.getId());
+                    panel.getTabPanel().scrollToTab(linea, true);
+                }
+            }
+
+             if (menuItemId.equalsIgnoreCase("fun3002")) {
+                PedidoConfirmado linea = new PedidoConfirmado(this, panel);
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador de Coleccion", "mensaje");
+                    panel.getTabPanel().add(linea);
+                    panel.getTabPanel().activate(linea.getId());
+                    panel.getTabPanel().scrollToTab(linea, true);
+                }
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun4000")) {
+                Muestra mar = new Muestra();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador publicidad web", "mensaje");
+                    panel.getTabPanel().add(mar);
+                    panel.getTabPanel().activate(mar.getId());
+                    panel.getTabPanel().scrollToTab(mar, true);
+                }
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun2007")) {
+                ConfiguracionParametro linea = new ConfiguracionParametro();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador de tienda", "mensaje");
+                    panel.getTabPanel().add(linea);
+                    panel.getTabPanel().activate(linea.getId());
+                    panel.getTabPanel().scrollToTab(linea, true);
+                }
+            }
+
+      
+            if (menuItemId.equalsIgnoreCase("fun4001")) {
+                Gasto pedido1 = new Gasto();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(pedido1);
+                    panel.getTabPanel().activate(pedido1.getId());
+                    panel.getTabPanel().scrollToTab(pedido1, true);
+                }
+
+
+            }
+            if (menuItemId.equalsIgnoreCase("fun1509")) {
+                MarcaDetalle pedido1 = new MarcaDetalle();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(pedido1);
+                    panel.getTabPanel().activate(pedido1.getId());
+                    panel.getTabPanel().scrollToTab(pedido1, true);
+                }
+
+
+            }
+            if (menuItemId.equalsIgnoreCase("fun1508")) {
+                ModeloDetalle pedido1 = new ModeloDetalle();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(pedido1);
+                    panel.getTabPanel().activate(pedido1.getId());
+                    panel.getTabPanel().scrollToTab(pedido1, true);
+                }
+
+
+            }
+            //reporte prueba////////////////////
+            if (menuItemId.equalsIgnoreCase("fun1101")) {
+                ReporteAlmacen prueba = new ReporteAlmacen();
+                prueba.show();
+
+
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun3003")) {
+
+                String enlace = "php/Marca.php?funcion=BuscarMarca";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                        Object[][] tiendaM = Utils.getArrayOfJSONObject(marcaO, "tiendaM", new String[]{"idtienda", "nombre"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "marcaM", new String[]{"idmarca", "nombre"});
+//                                Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formM = new SeleccionMarca(marcaM, KMenu.this);
+                                        formM.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+            //reporte fin prueba////
+
+            if (menuItemId.equalsIgnoreCase("fun3010")) {
+
+                String enlace = "php/Marca.php?funcion=BuscarMarca";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                        Object[][] tiendaM = Utils.getArrayOfJSONObject(marcaO, "tiendaM", new String[]{"idtienda", "nombre"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "marcaM", new String[]{"idmarca", "nombre"});
+//                                Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formMCo = new SeleccionMarcaCodigo(marcaM, KMenu.this);
+                                        formMCo.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+
+
+
+            if (menuItemId.equalsIgnoreCase("fun1030")) {
+
+                String enlace = "php/Marca.php?funcion=BuscarMarca";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                        Object[][] tiendaM = Utils.getArrayOfJSONObject(marcaO, "tiendaM", new String[]{"idtienda", "nombre"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "marcaM", new String[]{"idmarca", "nombre"});
+//                                Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formMKar = new SeleccionMarcaKardex(marcaM, KMenu.this);
+                                        formMKar.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+            //reporte fin prueba////
+
+            if (menuItemId.equalsIgnoreCase("fun5004")) {
+                String enlace = "php/IngresoAlmacen.php?funcion=BuscarTiendaMarca";
+
+
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+                                        Object[][] tiendaM = Utils.getArrayOfJSONObject(marcaO, "tiendaM", new String[]{"idtienda", "nombre"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "marcaM", new String[]{"idmarca", "nombre"});
+//                                Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+                                        ped = new IngresoAlmacenForm(tiendaM, marcaM, KMenu.this);
+                                        ped.show();
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+       if (menuItemId.equalsIgnoreCase("fun5013")) {
+
+                String enlace = "php/Marca.php?funcion=BuscarMarca";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                        Object[][] tiendaM = Utils.getArrayOfJSONObject(marcaO, "tiendaM", new String[]{"idtienda", "nombre"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "marcaM", new String[]{"idmarca", "nombre"});
+//                                Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formMT = new SeleccionMarcaTienda(marcaM, KMenu.this);
+                                        formMT.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+     if (menuItemId.equalsIgnoreCase("fun5018")) {
+//String enlace = "php/Marca.php?funcion=BuscarMarcaEstilo";
+   String enlace = "php/IngresoAlmacen.php?funcion=BuscarMarcaEstilo";
+                //String enlace = "php/Marca.php?funcion=BuscarMarca";
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                        Object[][] tiendaM = Utils.getArrayOfJSONObject(marcaO, "tiendaM", new String[]{"idtienda", "nombre"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "marcaM", new String[]{"idmarca", "nombre"});
+          //Object[][] estiloM = Utils.getArrayOfJSONObject(marcaO, "estiloM", new String[]{"idestilo", "nombre"});
+        Object[][] estiloM = Utils.getArrayOfJSONObject(marcaO, "estiloM", new String[]{"idestilo", "nombre","idmarca"});
+                                        formMTE = new SeleccionMarcaEstilo(marcaM,estiloM ,KMenu.this);
+                                        formMTE.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+ if (menuItemId.equalsIgnoreCase("fun1040")) {
+
+                String enlace = "php/Muestra.php?funcion=BuscarMarcaAlmacenColeccion";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+                               //         Object[][] tiendaM = Utils.getArrayOfJSONObject(marcaO, "almacenM", new String[]{"idalmacen", "nombre"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "marcaM", new String[]{"idmarca", "nombre"});
+//                                Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+  String coleccion = Utils.getStringOfJSONObject(marcaO, "coleccion");
+
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formMofic = new SeleccionMarcaColeccion(marcaM, coleccion,KMenu.this);
+                                        formMofic.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+
+
+ if (menuItemId.equalsIgnoreCase("fun1041")) {
+
+                String enlace = "php/Muestra.php?funcion=BuscarMarcaAlmacenColeccion";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+                                        Object[][] tiendaM = Utils.getArrayOfJSONObject(marcaO, "almacenM", new String[]{"idalmacen", "nombre"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "marcaM", new String[]{"idmarca", "nombre"});
+//                                Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+  String coleccion = Utils.getStringOfJSONObject(marcaO, "coleccion");
+
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formMofi = new SeleccionMarcaOficina(marcaM, tiendaM,coleccion,KMenu.this);
+                                        formMofi.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+        if (menuItemId.equalsIgnoreCase("fun6021")) {
+                String enlace = "php/CobroMayor.php?funcion=BuscarClienteMarcaReciboTipoCambio";
+
+//                String enlace = "php/Muestra.php?funcion=BuscarMarcaAlmacenColeccion";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+   Object[][] clienteM = Utils.getArrayOfJSONObject(marcaO, "clienteM", new String[]{"idcliente", "nombre"});
+   Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "marcaM", new String[]{"idmarca","idcliente", "nombre"});
+  // Object[][] reciboM = Utils.getArrayOfJSONObject(marcaO, "reciboM", new String[]{"factura", "idcredito","idmarca","idcliente"});
+   String tipocambio = Utils.getStringOfJSONObject(marcaO, "tipocambio");
+
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                    //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formMCM = new CobrosMayor(clienteM,marcaM, tipocambio,KMenu.this);
+                                        formMCM.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+
+
+              if (menuItemId.equalsIgnoreCase("fun3009")) {
+                IngresoPedidoFacturado pedido1 = new IngresoPedidoFacturado(this,panel);
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(pedido1);
+                    panel.getTabPanel().activate(pedido1.getId());
+                    panel.getTabPanel().scrollToTab(pedido1, true);
+                }
+            }
+//               if (menuItemId.equalsIgnoreCase("fun3010")) {
+//                IngresoPedidoAlmacen pedido1 = new IngresoPedidoAlmacen();
+//                if (panel.getTabPanel() == null) {
+//                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+//                } else {
+//
+//                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+//                    panel.getTabPanel().add(pedido1);
+//                    panel.getTabPanel().activate(pedido1.getId());
+//                    panel.getTabPanel().scrollToTab(pedido1, true);
+//                }
+//            }
+
+            if (menuItemId.equalsIgnoreCase("fun5005")) {
+                IngresoTienda pedido1 = new IngresoTienda();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(pedido1);
+                    panel.getTabPanel().activate(pedido1.getId());
+                    panel.getTabPanel().scrollToTab(pedido1, true);
+                }
+
+
+            }
+
+              if (menuItemId.equalsIgnoreCase("fun5017")) {
+                IngresoTiendaMarca pedido1 = new IngresoTiendaMarca();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(pedido1);
+                    panel.getTabPanel().activate(pedido1.getId());
+                    panel.getTabPanel().scrollToTab(pedido1, true);
+                }
+
+
+            }
+    if (menuItemId.equalsIgnoreCase("fun6000")) {
+                ListaVenta linea = new ListaVenta(KMenu.this);
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador de Empresa", "mensaje");
+                    panel.getTabPanel().add(linea);
+                    panel.getTabPanel().activate(linea.getId());
+                    panel.getTabPanel().scrollToTab(linea, true);
+                }
+            }
+            if (menuItemId.equalsIgnoreCase("fun1511")) {
+                String enlace = "php/ControlPrecio.php?funcion=BuscarMarcaColeccion";
+
+
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+                                        Object[][] ColeccionM = Utils.getArrayOfJSONObject(marcaO, "coleccionM", new String[]{"idcoleccion", "codigo", "idmarca"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "marcaM", new String[]{"idmarca", "nombre"});
+//                              
+                                        controlp = new ControlPrecioForm(marcaM, ColeccionM, KMenu.this);
+                                        controlp.show();
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun3004")) {
+                String enlace = "php/ControlPrecioPedido.php?funcion=BuscarMarcaPedido";
+
+
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+                                        Object[][] pedidoM = Utils.getArrayOfJSONObject(marcaO, "pedidoM", new String[]{"idpedido", "numeropedido", "idmarca"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "marcaM", new String[]{"idmarca", "nombre"});
+//
+                                        controlpp = new ControlPrecioPedidoForm(marcaM, pedidoM, KMenu.this);
+                                        controlpp.show();
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+
+
+            if (menuItemId.equalsIgnoreCase("fun1601")) {
+
+                String enlace = "php/Cobros.php?funcion=BuscarClienteEmpresaop";
+
+//                     String enlace = "php/dao/ProductoListar.php?function=findCiudadSucAlmCatSubcat";
+                Utils.setErrorPrincipal("Cargando ", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    // Object[][] almacenM1016 = Utils.getArrayOfJSONObject(jsonObject, "tiendaM", new String[]{"idtienda", "nombre"});
+                                    Object[][] categoriaM1016 = Utils.getArrayOfJSONObject(jsonObject, "empresaM", new String[]{"idempresa", "nombre"});
+
+                                    Object[][] subcategoriaM1016 = Utils.getArrayOfJSONObject(jsonObject, "clienteM", new String[]{"idcliente", "nombre", "idempresa"});
+                                    //   Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+                                    VentasCredito pedido1 = new VentasCredito(categoriaM1016, subcategoriaM1016);
+                                    //   Credito pro = new Credito(ciudadM1016, almacenM1016, categoriaM1016, subcategoriaM1016);
+                                    if (panel.getTabPanel() == null) {
+                                        Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                                    } else {
+
+                                        Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                                        panel.getTabPanel().add(pedido1);
+                                        panel.getTabPanel().activate(pedido1.getId());
+                                    // panel.getTabPanel().scrollToTab(pedido1, true);
+                                    }
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+
+
+            }
+
+
+
+
+
+            if (menuItemId.equalsIgnoreCase("fun1602")) {
+                RegistroCobros pedido1 = new RegistroCobros();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(pedido1);
+                    panel.getTabPanel().activate(pedido1.getId());
+                    panel.getTabPanel().scrollToTab(pedido1, true);
+                }
+
+
+            }
+            if (menuItemId.equalsIgnoreCase("fun1603")) {
+
+                String enlace = "php/Cobros.php?funcion=BuscarClienteEmpresa";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                         clienteC = Utils.getArrayOfJSONObject(compraObject, "clienteM", new String[]{"idcliente","idempresa", "nombre"});
+                                        Object[][] empresaC = Utils.getArrayOfJSONObject(marcaO, "empresaM", new String[]{"idempresa", "nombre"});
+                                        Object[][] clienteM = Utils.getArrayOfJSONObject(marcaO, "clienteM", new String[]{"idcliente", "idempresa", "nombre"});
+//                                Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formEC = new SeleccionEmpresaCliente(empresaC, clienteM, KMenu.this);
+                                        formEC.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun1604")) {
+                formG = new SeleccionTiposGastos(KMenu.this);
+                formG.show();
+            }
+            if (menuItemId.equalsIgnoreCase("fun1605")) {
+
+                String enlace = "php/Cobros.php?funcion=ConsultaEmpresa";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                        Object[][] tiendaM = Utils.getArrayOfJSONObject(marcaO, "tiendaM", new String[]{"idtienda", "nombre"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "empresaM", new String[]{"idempresa", "nombre"});
+//
+                                        String planilla = Utils.getStringOfJSONObject(marcaO, "planilla");
+
+                                        formJ = new ConsultaEmpresa(marcaM, planilla, KMenu.this);
+                                        formJ.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun1606")) {
+                ListaPagos proveedor = new ListaPagos();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(proveedor);
+                    panel.getTabPanel().activate(proveedor.getId());
+                    panel.getTabPanel().scrollToTab(proveedor, true);
+                }
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun1607")) {
+
+              String enlace = "php/Cobros.php?funcion=ConsultaEmpresa";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                        Object[][] tiendaM = Utils.getArrayOfJSONObject(marcaO, "tiendaM", new String[]{"idtienda", "nombre"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "empresaM", new String[]{"idempresa", "nombre"});
+//
+                                        String planilla = Utils.getStringOfJSONObject(marcaO, "planilla");
+       formJ = new ConsultaEmpresa(marcaM, planilla, KMenu.this);
+                                        formJ.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun1608")) {
+                String enlace = "php/Cobros.php?funcion=finddatoscredito";
+
+//                     String enlace = "php/dao/ProductoListar.php?function=findCiudadSucAlmCatSubcat";
+                Utils.setErrorPrincipal("Cargando ", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    Object[][] ciudadM1016 = Utils.getArrayOfJSONObject(jsonObject, "ciudadM", new String[]{"idciudad", "nombre"});
+                                    //Object[][] sucursalM1016 = Utils.getArrayOfJSONObject(jsonObject, "sucursalM", new String[]{"idsucursal", "nombre", "idciudad"});
+                                    Object[][] almacenM1016 = Utils.getArrayOfJSONObject(jsonObject, "tiendaM", new String[]{"idtienda", "nombre"});
+                                    Object[][] subcategoriaM1016 = Utils.getArrayOfJSONObject(jsonObject, "clienteM", new String[]{"idcliente", "nombre", "idempresa"});
+                                    Object[][] categoriaM1016 = Utils.getArrayOfJSONObject(jsonObject, "empresaM", new String[]{"idempresa", "nombre"});
+                                    //   Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+
+                                    Credito pro = new Credito(ciudadM1016, almacenM1016, categoriaM1016, subcategoriaM1016);
+                                    if (panel.getTabPanel() == null) {
+                                        Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                                    } else {
+
+                                        Utils.setErrorPrincipal("Se cargo el manejador ", "mensaje");
+                                        panel.getTabPanel().add(pro);
+                                        panel.getTabPanel().activate(pro.getId());
+                                    //panel.getTabPanel().scrollToTab(pro, true);
+                                    }
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+
+
+            }
+
+
+             if (menuItemId.equalsIgnoreCase("fun6002")) {
+                String enlace = "php/VentaMayor.php?funcion=finddatosentregas";
+
+//                     String enlace = "php/dao/ProductoListar.php?function=findCiudadSucAlmCatSubcat";
+                Utils.setErrorPrincipal("Cargando ", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    Object[][] ciudadM1016 = Utils.getArrayOfJSONObject(jsonObject, "clienteM", new String[]{"idcliente", "codigo"});
+                                    Object[][] almacenM1016 = Utils.getArrayOfJSONObject(jsonObject, "marcaM", new String[]{"idmarca", "nombre"});
+                                    Object[][] tallaM1016 = Utils.getArrayOfJSONObject(jsonObject, "tallaM", new String[]{"idtallamarca", "nombre"});
+
+                                    Object[][] vendedorM1016 = Utils.getArrayOfJSONObject(jsonObject, "empleadoM", new String[]{"idempleado", "codigo"});
+
+                                    //Object[][] subcategoriaM1016 = Utils.getArrayOfJSONObject(jsonObject, "tallaM", new String[]{"idtallamarca", "nombre", "idempresa"});
+                                    String recibo = Utils.getStringOfJSONObject(jsonObject, "recibo");
+                                    Number tipoCambio1 = Utils.getBigDecimalOfJSONObject(jsonObject, "tipocambio");
+
+                                    //   Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+                                       //  Number tipocambio2= tipoCambio1;
+                                    Entrega pro = new Entrega(ciudadM1016, almacenM1016,vendedorM1016,tallaM1016,tipoCambio1, recibo);
+                                    if (panel.getTabPanel() == null) {
+                                        Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                                    } else {
+
+                                        Utils.setErrorPrincipal("Se cargo el manejador ", "mensaje");
+                                        panel.getTabPanel().add(pro);
+                                        panel.getTabPanel().activate(pro.getId());
+                                    //panel.getTabPanel().scrollToTab(pro, true);
+                                    }
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+
+
+            }
+
+if (menuItemId.equalsIgnoreCase("fun1609")) {
+
+                String enlace = "php/Cobros.php?funcion=BuscarClienteEmpresa";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                         clienteC = Utils.getArrayOfJSONObject(compraObject, "clienteM", new String[]{"idcliente","idempresa", "nombre"});
+                                        Object[][] empresaC = Utils.getArrayOfJSONObject(marcaO, "empresaM", new String[]{"idempresa", "nombre"});
+                                        Object[][] clienteM = Utils.getArrayOfJSONObject(marcaO, "clienteM", new String[]{"idcliente", "idempresa", "nombre"});
+//                                Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formVE = new VentasEmpresaCliente(empresaC, clienteM, KMenu.this);
+                                        formVE.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+         if (menuItemId.equalsIgnoreCase("fun1610")) {
+
+                String enlace = "php/Cobros.php?funcion=BuscarClienteEmpresa";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                         clienteC = Utils.getArrayOfJSONObject(compraObject, "clienteM", new String[]{"idcliente","idempresa", "nombre"});
+                                        Object[][] empresaC = Utils.getArrayOfJSONObject(marcaO, "empresaM", new String[]{"idempresa", "nombre"});
+                                        Object[][] clienteM = Utils.getArrayOfJSONObject(marcaO, "clienteM", new String[]{"idcliente", "idempresa", "nombre"});
+//                                Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formSA = new SaldosEmpresaCliente(empresaC, clienteM, KMenu.this);
+                                        formSA.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+
+         if (menuItemId.equalsIgnoreCase("fun1611")) {
+
+                String enlace = "php/Cobros.php?funcion=BuscarClienteEmpresa";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                         clienteC = Utils.getArrayOfJSONObject(compraObject, "clienteM", new String[]{"idcliente","idempresa", "nombre"});
+                                        Object[][] empresaC = Utils.getArrayOfJSONObject(marcaO, "empresaM", new String[]{"idempresa", "nombre"});
+                                        Object[][] clienteM = Utils.getArrayOfJSONObject(marcaO, "clienteM", new String[]{"idcliente", "idempresa", "nombre"});
+//                                Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formCA = new CambiarEmpresaCliente(empresaC, clienteM, KMenu.this);
+                                        formCA.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+
+       if (menuItemId.equalsIgnoreCase("fun1701")) {
+                String enlace = "php/Cobros.php?funcion=ConsultaEmpresa";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                        Object[][] tiendaM = Utils.getArrayOfJSONObject(marcaO, "tiendaM", new String[]{"idtienda", "nombre"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "empresaM", new String[]{"idempresa", "nombre"});
+//
+                                        String planilla = Utils.getStringOfJSONObject(marcaO, "planilla");
+
+                                        //   Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formEE = new EmisionPlanilla(marcaM, planilla, KMenu.this);
+                                        formEE.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+
+                        if (menuItemId.equalsIgnoreCase("fun1702")) {
+
+                String enlace = "php/Cobros.php?funcion=ConsultaEmpresa";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                        Object[][] tiendaM = Utils.getArrayOfJSONObject(marcaO, "tiendaM", new String[]{"idtienda", "nombre"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "empresaM", new String[]{"idempresa", "nombre"});
+//
+                                        String planilla = Utils.getStringOfJSONObject(marcaO, "planilla");
+
+                                        //   Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formFF = new RevertirPlanilla(marcaM, planilla, KMenu.this);
+                                        formFF.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+                        if (menuItemId.equalsIgnoreCase("fun1703")) {
+
+                String enlace = "php/Cobros.php?funcion=ConsultaEmpresa";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                        Object[][] tiendaM = Utils.getArrayOfJSONObject(marcaO, "tiendaM", new String[]{"idtienda", "nombre"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "empresaM", new String[]{"idempresa", "nombre"});
+//
+                                        String planilla = Utils.getStringOfJSONObject(marcaO, "planilla");
+
+                                        //   Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formGG = new ModificarPlanilla(marcaM, planilla, KMenu.this);
+                                        formGG.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+                        if (menuItemId.equalsIgnoreCase("fun1704")) {
+
+                String enlace = "php/Cobros.php?funcion=ConsultaEmpresa";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                        Object[][] tiendaM = Utils.getArrayOfJSONObject(marcaO, "tiendaM", new String[]{"idtienda", "nombre"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "empresaM", new String[]{"idempresa", "nombre"});
+//
+                                        String planilla = Utils.getStringOfJSONObject(marcaO, "planilla");
+
+                                        //   Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formHH = new ReimpresionPlanilla(marcaM, planilla, KMenu.this);
+                                        formHH.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+
+                    if (menuItemId.equalsIgnoreCase("fun1705")) {
+
+                String enlace = "php/Cobros.php?funcion=ConsultaEmpresa";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                        Object[][] tiendaM = Utils.getArrayOfJSONObject(marcaO, "tiendaM", new String[]{"idtienda", "nombre"});
+                                        Object[][] marcaM = Utils.getArrayOfJSONObject(marcaO, "empresaM", new String[]{"idempresa", "nombre"});
+//
+                                        String planilla = Utils.getStringOfJSONObject(marcaO, "planilla");
+
+                                        //   Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formGGG = new ConsultaPlanilla(marcaM, planilla, KMenu.this);
+                                        formGGG.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+
+   if (menuItemId.equalsIgnoreCase("fun1801")) {
+                ConsultaDeEmpresa linea = new ConsultaDeEmpresa();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador de Empresa", "mensaje");
+                    panel.getTabPanel().add(linea);
+                    panel.getTabPanel().activate(linea.getId());
+                    panel.getTabPanel().scrollToTab(linea, true);
+                }
+            }
+   if (menuItemId.equalsIgnoreCase("fun1804")) {
+
+                String enlace = "php/Cobros.php?funcion=BuscarClienteEmpresa";
+//                Utils.setErrorPrincipal("Cargando tienda y marca", "cargar");
+                final Conector conecaPB = new Conector(enlace, false);
+                try {
+                    conecaPB.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    JSONValue marcaV = jsonObject.get("resultado");
+                                    JSONObject marcaO;
+                                    if ((marcaO = marcaV.isObject()) != null) {
+
+//                                         clienteC = Utils.getArrayOfJSONObject(compraObject, "clienteM", new String[]{"idcliente","idempresa", "nombre"});
+                                        Object[][] empresaC = Utils.getArrayOfJSONObject(marcaO, "empresaM", new String[]{"idempresa", "nombre"});
+                                        Object[][] clienteM = Utils.getArrayOfJSONObject(marcaO, "clienteM", new String[]{"idcliente", "idempresa", "nombre"});
+//                                Object[][] caracM1016 = Utils.getArrayOfJSONObject(jsonObject, "caracteristicaM", new String[]{"idcaracteristica", "nombre"});
+                                        //IngresoAlmacenForm aux  = new IngresoAlmacenForm(KMenu.this, panel);
+                                        //IngresoAlmacenForm(KMenu.this, panel);
+
+                                        formPEC = new SeleccionPorEmpresaCliente(empresaC, clienteM, KMenu.this);
+                                        formPEC.show();
+
+
+                                    }
+
+                                //
+                                } else {
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            } else {
+                                Utils.setErrorPrincipal("Error en los datos", "error");
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                        }
+                    });
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun1510")) {
+                LineaLocal proveedor = new LineaLocal();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador", "mensaje");
+                    panel.getTabPanel().add(proveedor);
+                    panel.getTabPanel().activate(proveedor.getId());
+                    panel.getTabPanel().scrollToTab(proveedor, true);
+                }
+            }
+   if (menuItemId.equalsIgnoreCase("fun10201")) {
+                Periodo linea = new Periodo();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador de Empresa", "mensaje");
+                    panel.getTabPanel().add(linea);
+                    panel.getTabPanel().activate(linea.getId());
+                    panel.getTabPanel().scrollToTab(linea, true);
+                }
+            }
+            if (menuItemId.equalsIgnoreCase("fun7001")) {
+                Consultas linea = new Consultas();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo el manejador de Coleccion", "mensaje");
+                    panel.getTabPanel().add(linea);
+                    panel.getTabPanel().activate(linea.getId());
+                    panel.getTabPanel().scrollToTab(linea, true);
+                }
+            }
+ if (menuItemId.equalsIgnoreCase("fun1019")) {
+                formProforma = new SeleccionProforma(KMenu.this);
+                formProforma.show();
+            }
+     if (menuItemId.equalsIgnoreCase("fun6005")) {
+                formEntrega = new SeleccionEntrega(KMenu.this);
+                formEntrega.show();
+            }
+        }
+  
+
+        else {
+
+            if (menuItemId.equalsIgnoreCase("fun5002")) {
+                PanelPedido p = (PanelPedido) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+if (menuItemId.equalsIgnoreCase("fun5020")) {
+                PanelPedidoMuestra p = (PanelPedidoMuestra) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+            if (menuItemId.equalsIgnoreCase("fun5009")) {
+                PanelPedidoConfirmado p = (PanelPedidoConfirmado) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+              if (menuItemId.equalsIgnoreCase("fun5011")) {
+                PanelPedidoFacturado p = (PanelPedidoFacturado) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+             if (menuItemId.equalsIgnoreCase("fun5012")) {
+                PanelPedidoRegistrado p = (PanelPedidoRegistrado) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+
+             if (menuItemId.equalsIgnoreCase("fun5014")) {
+                IngresoPedidoAlmacen p = (IngresoPedidoAlmacen) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+if (menuItemId.equalsIgnoreCase("fun5015")) {
+                KardexAlmacen p = (KardexAlmacen) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+             if (menuItemId.equalsIgnoreCase("fun5016")) {
+                PanelPedidoE p = (PanelPedidoE) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+ if (menuItemId.equalsIgnoreCase("fun6001")) {
+                PanelVenta p = (PanelVenta) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+            if (menuItemId.equalsIgnoreCase("fun7000")) {
+                PanelCobrosEmpresa p = (PanelCobrosEmpresa) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+            if (menuItemId.equalsIgnoreCase("fun7002")) {
+                PanelModificarPlanilla p = (PanelModificarPlanilla) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+            }
+            if (menuItemId.equalsIgnoreCase("fun7003")) {
+                PanelConsultaPlanilla p = (PanelConsultaPlanilla) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+            }
+if (menuItemId.equalsIgnoreCase("fun7004")) {
+                PanelModificarVentas p = (PanelModificarVentas) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun7005")) {
+                PanelModificarSaldos p = (PanelModificarSaldos) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+              if (menuItemId.equalsIgnoreCase("fun7006")) {
+                PanelCobrosEmpresaCliente p = (PanelCobrosEmpresaCliente) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+            if (menuItemId.equalsIgnoreCase("fun10021")) {
+                Cliente p = (Cliente) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+            if (menuItemId.equalsIgnoreCase("fun10022")) {
+                ClienteDetalle p = (ClienteDetalle) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+ if (menuItemId.equalsIgnoreCase("fun10411")) {
+                ListaRecibidos p = (ListaRecibidos) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+            if (menuItemId.equalsIgnoreCase("fun1505")) {
+                ConfiguracionColor p = (ConfiguracionColor) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+            if (menuItemId.equalsIgnoreCase("fun1506")) {
+                Material p = (Material) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+//             if (menuItemId.equalsIgnoreCase("fun16041")) {
+//                TiposGastos p = (TiposGastos) object;
+//                panel.getTabPanel().add(p);
+//                panel.getTabPanel().activate(p.getId());
+//                panel.getTabPanel().scrollToTab(p, true);
+//
+//
+//            }
+            if (menuItemId.equalsIgnoreCase("fun16041")) {
+                TiposGastos linea = new TiposGastos();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo la lista", "mensaje");
+                    panel.getTabPanel().add(linea);
+                    panel.getTabPanel().activate(linea.getId());
+                    panel.getTabPanel().scrollToTab(linea, true);
+                }
+            }
+if (menuItemId.equalsIgnoreCase("fun10191")) {
+                Control p = (Control) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun16042")) {
+                TiposGastosDetalle linea = new TiposGastosDetalle();
+                if (panel.getTabPanel() == null) {
+                    Utils.setErrorPrincipal("No existe el manejador de pestanas", "error");
+                } else {
+                    Utils.setErrorPrincipal("Se cargo la lista", "mensaje");
+                    panel.getTabPanel().add(linea);
+                    panel.getTabPanel().activate(linea.getId());
+                    panel.getTabPanel().scrollToTab(linea, true);
+                }
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun1500")) {
+                Coleccion p = (Coleccion) object;
+                panel.getTabPanel().add(p);
+                panel.getTabPanel().activate(p.getId());
+                panel.getTabPanel().scrollToTab(p, true);
+
+
+            }
+
+            if (menuItemId.equalsIgnoreCase("fun5099")) {
+                IngresoAlmacen in = (IngresoAlmacen) object;
+                panel.getTabPanel().add(in);
+                panel.getTabPanel().activate(in.getId());
+                panel.getTabPanel().scrollToTab(in, true);
+                ped.close();
+                ped.setModal(false);
+
+
+            }
+            if (menuItemId.equalsIgnoreCase("fun60051")) {
+                Entregas in = (Entregas) object;
+                panel.getTabPanel().add(in);
+                panel.getTabPanel().activate(in.getId());
+                panel.getTabPanel().scrollToTab(in, true);
+                ped.close();
+                ped.setModal(false);
+            }
+
+//            if (menuItemId.equalsIgnoreCase("fun5002")) {
+//                PanelPedido p = (PanelPedido) object;
+//                panel.getTabPanel().add(p);
+//                panel.getTabPanel().activate(p.getId());
+//                panel.getTabPanel().scrollToTab(p, true);
+//
+//
+//            }
+            if (menuItemId.equalsIgnoreCase("fun1001")) {
+                Marca in = (Marca) object;
+                panel.getTabPanel().add(in);
+                panel.getTabPanel().activate(in.getId());
+                panel.getTabPanel().scrollToTab(in, true);
+//                conf.
+//                conf.setModal(false);
+
+
+            }
+               
+
+
+            if (menuItemId.equalsIgnoreCase("fun3001")) {
+                Pedido in = (Pedido) object;
+                panel.getTabPanel().add(in);
+                panel.getTabPanel().activate(in.getId());
+                panel.getTabPanel().scrollToTab(in, true);
+//                conf.
+//                conf.setModal(false);
+
+
+            }
+            if (menuItemId.equalsIgnoreCase("fun3002")) {
+                PedidoConfirmado in = (PedidoConfirmado) object;
+                panel.getTabPanel().add(in);
+                panel.getTabPanel().activate(in.getId());
+                panel.getTabPanel().scrollToTab(in, true);
+//                conf.
+//                conf.setModal(false);
+
+
+            }
+             if (menuItemId.equalsIgnoreCase("fun300410")) {
+                ControlPreciosPedido in = (ControlPreciosPedido) object;
+                panel.getTabPanel().add(in);
+                panel.getTabPanel().activate(in.getId());
+                panel.getTabPanel().scrollToTab(in, true);
+//                conf.
+//                conf.setModal(false);
+
+
+            }
+
+        }
+    }
+}

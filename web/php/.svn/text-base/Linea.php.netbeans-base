@@ -1,0 +1,108 @@
+<?php 
+session_name("balderrama");
+session_start();
+include("impl/Linea.php");
+include("impl/Marca.php");
+include("impl/Coleccion.php");
+include("impl/Estilo.php");
+include("impl/Utils.php");
+include("bd/bd.php");
+require_once("impl/JSON.php");
+
+if(permitido("fun1001", $_SESSION['codigo'])==true)
+{
+    $funcion = $_GET['funcion'];
+    
+    if($funcion == "ListarLinea"){
+
+        $band = false;
+        if($_GET['buscarcodigo'] != null)
+        {
+            if($band == false) {
+                $extras .= " lin.codigo LIKE '%".$_GET['buscarcodigo']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND lin.codigo LIKE '%".$_GET['buscarcodigo']."%'";
+            }
+        }
+        if($_GET['buscarmarca'] != null)
+        {
+            if($band == false) {
+                $extras .= " mar.nombre LIKE '%".$_GET['buscarmarca']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND mar.nombre LIKE '%".$_GET['buscarmarca']."%'";
+            }
+        }
+        if($_GET['buscarcoleccion'] != null)
+        {
+            if($band == false) {
+                $extras .= " col.codigo LIKE '%".$_GET['buscarcoleccion']."%' ";
+                $band = true;
+            }
+            else {
+                $extras .= " AND col.codigo LIKE '%".$_GET['buscarcoleccion']."%'";
+            }
+        }
+        if($_GET['buscarestilo'] != null)
+        {
+            if($band == false) {
+                $extras .= " est.nombre LIKE '%".$_GET['buscarestilo']."%' ";
+                $band = true;
+            }
+            else {
+                $extras .= " AND est.nombre LIKE '%".$_GET['buscarestilo']."%'";
+            }
+        }
+        ListarLinea($_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], $extras, false);
+    }
+    else if($funcion == "GuardarNuevaLinea"){
+        $idmarca = $_GET['idmarca'];
+//        echo "hola";
+        InsertarNuevaLinea($idmarca,false);
+    }
+    else if($funcion == "BuscarLineaPorId"){
+        $idlinea = $_GET['idlinea'];
+        BuscarLineaPorId($idlinea,false);
+    }
+    else if($funcion == "BuscarEstiloColeccionPorMarca"){
+        $idmarca = $_GET['idmarca'];
+        BuscarEstiloColeccionPorMarca($idmarca,false);
+    }
+    else if($funcion == "BuscarMarcaColeccionEstilo"){
+        $idmarca = $_GET['idmarca'];
+        BuscarMarcaColeccionEstilo(false);
+    }
+    else if($funcion =="GuardarEditarLinea"){
+        GuardarEditarLinea();
+    }
+    else if($funcion =="EliminarLinea"){
+        $idlinea = $_GET['idlinea'];
+        EliminarLinea($idlinea, $_GET['callback'],$_GET['_dc'],false);
+    }
+    else if($funcion == "BuscarEstiloMarcaColeccionPorId"){
+        $idlinea = $_GET['idlinea'];
+        BuscarEstiloMarcaColeccionPorId($idlinea,false);
+    }
+     else if($funcion == "BuscarEstiloMarcaColeccionPorColeccion"){
+        $idcoleccion = $_GET['idcoleccion'];
+        BuscarEstiloMarcaColeccionPorColeccion($idcoleccion,false);
+    }
+    else{
+        echo "else";
+        
+    }
+
+
+}
+else
+{
+    $dev['mensaje'] = "Ud no tiene privilegios para esta funcion";
+    $dev['error'] = "false";
+    $json = new Services_JSON();
+    $output = $json->encode($dev);
+    print($output);
+}
+?>

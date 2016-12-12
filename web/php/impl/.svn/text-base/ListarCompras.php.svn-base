@@ -1,0 +1,1689 @@
+<?php
+function listarcompras($start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = "true")
+{
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+    if($where == null || $where == "")
+    {
+        $sql = "
+SELECT
+ c.idcompra,
+ c.tipo,
+  c.codigo,
+  c.fecha,
+  c.hora,
+ p.nombre AS proveedor,
+ SUM(i.cantidad) AS cantidad,
+ c.montototal AS monto,
+ c.observacion AS compra
+ FROM
+ compra c,
+ items i,
+ proveedores p
+ WHERE
+ c.idproveedor=p.idproveedor AND i.idcompra = c.idcompra
+AND c.tipo = 'directa'
+ GROUP by (c.idcompra) $order LIMIT $start,$limit ";
+
+
+
+    }
+    else
+    {
+        $sql = "
+SELECT
+c.idcompra,
+   p.nombre AS proveedor,
+  c.tipo,
+  c.codigo,
+  c.fecha,
+  c.hora,
+SUM(i.cantidad) AS cantidad,
+  c.observacion,
+  c.montototal,
+  c.montoapagar,
+  c.idcompra
+FROM
+  proveedores p,
+  items i,
+  compra c
+
+WHERE
+  p.idproveedor = c.idproveedor AND i.idcompra = c.idcompra AND c.tipo = 'directa' AND $where GROUP by (c.idcompra) $order LIMIT $start,$limit ";
+    }
+    //echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    //    echo $sql;
+    $numtuplas = NumeroTuplas($sql);
+    $dev['totalCount'] = $numtuplas['resultado'];
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+    }
+}
+function listarcomprasentrega($start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = "true")
+{
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+    if($where == null || $where == "")
+    {
+        $sql = "
+SELECT
+ c.idcompra,
+ c.tipo,
+  c.codigo,
+  c.fecha,
+  c.hora,
+ p.nombre AS proveedor,
+ SUM(i.cantidad) AS cantidad,
+ c.montototal AS montototal,
+ c.observacion AS compra
+ FROM
+ compra c,
+ items i,
+ proveedores p
+ WHERE
+ c.idproveedor=p.idproveedor AND i.idcompra=c.idcompra
+ AND c.tipo = 'compra con entrega'
+ GROUP by (c.idcompra) $order LIMIT $start,$limit ";
+
+
+
+    }
+    else
+    {
+        $sql = "
+SELECT
+c.idcompra,
+   p.nombre AS proveedor,
+  c.tipo,
+  c.codigo,
+  c.fecha,
+  c.hora,
+SUM(i.cantidad) AS cantidad,
+  c.observacion,
+  c.montototal,
+  c.montoapagar AS montototal,
+  c.idcompra
+FROM
+  proveedores p,
+  items i,
+  compra c
+
+WHERE
+  p.idproveedor = c.idproveedor AND c.tipo = 'compra con entrega' AND i.idcompra=c.idcompra AND $where GROUP by (c.idcompra) $order LIMIT $start,$limit ";
+    }
+    //echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    //    echo $sql;
+    $numtuplas = NumeroTuplas($sql);
+    $dev['totalCount'] = $numtuplas['resultado'];
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+    }
+}
+function buscarcompraporid($idcompra, $callback, $_dc, $return= 'true')
+{
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+
+
+
+    $sql = "
+SELECT
+  com.idcompra,
+  com.idproveedor,
+  com.idtipodocumento as tipodocumento,
+  com.codigo as proveedor,
+  com.numerodocumento,
+  com.gastoviaje,
+  com.montototal,
+  trp.saldo
+FROM
+  compra com, transaccionproveedor trp
+WHERE
+  com.idcompra = '$idcompra' AND com.idcompra = trp.idcompra AND com.idproveedor = trp.idproveedor
+  and trp.numero = (select MAX(numero) from transaccionproveedor tp where tp.idproveedor = trp.idproveedor)
+ ";
+
+    $tipo = getTablaToArrayOfSQL($sql);
+    $value['compra'] = "true";
+    $value['compraM'] = $tipo['resultado'];
+
+    $dev['tipocambio'] = ObtenerTipocambio();
+    $dev['error']   = "true";
+
+    $dev['resultado'] = $value;
+    $dev['totalCount'] = 1;
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+
+}
+function listarmoneda($start, $limit, $sort, $dir, $callback, $_dc, $return)
+{
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+    if($star == 0 && $limit == 0)
+    {
+        $sql = "SELECT
+  m.idmoneda,
+  m.nombre
+FROM
+  moneda m $order";
+    }
+    else
+    {
+        $sql = "SELECT
+  m.idmoneda,
+  m.nombre
+FROM
+  moneda m $order LIMIT $start,$limit ";
+    }
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    $dev['totalCount'] = allBySql($sql);
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+    }
+}
+function listardocumento($start, $limit, $sort, $dir, $callback, $_dc, $return)
+{
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+    if($star == 0 && $limit == 0)
+    {
+        $sql = "SELECT
+  t.nombre,
+  t.idtipodocumento AS iddocumento
+FROM
+  tipodocumento t $order";
+    }
+    else
+    {
+        $sql = "SELECT
+  t.nombre,
+  t.idtipodocumento AS iddocumento
+FROM
+  tipodocumento t $order LIMIT $start,$limit ";
+    }
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    $dev['totalCount'] = allBySql($sql);
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+    }
+}
+function ObtenerTipocambio(){
+    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+    $sql="
+SELECT
+  t.valor
+FROM
+  tipocambio t
+WHERE
+  t.estado = 'activado'
+";
+    $result = findBySqlReturnCampoUnique($sql, true, true, "valor");
+    $valor = $result['resultado'];
+    return $valor;
+}
+function listarmonedaydoc($start, $limit, $sort, $dir, $callback, $_dc, $return)
+{
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+
+    $moneda = listarmoneda(0, 0, "", "", "", "", true);
+    if($moneda['error'] == true)
+    {
+        $value['moneda'] = "true";
+        $value['monedasM'] = $moneda['resultado'];
+    }
+    $tipo= listardocumento(0, 0, "", "", "", "", true);
+    if($tipo['error'] == true)
+    {
+        $value['documento'] = "true";
+        $value['documentosM'] = $tipo['resultado'];
+    }
+
+    $dev['tipocambio'] = ObtenerTipocambio();
+    $dev['error']   = "true";
+
+    $dev['resultado'] = $value;
+    $dev['totalCount'] = 1;
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+function getSqlNewCompra($idcompra, $idproveedor, $codigo, $fecha, $hora, $observacion, $idmoneda, $montototal, $montoapagar, $descuento, $descuentoporcentage, $numero, $tipo, $numerodocumento, $idtipodocumento,$idreport, $return){
+    $setC[0]['campo'] = 'idcompra';
+    $setC[0]['dato'] = $idcompra;
+    $setC[1]['campo'] = 'idproveedor';
+    $setC[1]['dato'] = $idproveedor;
+    $setC[2]['campo'] = 'codigo';
+    $setC[2]['dato'] = $codigo;
+    $setC[3]['campo'] = 'fecha';
+    $setC[3]['dato'] = $fecha;
+    $setC[4]['campo'] = 'hora';
+    $setC[4]['dato'] = $hora;
+    $setC[5]['campo'] = 'observacion';
+    $setC[5]['dato'] = $observacion;
+    $setC[6]['campo'] = 'idmoneda';
+    $setC[6]['dato'] = $idmoneda;
+    $setC[7]['campo'] = 'montototal';
+    $setC[7]['dato'] = $montototal;
+    $setC[8]['campo'] = 'montoapagar';
+    $setC[8]['dato'] = $montoapagar;
+    $setC[9]['campo'] = 'descuento';
+    $setC[9]['dato'] = $descuento;
+    $setC[10]['campo'] = 'descuentoporcentaje';
+    $setC[10]['dato'] = $descuentoporcentage;
+    $setC[11]['campo'] = 'numero';
+    $setC[11]['dato'] = $numero;
+    $setC[12]['campo'] = 'tipo';
+    $setC[12]['dato'] = $tipo;
+    $setC[13]['campo'] = 'numerodocumento';
+    $setC[13]['dato'] = $numerodocumento;
+    $setC[14]['campo'] = 'idtipodocumento';
+    $setC[14]['dato'] = $idtipodocumento;
+    $setC[15]['campo'] = 'idreport';
+    $setC[15]['dato'] = $idreport;
+    $sql2 = generarInsertValues($setC);
+    return "INSERT INTO compra ".$sql2;
+}
+function getSqlNewCompraEntrega($idcompra, $idproveedor, $codigo, $fecha, $hora, $observacion, $idmoneda, $montototal, $montoapagar, $montocancelado, $descuento, $descuentoporcentage, $numero, $tipo, $numerodocumento, $idtipodocumento,$idreport,$cuenta,$gastoviaje, $return){
+    $setC[0]['campo'] = 'idcompra';
+    $setC[0]['dato'] = $idcompra;
+    $setC[1]['campo'] = 'idproveedor';
+    $setC[1]['dato'] = $idproveedor;
+    $setC[2]['campo'] = 'codigo';
+    $setC[2]['dato'] = $codigo;
+    $setC[3]['campo'] = 'fecha';
+    $setC[3]['dato'] = $fecha;
+    $setC[4]['campo'] = 'hora';
+    $setC[4]['dato'] = $hora;
+    $setC[5]['campo'] = 'observacion';
+    $setC[5]['dato'] = $observacion;
+    $setC[6]['campo'] = 'idmoneda';
+    $setC[6]['dato'] = $idmoneda;
+    $setC[7]['campo'] = 'montototal';
+    $setC[7]['dato'] = $montototal;
+    $setC[8]['campo'] = 'montoapagar';
+    $setC[8]['dato'] = $montoapagar;
+    $setC[9]['campo'] = 'montocancelado';
+    $setC[9]['dato'] = $montocancelado;
+    $setC[10]['campo'] = 'descuento';
+    $setC[10]['dato'] = $descuento;
+    $setC[11]['campo'] = 'descuentoporcentaje';
+    $setC[11]['dato'] = $descuentoporcentage;
+    $setC[12]['campo'] = 'numero';
+    $setC[12]['dato'] = $numero;
+    $setC[13]['campo'] = 'tipo';
+    $setC[13]['dato'] = $tipo;
+    $setC[14]['campo'] = 'numerodocumento';
+    $setC[14]['dato'] = $numerodocumento;
+    $setC[15]['campo'] = 'idtipodocumento';
+    $setC[15]['dato'] = $idtipodocumento;
+    $setC[16]['campo'] = 'idreport';
+    $setC[16]['dato'] = $idreport;
+    $setC[17]['campo'] = 'cuenta';
+    $setC[17]['dato'] = $cuenta;
+    $setC[17]['campo'] = 'gastoviaje';
+    $setC[17]['dato'] = $gastoviaje;
+    $sql2 = generarInsertValues($setC);
+    return "INSERT INTO compra ".$sql2;
+}
+function getSqlNewTipoCambio($idtipocambio, $idmoneda, $valor, $estado, $numerotipocambio, $fechaCambio, $return){
+    $setC[0]['campo'] = 'idtipocambio';
+    $setC[0]['dato'] = $idtipocambio;
+    $setC[1]['campo'] = 'idmoneda';
+    $setC[1]['dato'] = $idmoneda;
+    $setC[2]['campo'] = 'valor';
+    $setC[2]['dato'] = $valor;
+    $setC[3]['campo'] = 'estado';
+    $setC[3]['dato'] = $estado;
+    $setC[4]['campo'] = 'numero';
+    $setC[4]['dato'] = $numerotipocambio;
+    $setC[5]['campo'] = 'fecha';
+    $setC[5]['dato'] = $fechaCambio;
+    $sql2 = generarInsertValues($setC);
+    return "INSERT INTO tipocambio ".$sql2;
+}
+function insertarcompradirecta($resultado, $return)
+{
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+    $compras=$resultado->compras;
+    $idultimocompraA = findUltimoID("compra", "numero", true);
+    $numerocompra = $idultimocompraA['resultado'] +1;
+    $idcompra = "cmp-".$numerocompra;
+
+    $idproveedor = $compras->idproveedor;
+    if($idproveedor==""){
+        $idproveedor = "prv-1"; // proveedor varios por defecto en compra directa
+    }
+    $codigo = "C-".date("y").date("m").$numerocompra;;
+    $idtipodocumento = $compras->idtipodocumento;
+    $idmoneda = $compras->idmoneda;
+    $numerodocumento = $compras->numerodocumento;
+    $tipocambio = $compras->tipocambio;
+    $fecha = $compras->fecha;
+    $hora = date("H:i:s");
+    $montototal = $compras->montototal;
+    $montoapagar= $compras->montoapagar;
+    $descuento = $compras->descuento;
+    $descuentoporcentaje = $compras->descuentoporcentaje;
+    $tipo = $compras->tipo;
+    $observacion = $compras->observacion;
+    $idreport = "cnj-1000";
+
+    ///////////////////////////Validacion///////////////////
+
+
+    $idproveedorA = validarIdTablas($codigo, false);
+    if($idproveedorA['error'] == false)
+    {
+        $dev['mensaje'] = "Error en el campo id proveedor: ".$idproveedorA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    //    $idtipodocA = validarIdTablas($idtipodocumento, true);
+    //    if($idtipodocA['error'] == false)
+    //    {
+    //        $dev['mensaje'] = "Error en el campo tipo documento: ".$idtipodocA['mensaje'];
+    //        $json = new Services_JSON();
+    //        $output = $json->encode($dev);
+    //        print($output);
+    //        exit;
+    //    }
+    if($numerodocumento==""){
+        $numerodocumento = 0;
+    }else {
+        $numerodocumentoA = validarEntero($numerodocumento, false);
+        if($numerodocumentoA['error'] == false)
+        {
+            $dev['mensaje'] = "Error en el campo numero de documento: ".$numerodocumentoA['mensaje'];
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+            exit;
+        }
+    }
+    if($fecha==""){
+        $fecha = date("Y-m-d");
+    }else {
+        $fechaA = validarFecha($fecha, true);
+        if($fechaA['error'] == false)
+        {
+            $dev['mensaje'] = "Error en el campo fecha: ".$fechaA['mensaje'];
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+            exit;
+        }
+    }
+    $montototalA = validarDecimal($montototal, true);
+    if($montototalA['error'] == false)
+    {
+        $dev['mensaje'] = "Error en el campo tipo documento: ".$montototalA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $montoapagarA = validarDecimal($montoapagar, true);
+    if($montoapagarA['error'] == false)
+    {
+        $dev['mensaje'] = "Error en el campo tipo documento: ".$montoapagarA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+
+
+    /////////////////////////////////////////////////////////
+
+    $sql[]=getSqlNewCompra($idcompra, $idproveedor, $codigo, $fecha, $hora, $observacion, $idmoneda, $montototal, $montoapagar, $descuento, $descuentoporcentaje, $numerocompra, $tipo, $numerodocumento, $idtipodocumento,$idreport, $return);
+
+    $idultimoitemA = findUltimoID("items", "numero", true);
+    $numeroitem = $idultimoitemA['resultado'] +1;
+    $idalmacen = "alm-1";
+    //    echo $fecha;
+    $productos = $resultado->productos;
+    for($i=0;$i<count($productos);$i++){
+        $producto = $productos[$i];
+        $idproducto = $producto->idproducto;
+        $iditem = "itm-".$numeroitem;
+        $cantidad = $producto->cantidad;
+        $preciosus = $producto->preciosus;
+        $sellosus = $producto->sellosus;
+        $costorealsus = $producto->costorealsus;
+        $costorealbs = $producto->costorealbs;
+
+        $utilidad = $producto->utilidad;
+        $preciomayor = $producto->preciomayor;
+        $preciounitario = $preciomayor + ($preciomayor*0.3);
+        $total = $producto->total;
+        $detalle = $producto->detalle;
+        $tipodecambioA = findUltimoIDforanyway("tipocambio", "valor", "estado", "activado", true);
+        $tipodecambio = $tipodecambioA["resultado"];
+  
+
+        $sql[] =  getSqlNewItems($iditem, $idproducto, $idcompra, "producto", "Sin novedad", $preciosus, $numeroitem, $cantidad, $costorealbs, $costorealsus, $total, $sellosus, $utilidad, $preciomayor, $return);
+        $numeroitem ++;
+        $numeroKardexA = findUltimoID("movimientokardexalmacen", "numero", true);
+        $numerokardex = $numeroKardexA['resultado'] +1 + $i;
+        $idmovimientokardex = "mka-".$numerokardex;
+        $sql[] = getSqlNewMovimientokardexalmacen($idmovimientokardex, $idproducto, $idalmacen, $cantidad, 0, 0, $costorealbs, $costorealbs*$cantidad, 0, 0, $fecha, $hora, $idcompra, $numerokardex, $cantidad,false);
+        $movimiento[$i]["idproducto"] = $idproducto;
+        $movimiento[$i]["fecha"] = $fecha;
+        $movimiento[$i]["hora"] = $hora;
+
+        $sql[] = updatePrecioProductoKardexAlmacen($fecha, $idproducto, $idalmacen, $cantidad, $costorealbs, $costorealsus, $preciomayor,$preciounitario, false);
+        //        $sql[] = getPrecioProductoKardexAlmacen($fecha, $idproducto, $cantidad, $preciobs, $preciosus, $precio2bs, $precio2sus, false);
+
+    }
+
+
+
+//                MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        for($j=0;$j<count($movimiento);$j++){
+            //            echo $movimiento[$j]['idproducto'];
+            actualizarSaldoMovimiento($movimiento[$j]['idproducto'],$idalmacen,$movimiento[$j]['fecha'],$movimiento[$j]['hora'], false);
+        }
+
+
+        $dev['mensaje'] = "Se guardaron y actualizaron correctamente los proveedores";
+        $dev['error'] = "true";
+        $dev['resultado'] = $idcompra;
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al actualizar o guardar los proveedores";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+
+function updatePrecioProductoKardexAlmacen($fechamodificacion, $idproducto, $idalmacen, $cantidad, $costorealbs, $costorealsus, $preciomayor,$preciounitario, $return){
+    $setC[0]['campo'] = 'fechamodificacion';
+    $setC[0]['dato'] = $fechamodificacion;
+    $setC[1]['campo'] = 'precio1bs';
+    $setC[1]['dato'] = $preciounitario;
+    $setC[2]['campo'] = 'precio1sus';
+    $setC[2]['dato'] = $costorealsus;
+    $setC[3]['campo'] = 'cantidad';
+    $setC[3]['dato'] = $cantidad;
+    $setC[4]['campo'] = 'precio2bs';
+    $setC[4]['dato'] = $preciomayor;
+    $setC[5]['campo'] = 'costounitario';
+    $setC[5]['dato'] = $costorealbs;
+
+    $set = generarSetsUpdate($setC);
+    $wher[0]['campo'] = 'idproducto';
+    $wher[0]['dato'] = $idproducto;
+    $wher[1]['campo'] = 'idalmacen';
+    $wher[1]['dato'] = $idalmacen;
+
+    $where = generarWhereUpdate($wher);
+    return "UPDATE kardexalmacen SET ".$set." WHERE ".$where;
+}
+
+function insertarcompraconcuenta($resultado, $return)
+{
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+    $compras=$resultado->compras;
+    $idultimocompraA = findUltimoID("compra", "numero", true);
+    $numerocompra = $idultimocompraA['resultado'] +1;
+    $idcompra = "cmp-".$numerocompra;
+
+    $idproveedor = $compras->idproveedor;
+    $codigo = $idproveedor."/".$idcompra;
+    $idtipodocumento = $compras->idtipodocumento;
+    $idmoneda = $compras->idmoneda;
+    $numerodocumento = $compras->numerodocumento;
+    $tipocambio = $compras->tipocambio;
+    $gastoviaje = $compras->gastoviaje;
+    $fecha = $compras->fecha;
+    $hora = date("H:i:s");
+    $montototal = $compras->montototal;
+    $montoapagar= $compras->montoapagar;
+    $montocancelado= $compras->montocancelado;
+    $descuento = $compras->descuento;
+    $descuentoporcentage = $compras->descuentoporcentaje;
+    $tipo = $compras->tipo;
+    $observacion = $compras->observacion;
+
+
+    $idreport = "cnj-1000";
+
+    ///////////////////////////Validacion///////////////////
+
+    $idproveedorA = validarIdTablas($codigo, false);
+    if($idproveedorA['error'] == false)
+    {
+        $dev['mensaje'] = "Error en el campo id proveedor: ".$idproveedorA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    //    $idtipodocA = validarIdTablas($idtipodocumento, true);
+    //    if($idtipodocA['error'] == false)
+    //    {
+    //        $dev['mensaje'] = "Error en el campo tipo documento: ".$idtipodocA['mensaje'];
+    //        $json = new Services_JSON();
+    //        $output = $json->encode($dev);
+    //        print($output);
+    //        exit;
+    //    }
+    $numerodocumentoA = validarEntero($numerodocumento, true);
+    if($numerodocumentoA['error'] == false)
+    {
+        $dev['mensaje'] = "Error en el campo numero de documento: ".$numerodocumentoA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    if($fecha==""){
+        $fecha = date("Y-m-d");
+    }else {
+        $fechaA = validarFecha($fecha, true);
+        if($fechaA['error'] == false)
+        {
+            $dev['mensaje'] = "Error en el campo fecha: ".$fechaA['mensaje'];
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+            exit;
+        }
+    }
+    $montototalA = validarDecimal($montototal, true);
+    if($montototalA['error'] == false)
+    {
+        $dev['mensaje'] = "Error en el campo tipo documento: ".$montototalA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $montoapagarA = validarDecimal($montoapagar, true);
+    if($montoapagarA['error'] == false)
+    {
+        $dev['mensaje'] = "Error en el campo tipo documento: ".$montoapagarA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $montocanceladoA = validarDecimal($montocancelado, true);
+    if($montocanceladoA['error'] == false)
+    {
+        $dev['mensaje'] = "Error en el campo tipo documento: ".$montocanceladoA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+
+    /////////////////////////////////////////////////////////
+
+    $sql[]=getSqlNewCompraEntrega($idcompra, $idproveedor, $codigo, $fecha, $hora, $observacion, $idmoneda, $montototal, $montoapagar, $montocancelado, $descuento, $descuentoporcentage, $numerocompra, $tipo, $numerodocumento, $idtipodocumento,$idreport,"NO", $gastoviaje, $return);
+
+    $idultimoidtransaccionproveedorA = findUltimoID("transaccionproveedor", "numero", true);
+    $idtransaccionproveedorA = $idultimoidtransaccionproveedorA['resultado'] +1;
+    $idtransaccionproveedor = "tr-pv".$idtransaccionproveedorA;
+    $deposito = $montocancelado;
+    $retiro ="0";
+    //$idcuentaproveedor
+    $saldo =($montoapagar-$montocancelado);
+    $idusuario = $_SESSION['idusuario'];
+    $sql[]=getSqlNewTransaccionproveedor($idtransaccionproveedor, $idproveedor, $fecha, $hora, $deposito, $retiro, $idusuario, $idtransaccionproveedorA, $saldo, $idcompra, false);
+
+    $idultimoitemA = findUltimoID("items", "numero", true);
+    $numeroitem = $idultimoitemA['resultado'] +1;
+
+    //    echo $fecha;
+    $productos = $resultado->productos;
+    for($i=0;$i<count($productos);$i++){
+        $producto = $productos[$i];
+        $idproducto = $producto->idproducto;
+        $iditem = "itm-".$numeroitem;
+        //        $precio = $producto->precio;
+        $cantidad = $producto->cantidad;
+        //        $preciobs = $producto->preciobs;
+        $preciosus = $producto->preciosus;
+        $total = $producto->total;
+        $detalle = $producto->detalle;
+
+        //        $tipodecambioA = findUltimoIDforanyway("tipocambio", "valor", "estado", "activado", true);
+        //        $tipodecambio = $tipodecambioA["resultado"];
+        //        if($preciobs == 0 && $preciosus != 0) {
+        //            $preciobs = ($preciosus*$tipodecambio);
+        //            if($precio != 0){
+        //                $precio2sus = $precio;
+        //                $precio2bs = ($precio*$tipodecambio);
+        //            }
+        //        }
+        //        if($preciobs != 0 && $preciosus == 0) {
+        //            $preciosus = ($preciobs/$tipodecambio);
+        //            if($precio != 0){
+        //                $precio2bs = $precio;
+        //                $precio2sus = ($precio/$tipodecambio);
+        //            }
+        //        }
+
+        $sql[] =  getSqlNewItems($iditem, $idproducto, $idcompra, "producto", $detalle, $preciosus, $numeroitem, $cantidad, 0, 0, $total, 0, 0, 0, $return);
+        $numeroitem ++;
+
+    }
+
+
+
+    //    MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se guardaron y actualizaron correctamente los proveedores";
+        $dev['error'] = "true";
+        $dev['resultado'] = $idcompra;
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al actualizar o guardar los proveedores";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+
+function insertarcompraentregas($resultado, $return)
+{
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+    $compras=$resultado->compras;
+
+    $idultimoentregacompraA = findUltimoID("entregacompra", "numero", true);
+    $numeroentregacompra = $idultimoentregacompraA['resultado'] +1;
+    $identregacompra = "ecp-".$numeroentregacompra;
+
+    $idproveedor = $compras->idproveedor;
+    $tipocambio = $compras->tipocambio;
+    $idcompra = $compras->compra;
+    $fecha = $compras->fecha;
+    $hora = date("H:i:s");
+    $numerodocumento = $compras->numerodocumento;
+    $montototal = $compras->montototal;
+    $montoapagar = $compras->montoapagar;
+    $montocancelado = $compras->montocancelado;
+    $deuda = $compras->deuda;
+    $observacion = $compras->observacion;
+    $gastotransporte = $compras->gastotransporte;
+    $saldo = 0;
+    if($fecha==""){
+        $fecha = date("Y-m-d");
+    }else {
+        $fechaA = validarFecha($fecha, true);
+        if($fechaA['error'] == false)
+        {
+            $dev['mensaje'] = "Error en el campo fecha: ".$fechaA['mensaje'];
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+            exit;
+        }
+    }
+
+    if($montocancelado <= $deuda) {
+        $saldo = ($deuda-$montocancelado);
+    } else {
+        $dev['error'] = true;
+        $dev['mensaje'] = "Error en el campo Monto Cancelado con ".$montocancelado.", tiene que ser menor o igual a la deuda de ".$deuda;
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+
+    $sql[]=getSqlNewEntregaCompra($identregacompra, $idcompra, $fecha, $hora, $montocancelado, $saldo, $numerodocumento, $numeroentregacompra, $gastotransporte, $return);
+    $idultimoentregaitemA = findUltimoID("entregaitems", "numero", true);
+    $numeroentregaitem = $idultimoentregaitemA['resultado'] +1;
+    $idalmacen = "alm-1";
+    if($montocancelado != "0.00") {
+        $idultimoidtransaccionproveedorA = findUltimoID("transaccionproveedor", "numero", true);
+        $idtransaccionproveedorA = $idultimoidtransaccionproveedorA['resultado'] +1;
+        $idtransaccionproveedor = "tr-pv".$idtransaccionproveedorA;
+        $deposito = $montocancelado;
+        $retiro ="0";
+        //$idcuentaproveedor
+        //$saldo =($montoapagar-$montocancelado);
+        $idusuario = $_SESSION['idusuario'];
+        $sql[]=getSqlNewTransaccionproveedor($idtransaccionproveedor, $idproveedor, $fecha, $hora, $deposito, $retiro, $idusuario, $idtransaccionproveedorA, $saldo, $idcompra, false);
+    }
+    $productos = $resultado->productos;
+    for($i=0;$i<count($productos);$i++){
+        $producto = $productos[$i];
+        $idproducto = $producto->idproducto;
+        $identregaitems = "eit-".$numeroentregaitem;
+        $cantidad = $producto->cantidad;
+        $preciosus = $producto->preciosus;
+        $sellosus = $producto->sellosus;
+        $fletecaja = $producto->fletecaja;
+        $costorealsus = $producto->costorealsus;
+        $costorealbs = $producto->costorealbs;
+        $utilidad = $producto->utilidad;
+        $preciomayor = $producto->preciomayor;
+        $total = $producto->total;
+        $detalle = $producto->detalle;
+
+        $sql[] =  getSqlNewEntregaItems($identregaitems, $identregacompra, $idproducto, "producto", $detalle, $preciosus, $cantidad, $costorealbs, $costorealsus, $numeroentregaitem, $total, $sellosus, $fletecaja, $utilidad, $preciomayor, $return);
+        $numeroentregaitem ++;
+
+        $cantidadcompraproductoA = findUltimoID2condiciones("items", "cantidad", "idcompra", $idcompra, "idproducto", $idproducto, true); // revisar
+        if($cantidad <= $cantidadcompraproductoA['resultado']) {
+            $saldofisico = ($cantidadcompraproductoA['resultado']-$cantidad);
+        } else {
+            $dev['error'] = true;
+            $dev['mensaje'] = "Error en el campo cantidad de producto con ".$cantidad.", tiene que ser menor o igual a la cantidad de compra de ".$cantidadcompraproductoA['resultado'];
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+            exit;
+        }
+
+        //        $numeroKardexA = findUltimoIDforanyway("movimientokardex", "numero", "idproducto", $idproducto, true);
+        //        $numerokardex = $numeroKardexA['resultado'] +1;
+        //        $idmovimientokardex = "mok-".$numerokardex;
+        //        $sql[] = getSqlNewMovimientokardex($idmovimientokardex, $idproducto, $cantidad, 0, 0, $total, 0, 0, $idcompra, $fecha, $hora , $numerokardex, $total/$cantidad, $identregacompra,$cantidad, $return);
+
+        $numeroKardexA = findUltimoID("movimientokardexalmacen", "numero", true);
+        $numerokardex = $numeroKardexA['resultado'] +1;
+        $idmovimientokardex = "mka-".$numerokardex;
+        $sql[] = getSqlNewMovimientokardexalmacen($idmovimientokardex, $idproducto, $idalmacen, $cantidad, 0, 0, $costorealbs, $costorealbs*$cantidad, 0, 0, $fecha, $hora, "entrega de producto", $numerokardex, $cantidad,false);
+
+        //        $movimiento[$i]["idproducto"] = $idproducto;
+        //        $movimiento[$i]["fecha"] = $fecha;
+        //        $movimiento[$i]["hora"] = $hora;
+        //        $movimiento[$i]["cantidad"] = $cantidad;
+        //        $kardex[$i]["idproducto"] = $fecha;
+        //        if($precio != 0){
+        //            $precio2bs = $precio;
+        //            $tipodecambioA = findUltimoIDforanyway("tipocambio", "valor", "estado", "activado", true);
+        //            $tipodecambio = $tipodecambioA["resultado"];
+        //            $precio2sus = ($precio/$tipodecambio);
+        //        }
+        //        $sql[] = getPrecioProductoKardex($fecha, $idproducto, $cantidad, $preciobs, $preciosus, $precio2bs, $precio2sus, false);
+        //        $sql[] = getPrecioProductoKardexAlmacen($fecha, $idproducto, $cantidad, $preciobs, $preciosus, $precio2bs, $precio2sus, false);
+
+        $movimiento[$i]["idproducto"] = $idproducto;
+        $movimiento[$i]["fecha"] = $fecha;
+        $movimiento[$i]["hora"] = $hora;
+        $movimiento[$i]["cantidad"] = $cantidad;
+
+        $sql[] = updatePrecioProductoKardexAlmacen($fecha, $idproducto, $idalmacen, $cantidad, $costorealbs, $costorealsus, $preciomayor,$preciounitario, false);
+
+    }
+
+    //        MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se guardaron y actualizaron correctamente los datos";
+        $dev['error'] = "true";
+        $dev['resultado'] = $idcompra;
+
+        for($j=0;$j<count($movimiento);$j++){
+            //            echo $movimiento[$j]['idproducto'];
+            actualizarSaldoMovimiento($movimiento[$j]['idproducto'],$idalmacen,$movimiento[$j]['fecha'],$movimiento[$j]['hora'], false);
+        }
+    
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al actualizar o guardar las entregas de compra";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+
+function insertartipocambio($tipocambio,$callback, $_dc, $return= 'true')
+{
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+    $valor=$tipocambio;
+    $idultimotipocambioA = findUltimoID("tipocambio", "numero", true);
+    $numerotipocambio = $idultimotipocambioA['resultado'] +1;
+    $idtipocambio = "tcp-".$numerotipocambio;
+    $fechaCambio = date("Y-m-d");
+    $estado = "activado";
+    $idmoneda = "mon-1001";
+
+    ///////////////////////////Validacion///////////////////
+
+    $tipocambioA = validarDecimal($valor, true);
+    if($tipocambioA['error'] == false)
+    {
+        $dev['mensaje'] = "Error en el campo tipo documento: ".$tipocambioA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+
+    /////////////////////////////////////////////////////////
+    $sql[]=getSqlNewTipoCambio($idtipocambio, $idmoneda, $valor, $estado, $numerotipocambio, $fechaCambio, $return);
+
+    $idtipodecambioactivoA = findUltimoIDforanyway("tipocambio", "idtipocambio", "estado", "activado", true);
+    $idtipocambioactivo = $idtipodecambioactivoA["resultado"];
+    actualizarEstadoTipoCambio($idtipocambioactivo, false);
+
+    //    MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se guardaron correctamente los valores de tipo de cambio";
+        $dev['error'] = "true";
+        $dev['resultado'] = $idtipocambio;
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al guardar el tipo de cambio";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+function getSqlNewItems($iditem, $idproducto, $idcompra, $nombre, $detalle, $precio, $numero, $cantidad, $preciobs, $preciosus, $total, $sellosus, $utilidad, $preciomayor, $return){
+    $setC[0]['campo'] = 'iditem';
+    $setC[0]['dato'] = $iditem;
+    $setC[1]['campo'] = 'idproducto';
+    $setC[1]['dato'] = $idproducto;
+    $setC[2]['campo'] = 'idcompra';
+    $setC[2]['dato'] = $idcompra;
+    $setC[3]['campo'] = 'nombre';
+    $setC[3]['dato'] = $nombre;
+    $setC[4]['campo'] = 'detalle';
+    $setC[4]['dato'] = $detalle;
+    $setC[5]['campo'] = 'precio';
+    $setC[5]['dato'] = $precio;
+    $setC[6]['campo'] = 'numero';
+    $setC[6]['dato'] = $numero;
+    $setC[7]['campo'] = 'cantidad';
+    $setC[7]['dato'] = $cantidad;
+    $setC[8]['campo'] = 'cantidadentrega';
+    $setC[8]['dato'] = $cantidad;
+    $setC[9]['campo'] = 'preciobs';
+    $setC[9]['dato'] = $preciobs;
+    $setC[10]['campo'] = 'preciosus';
+    $setC[10]['dato'] = $preciosus;
+    $setC[11]['campo'] = 'total';
+    $setC[11]['dato'] = $total;
+    $setC[12]['campo'] = 'sello';
+    $setC[12]['dato'] = $sellosus;
+    $setC[13]['campo'] = 'utilidad';
+    $setC[13]['dato'] = $utilidad;
+    $setC[14]['campo'] = 'preciomayor';
+    $setC[14]['dato'] = $preciomayor;
+    $sql2 = generarInsertValues($setC);
+    return "INSERT INTO items ".$sql2;
+}
+function getSqlNewEntregaItems($identregaitems, $identregacompra, $idproducto, $nombre, $detalle, $precio, $cantidad, $preciobs, $preciosus, $numeroentregaitem, $total, $sellosus, $fletecaja, $utilidad, $preciomayor, $return) {
+    $setC[0]['campo'] = 'identregaitems';
+    $setC[0]['dato'] = $identregaitems;
+    $setC[1]['campo'] = 'identregacompra';
+    $setC[1]['dato'] = $identregacompra;
+    $setC[2]['campo'] = 'idproducto';
+    $setC[2]['dato'] = $idproducto;
+    $setC[3]['campo'] = 'nombre';
+    $setC[3]['dato'] = $nombre;
+    $setC[4]['campo'] = 'detalle';
+    $setC[4]['dato'] = $detalle;
+    $setC[5]['campo'] = 'precio';
+    $setC[5]['dato'] = $precio;
+    $setC[6]['campo'] = 'cantidad';
+    $setC[6]['dato'] = $cantidad;
+    $setC[7]['campo'] = 'preciobs';
+    $setC[7]['dato'] = $preciobs;
+    $setC[8]['campo'] = 'preciosus';
+    $setC[8]['dato'] = $preciosus;
+    $setC[9]['campo'] = 'numero';
+    $setC[9]['dato'] = $numeroentregaitem;
+    $setC[10]['campo'] = 'total';
+    $setC[10]['dato'] = $total;
+    $setC[11]['campo'] = 'sello';
+    $setC[11]['dato'] = $sellosus;
+    $setC[12]['campo'] = 'fletecaja';
+    $setC[12]['dato'] = $fletecaja;
+    $setC[13]['campo'] = 'utilidad';
+    $setC[13]['dato'] = $utilidad;
+    $setC[14]['campo'] = 'preciomayor';
+    $setC[14]['dato'] = $preciomayor;
+    $sql2 = generarInsertValues($setC);
+    return "INSERT INTO entregaitems ".$sql2;
+}
+
+function getSqlNewEntregaCompra($identregacompra, $idcompra, $fecha, $hora, $montocancelado, $saldo, $numerodocumento, $numeroentregacompra, $gastotransporte, $return){
+    $setC[0]['campo'] = 'identregacompra';
+    $setC[0]['dato'] = $identregacompra;
+    $setC[1]['campo'] = 'idcompra';
+    $setC[1]['dato'] = $idcompra;
+    $setC[2]['campo'] = 'fecha';
+    $setC[2]['dato'] = $fecha;
+    $setC[3]['campo'] = 'hora';
+    $setC[3]['dato'] = $hora;
+    $setC[4]['campo'] = 'montoacuenta';
+    $setC[4]['dato'] = $montocancelado;
+    $setC[5]['campo'] = 'saldo';
+    $setC[5]['dato'] = $saldo;
+    $setC[6]['campo'] = 'numerodocumento';
+    $setC[6]['dato'] = $numerodocumento;
+    $setC[7]['campo'] = 'numero';
+    $setC[7]['dato'] = $numeroentregacompra;
+    $setC[8]['campo'] = 'gastotransporte';
+    $setC[8]['dato'] = $gastotransporte;
+    $sql2 = generarInsertValues($setC);
+    return "INSERT INTO entregacompra ".$sql2;
+}
+
+function ObtenerSaldoAnterior($idproducto){
+
+}
+function actualizarEstadoTipoCambio($idtipocambio, $return = false ){
+    $sqlA[]="UPDATE tipocambio SET estado = 'desactivado' WHERE idtipocambio = '$idtipocambio'";
+
+    if($return == true)
+    {
+        return $sqlA;
+    }
+    else
+    {
+        //        MostrarConsulta($sqlA);
+        if(ejecutarConsultaSQLBeginCommit($sqlA))
+        {
+            $dev['mensaje'] = "Se actualizo el estado de tipo de cambio activado a desactivado";
+            $dev['error'] = "true";
+            $dev['resultado'] = "";
+        }
+        else
+        {
+            $dev['mensaje'] = "Ocurrio un error al cambiar el estado de tipo de cambio";
+            $dev['error'] = "false";
+            $dev['resultado'] = "";
+        }
+    }
+}
+function actualizarSaldoMovimiento($idproducto, $idalmacen, $fecha,$hora ,$return = false ){
+    $sql="
+SELECT COALESCE(mk.saldo, 0) AS saldo,COALESCE(mk.saldobs, 0) AS saldobs
+FROM movimientokardexalmacen mk
+WHERE mk.idproducto = '$idproducto' AND mk.idalmacen = '$idalmacen' AND
+TIMESTAMP(mk.fecha , mk.hora) < TIMESTAMP ('$fecha','$hora')
+ORDER BY mk.fecha DESC, mk.hora DESC LIMIT 1
+";
+    $saldo = findBySqlReturnCampoUnique($sql, true, true, "saldo");
+    $saldobs = findBySqlReturnCampoUnique($sql, true, true, "saldobs");
+    $sql1 = "
+SELECT * FROM  movimientokardexalmacen mk
+ WHERE mk.idproducto = '$idproducto' AND
+TIMESTAMP(mk.fecha,mk.hora) <= TIMESTAMP ('$fecha','$hora')
+order by mk.fecha DESC , mk.hora DESC LIMIT 1;
+";
+    //                echo $sql1."<br />";
+    //                echo $sql."<br />";
+    $link=new BD;
+    $link->conectar();
+    $res=$link->consulta($sql1);
+    $saldoActual = $saldo['resultado'];
+    $saldoActualBs = $saldobs['resultado'];
+    while ($res1=mysql_fetch_array($res)){
+        $saldoActual = $saldoActual + $res1['entrada'] - $res1['salida'];
+        $saldoActualBs = $saldoActualBs  + $res1['ingreso'] - $res1['egreso'];
+        $idmovimientokardex = $res1['idmovimientokardexalmacen'];
+        $sqlA[]="UPDATE movimientokardexalmacen SET saldo = '$saldoActual' , saldobs = '$saldoActualBs' WHERE idmovimientokardexalmacen = '$idmovimientokardex' AND idproducto = '$idproducto' AND idalmacen = '$idalmacen'";
+    }
+    $sqlA[]="UPDATE kardexalmacen SET saldocantidad = '$saldoActual' ,saldobs = '$saldoActualBs' WHERE idproducto = '$idproducto' AND idalmacen = '$idalmacen'";
+
+    if($return == true)
+    {
+        return $sqlA;
+    }
+    else
+
+    {
+        //                MostrarConsulta($sqlA);
+        if(ejecutarConsultaSQLBeginCommit($sqlA))
+        {
+            $dev['mensaje'] = "Se guardo una transaccion correctamente";
+            $dev['error'] = "true";
+            $dev['resultado'] = "";
+        }
+        else
+        {
+            $dev['mensaje'] = "Ocurrio un error al guardar una transaccion";
+            $dev['error'] = "false";
+            $dev['resultado'] = "";
+        }
+
+    }
+    //            if($return == true)
+    //            {
+    //                return $dev;
+    //            }
+    //            else
+    //            {
+    //                $json = new Services_JSON();
+    //                $output = $json->encode($dev);
+    //                print($output);
+    //            }
+
+
+}
+function actualizarSaldoKardex($idproducto, $return = false ){
+    $sql="
+SELECT saldo, fecha, hora
+FROM movimientokardex
+WHERE idproducto = '$idproducto' 
+ORDER BY fecha DESC, hora DESC LIMIT 0,1
+";
+    $saldo = findBySqlReturnCampoUnique($sql, true, true, "saldo");
+    $saldoActual = $saldo['resultado'];
+    $sqlA[]="UPDATE kardex SET saldocantidad = '$saldoActual' WHERE idproducto = '$idproducto'";
+
+    if($return == true)
+    {
+        return $sqlA;
+    }
+    else
+    {
+        //        MostrarConsulta($sqlA);
+        if(ejecutarConsultaSQLBeginCommit($sqlA))
+        {
+            $dev['mensaje'] = "Se guardo la cantidad de saldo correctamente";
+            $dev['error'] = "true";
+            $dev['resultado'] = "";
+        }
+        else
+        {
+            $dev['mensaje'] = "Ocurrio un error al guardar la cantidad de saldo";
+            $dev['error'] = "false";
+            $dev['resultado'] = "";
+        }
+    }
+}
+
+function actualizarSaldoKardexAlmacen($idproducto, $return = false ){
+    $sql="
+SELECT saldocantidad
+FROM kardex
+WHERE idproducto = '$idproducto'
+ORDER BY saldocantidad DESC LIMIT 0,1
+";
+    $saldo = findBySqlReturnCampoUnique($sql, true, true, "saldocantidad");
+    $saldoActual = $saldo['resultado'];
+    $sqlA[]="UPDATE kardexalmacen SET saldocantidad = '$saldoActual' WHERE idalmacen = 'alm-1000' and idproducto = '$idproducto'";
+
+    if($return == true)
+    {
+        return $sqlA;
+    }
+    else
+    {
+        //                MostrarConsulta($sqlA);
+        if(ejecutarConsultaSQLBeginCommit($sqlA))
+        {
+            $dev['mensaje'] = "Se guardo en kardex almacen, la cantidad de saldo correctamente";
+            $dev['error'] = "true";
+            $dev['resultado'] = "";
+        }
+        else
+        {
+            $dev['mensaje'] = "Ocurrio un error al guardar la cantidad de saldo en kardex almacen";
+            $dev['error'] = "false";
+            $dev['resultado'] = "";
+        }
+    }
+}
+
+function actualizarSaldoItems($idproducto, $idcompra, $cantidad, $return = false ){
+    $sql="
+SELECT cantidadentrega
+FROM items
+WHERE idproducto = '$idproducto'
+AND idcompra = '$idcompra'
+";
+    $saldo = findBySqlReturnCampoUnique($sql, true, true, "cantidadentrega");
+    $saldoActual = ($saldo['resultado'] - $cantidad);
+    $sqlA[]="UPDATE items SET cantidadentrega = '$saldoActual' WHERE idproducto = '$idproducto' and idcompra = '$idcompra'";
+
+    if($return == true)
+    {
+        return $sqlA;
+    }
+    else
+    {
+        //        MostrarConsulta($sqlA);
+        if(ejecutarConsultaSQLBeginCommit($sqlA))
+        {
+            $dev['mensaje'] = "Se guardo la cantidad de saldo correctamente";
+            $dev['error'] = "true";
+            $dev['resultado'] = "";
+        }
+        else
+        {
+            $dev['mensaje'] = "Ocurrio un error al guardar la cantidad de saldo";
+            $dev['error'] = "false";
+            $dev['resultado'] = "";
+        }
+    }
+}
+
+function getSqlDeleteItems($iditem){
+    return "DELETE FROM items WHERE iditem = '$iditem'";
+}
+function getSqlDeleteCompra($idcompra){
+    return "DELETE FROM compra WHERE idcompra = '$idcompra'";
+}
+function eliminarcompra($idcompra,$callback, $_dc, $return= 'true')
+{
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $sql[] = getSqlDeleteCompra($idcompra);
+    $sql1="
+SELECT
+  i.iditem,
+  i.idproducto,
+  i.cantidad,
+  i.total,
+  c.fecha,
+  c.hora
+FROM
+  items i,
+  compra c
+WHERE
+  i.idcompra = c.idcompra AND
+  c.idcompra = '$idcompra'
+";
+    $link=new BD;
+    $link->conectar();
+    $res=$link->consulta($sql1);
+    $i = 0;
+    while ($res1=mysql_fetch_array($res)){
+        $idproducto = $res1['idproducto'];
+        $fecha = $res1['fecha'];
+        $hora = $res1['hora'];
+        $salida = $res1['cantidad'];
+        $total = $res1['total'];
+        $iditem = $res1['iditem'];
+        $numeroKardexA = findUltimoIDforanyway("movimientokardex", "numero", "idproducto", $idproducto, true);
+        $numerokardex = $numeroKardexA['resultado'] +1;
+        $idmovimientokardex = "mok-".$numerokardex;
+        $sql[] = getSqlDeleteItems($iditem);
+        $sql[] = "DELETE FROM movimientokardex WHERE compra = '$idcompra'";
+        //        $sql[] = getSqlNewMovimientokardex($idmovimientokardex, $idproducto, 0, $salida, 0,0, $total, 0, "eliminar producto", $fecha, $hora , $numerokardex, $total/$salida,"eliminar producto",0, false);
+        $movimiento[$i]["idproducto"] = $idproducto;
+        $movimiento[$i]["fecha"] = $fecha;
+        $movimiento[$i]["hora"] = $hora;
+        $i++;
+
+
+    }
+
+    //                MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se Elimino el usuario correctamente";
+        $dev['error'] = "true";
+        $dev['resultado'] = "";
+        for($j=0;$j<count($movimiento);$j++){
+
+
+            actualizarSaldoMovimiento($movimiento[$j]['idproducto'],$movimiento[$j]['fecha'],$movimiento[$j]['hora'], false);
+
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al elminar un usuario";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+function getSqlNewTransaccionproveedor($idtransaccionproveedor, $idproveedor, $fecha, $hora, $deposito, $retiro, $usuario, $numero, $saldo, $idcompra, $return){
+    $setC[0]['campo'] = 'idtransaccionproveedor';
+    $setC[0]['dato'] = $idtransaccionproveedor;
+    $setC[1]['campo'] = 'idproveedor';
+    $setC[1]['dato'] = $idproveedor;
+    $setC[2]['campo'] = 'fecha';
+    $setC[2]['dato'] = $fecha;
+    $setC[3]['campo'] = 'hora';
+    $setC[3]['dato'] = $hora;
+    $setC[4]['campo'] = 'deposito';
+    $setC[4]['dato'] = $deposito;
+    $setC[5]['campo'] = 'retiro';
+    $setC[5]['dato'] = $retiro;
+    $setC[6]['campo'] = 'usuario';
+    $setC[6]['dato'] = $usuario;
+    $setC[7]['campo'] = 'numero';
+    $setC[7]['dato'] = $numero;
+    $setC[8]['campo'] = 'saldo';
+    $setC[8]['dato'] = $saldo;
+    $setC[9]['campo'] = 'idcompra';
+    $setC[9]['dato'] = $idcompra;
+    $sql2 = generarInsertValues($setC);
+    return "INSERT INTO transaccionproveedor ".$sql2;
+}
+?>

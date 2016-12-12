@@ -1,0 +1,420 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.emergentes;
+
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Position;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.form.Label;
+import com.gwtext.client.widgets.grid.CheckboxSelectionModel;
+import com.gwtext.client.widgets.TabPanel;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import org.balderrama.client.util.Conector;
+import org.balderrama.client.util.Utils;
+import org.balderrama.client.MainEntryPoint;
+import org.balderrama.client.util.KMenu;
+import com.gwtext.client.widgets.MessageBox;
+import com.gwtext.client.widgets.form.TextField;
+//import org.balderrama.client.muestra.PanelPedidoMuestra;
+//import org.balderrama.client.pedido.Pedido;
+
+/**
+ *
+ * @author buggy
+ */
+public class SeleccionMarcaOficina extends Window {
+
+   // private final int ANCHO = 300;
+    //private final int ALTO = 90;
+    private final AnchorLayoutData ANCHO_LAYOUT_DATA = new AnchorLayoutData("90%");
+    private final int WINDOW_PADDING = 5;
+    private FormPanel formPanel;
+    private ComboBox com_oficina;
+    private ComboBox com_oficina1;
+    private ComboBox com_oficina2;
+    private ComboBox com_oficina3;
+    private ComboBox com_oficina4;
+    private ComboBox com_oficina5;
+    private ComboBox com_oficina6;
+    private ComboBox com_oficina7;
+
+    private ComboBox com_marca;
+
+    private TextField tex_monto;
+
+    private Label label = new Label("10");
+    private Panel formpanel1;
+    private Button but_aceptarP;
+    private Button but_cancelarP;
+    private String almacenC;
+    private String tipoC;
+    private Object[][] tiendaM;
+    private Object[][] marcaM;
+    private Object[][] oficinaM;
+   private String coleccion;
+
+    CheckboxSelectionModel cbSelectionModel;
+    private boolean nuevo;
+    //para crear un nuevo tab
+    public TabPanel tap_panel;
+    public KMenu padre;
+    public MainEntryPoint panel;
+  //  Pedido ped;
+
+
+    public SeleccionMarcaOficina(Object[][] marca,Object[][] oficina,String coleccionM, KMenu kmenu) {
+    //public IngresoAlmacenForm(KMenu kmenu,MainEntryPoint pan) {
+        //com.google.gwt.user.client.Window.alert("Cuantas veces");
+
+        // this.padre = padre
+        padre=kmenu;
+      //  panel=pan;
+       
+        marcaM = marca;
+        oficinaM = oficina;
+        coleccion = coleccionM;
+
+        //kmenu = menu;
+        String tituloTabla = "Registrar Muestras";
+        this.setClosable(true);
+        this.setId("TPfun104111");
+        setIconCls("tab-icon");
+        setAutoScroll(false);
+        setTitle(tituloTabla);
+        setAutoWidth(true);
+        setAutoHeight(true);
+        setLayout(new FitLayout());
+        setPaddings(WINDOW_PADDING);
+        setButtonAlign(Position.CENTER);
+
+        setCloseAction(Window.CLOSE);
+        //setPlain(true);
+        onModuleLoad();
+
+    }
+
+    public void onModuleLoad(){
+
+        //setId("win-Clientes");
+
+        String nombreBoton1 = "Entrar";
+        String nombreBoton2 = "Cancelar";
+
+        formPanel = new FormPanel();
+        formPanel.setBaseCls("x-plain");
+        //formPanel.setLabelWidth(ANCHO - 400);
+      
+        but_aceptarP = new Button(nombreBoton1, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                              GuardarEditarCliente(e);
+
+            }
+        });
+        but_cancelarP = new Button(nombreBoton2, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                SeleccionMarcaOficina.this.destroy();
+                SeleccionMarcaOficina.this.close();
+
+              }
+        });
+//        formpanel1 = new Panel();
+//        formpanel1.setWidth(50);
+//        formpanel1.setHeight(50);
+//        label.setHeight(50);
+//        label.setWidth(50);
+        //formpanel1.add(label);
+ com_oficina = new ComboBox("Izquierdo 1", "almacen1",200);
+ com_oficina1 = new ComboBox("Derecho1", "almacen2",200);
+ com_oficina2 = new ComboBox("Izquierdo 2", "almacen3",200);
+ com_oficina3 = new ComboBox("Derecho 2", "almacen4",200);
+ com_oficina4 = new ComboBox("Izquierdo 3", "almacen5",200);
+ com_oficina5 = new ComboBox("Derecho 3", "almacen6",200);
+ com_oficina6 = new ComboBox("Izquierdo 4", "almacen7",200);
+ com_oficina7 = new ComboBox("Derecho 4", "almacen8",200);
+
+      tex_monto = new TextField("Coleccion", "coleccion",60);
+
+        com_marca = new ComboBox("Marca", "marca",200);
+        //com_tipoC.setPosition(50, 50);
+
+        // formPanel.setLabelWidth(ANCHO - 400 - 5);
+
+      formPanel.add(com_oficina);
+      formPanel.add(com_oficina1);
+      formPanel.add(com_oficina2);
+      formPanel.add(com_oficina3);
+      formPanel.add(com_oficina4);
+      formPanel.add(com_oficina5);
+      formPanel.add(com_oficina6);
+      formPanel.add(com_oficina7);
+
+        //formPanel.add(formpanel1);
+        formPanel.add(com_marca);
+       formPanel.add(tex_monto);
+
+        addButton(but_aceptarP);
+        addButton(but_cancelarP);
+        add(formPanel);
+        initCombos();
+     initValues();
+    }
+
+    private void initCombos() {
+
+      
+        com_marca.setValueField("idmarca");
+        com_marca.setDisplayField("nombre");
+        com_marca.setMinChars(1);
+        com_marca.setForceSelection(true);
+        com_marca.setMode(ComboBox.LOCAL);
+        com_marca.setEmptyText("Seleccione una marca");
+        com_marca.setLoadingText("Buscando");
+        com_marca.setTypeAhead(true);
+        com_marca.setSelectOnFocus(true);
+        com_marca.setHideTrigger(true);  
+        
+        SimpleStore cotegoriaStore = new SimpleStore(new String[]{"idmarca", "nombre"}, marcaM);
+        cotegoriaStore.load();
+        com_marca.setStore(cotegoriaStore);
+
+com_oficina.setValueField("idalmacen");
+        com_oficina.setDisplayField("nombre");
+        com_oficina.setMinChars(1);
+        com_oficina.setForceSelection(true);
+        com_oficina.setMode(ComboBox.LOCAL);
+        com_oficina.setEmptyText("Seleccione una oficina");
+        com_oficina.setLoadingText("Buscando");
+        com_oficina.setTypeAhead(true);
+        com_oficina.setSelectOnFocus(true);
+        com_oficina.setHideTrigger(true);
+
+        SimpleStore cotegoriaStore1 = new SimpleStore(new String[]{"idalmacen", "nombre"}, oficinaM);
+        cotegoriaStore1.load();
+        com_oficina.setStore(cotegoriaStore1);
+
+com_oficina1.setValueField("idalmacen");
+        com_oficina1.setDisplayField("nombre");
+        com_oficina1.setMinChars(1);
+      //  com_oficina1.setFieldLabel("nombre");
+        com_oficina1.setMode(ComboBox.LOCAL);
+        com_oficina1.setEmptyText("Seleccione una oficina");
+        com_oficina1.setLoadingText("Buscando");
+        com_oficina1.setTypeAhead(true);
+        com_oficina1.setSelectOnFocus(true);
+        com_oficina1.setHideTrigger(true);
+
+        SimpleStore cotegoriaStore11 = new SimpleStore(new String[]{"idalmacen", "nombre"}, oficinaM);
+        cotegoriaStore11.load();
+        com_oficina1.setStore(cotegoriaStore11);
+com_oficina2.setValueField("idalmacen");
+        com_oficina2.setDisplayField("nombre");
+        com_oficina2.setMinChars(1);
+        //com_oficina2.setFieldLabel("nombre");
+        com_oficina2.setMode(ComboBox.LOCAL);
+        com_oficina2.setEmptyText("Seleccione una oficina");
+        com_oficina2.setLoadingText("Buscando");
+        com_oficina2.setTypeAhead(true);
+        com_oficina2.setSelectOnFocus(true);
+        com_oficina2.setHideTrigger(true);
+
+        SimpleStore cotegoriaStore12 = new SimpleStore(new String[]{"idalmacen", "nombre"}, oficinaM);
+        cotegoriaStore12.load();
+        com_oficina2.setStore(cotegoriaStore12);
+com_oficina3.setValueField("idalmacen");
+        com_oficina3.setDisplayField("nombre");
+        com_oficina3.setMinChars(1);
+       // com_oficina3.setFieldLabel("nombre");
+        com_oficina3.setMode(ComboBox.LOCAL);
+        com_oficina3.setEmptyText("Seleccione una oficina");
+        com_oficina3.setLoadingText("Buscando");
+        com_oficina3.setTypeAhead(true);
+        com_oficina3.setSelectOnFocus(true);
+        com_oficina3.setHideTrigger(true);
+
+        SimpleStore cotegoriaStore13 = new SimpleStore(new String[]{"idalmacen", "nombre"}, oficinaM);
+        cotegoriaStore13.load();
+        com_oficina3.setStore(cotegoriaStore13);
+com_oficina4.setValueField("idalmacen");
+        com_oficina4.setDisplayField("nombre");
+        com_oficina4.setMinChars(1);
+       // com_oficina4.setFieldLabel("nombre");
+        com_oficina4.setMode(ComboBox.LOCAL);
+        com_oficina4.setEmptyText("Seleccione una oficina");
+        com_oficina4.setLoadingText("Buscando");
+        com_oficina4.setTypeAhead(true);
+        com_oficina4.setSelectOnFocus(true);
+        com_oficina4.setHideTrigger(true);
+
+        SimpleStore cotegoriaStore14 = new SimpleStore(new String[]{"idalmacen", "nombre"}, oficinaM);
+        cotegoriaStore14.load();
+        com_oficina4.setStore(cotegoriaStore14);
+com_oficina5.setValueField("idalmacen");
+        com_oficina5.setDisplayField("nombre");
+        com_oficina5.setMinChars(1);
+      //  com_oficina5.setFieldLabel("nombre");
+        com_oficina5.setMode(ComboBox.LOCAL);
+        com_oficina5.setEmptyText("Seleccione una oficina");
+        com_oficina5.setLoadingText("Buscando");
+        com_oficina5.setTypeAhead(true);
+        com_oficina5.setSelectOnFocus(true);
+        com_oficina5.setHideTrigger(true);
+
+        SimpleStore cotegoriaStore15 = new SimpleStore(new String[]{"idalmacen", "nombre"}, oficinaM);
+        cotegoriaStore15.load();
+        com_oficina5.setStore(cotegoriaStore15);
+com_oficina6.setValueField("idalmacen");
+        com_oficina6.setDisplayField("nombre");
+        com_oficina6.setMinChars(1);
+       // com_oficina6.setFieldLabel("nombre");
+        com_oficina6.setMode(ComboBox.LOCAL);
+        com_oficina6.setEmptyText("Seleccione una oficina");
+        com_oficina6.setLoadingText("Buscando");
+        com_oficina6.setTypeAhead(true);
+        com_oficina6.setSelectOnFocus(true);
+        com_oficina6.setHideTrigger(true);
+
+        SimpleStore cotegoriaStore16 = new SimpleStore(new String[]{"idalmacen", "nombre"}, oficinaM);
+        cotegoriaStore16.load();
+        com_oficina6.setStore(cotegoriaStore16);
+com_oficina7.setValueField("idalmacen");
+        com_oficina7.setDisplayField("nombre");
+        com_oficina7.setMinChars(1);
+       // com_oficina7.setFieldLabel("nombre");
+        com_oficina7.setMode(ComboBox.LOCAL);
+        com_oficina7.setEmptyText("Seleccione una oficina");
+        com_oficina7.setLoadingText("Buscando");
+        com_oficina7.setTypeAhead(true);
+        com_oficina7.setSelectOnFocus(true);
+        com_oficina7.setHideTrigger(true);
+
+        SimpleStore cotegoriaStore17 = new SimpleStore(new String[]{"idalmacen", "nombre"}, oficinaM);
+        cotegoriaStore17.load();
+        com_oficina7.setStore(cotegoriaStore17);
+
+
+    }
+
+ private void initValues() {
+        tex_monto.setValue(coleccion);
+
+
+    }
+  
+
+    public Button getBut_aceptar() {
+        return but_aceptarP;
+    }
+
+    public Button getBut_cancelar() {
+        return but_cancelarP;
+    }
+
+
+
+    public void GuardarEditarCliente(EventObject e) {
+
+       
+        String idmarca = com_marca.getValue();
+        final String coleccion1 = tex_monto.getValueAsString();
+final String oficina = com_oficina.getValue();
+final String oficina1 = com_oficina1.getValue();
+final String oficina2 = com_oficina2.getValue();
+final String oficina3 = com_oficina3.getValue();
+final String oficina4 = com_oficina4.getValue();
+final String oficina5 = com_oficina5.getValue();
+final String oficina6 = com_oficina6.getValue();
+final String oficina7 = com_oficina7.getValue();
+// String contador = "2";
+String enlace = "php/Muestra.php?funcion=BuscarModeloLineaPorMarca&idmarca=" + idmarca+"&oficina="+oficina+"&oficina1="+oficina1+"&oficina2="+oficina2+"&oficina3="+oficina3+"&oficina4="+oficina4+"&oficina5="+oficina5+"&oficina6="+oficina6+"&oficina7="+oficina7;
+//dataProxy1018 = new ScriptTagProxy("./php/Empresa.php?funcion=buscarclientesempresaplanilla&idempresa="+idempresa+"&planilla="+planilla);
+
+//String enlace = "php/Marca.php?funcion=BuscarClienteVendedorColorMaterialModeloLineaPorMarca&idmarca=" + idmarca;
+        Utils.setErrorPrincipal("Cargando parametros de Registro", "cargar");
+        final Conector conec = new Conector(enlace, false);
+        {
+            try {
+                conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                    private EventObject e;
+
+                    public void onResponseReceived(Request request, Response response) {
+                        String data = response.getText();
+                        JSONValue jsonValue = JSONParser.parse(data);
+                        JSONObject jsonObject;
+                        if ((jsonObject = jsonValue.isObject()) != null) {
+                            String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                            String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                            if (errorR.equalsIgnoreCase("true")) {
+                                Utils.setErrorPrincipal(mensajeR, "mensaje");
+
+                                JSONValue marcaV = jsonObject.get("resultado");
+                                JSONObject marcaO;
+                                if ((marcaO = marcaV.isObject()) != null) {
+                                    Object[][] modelos = Utils.getArrayOfJSONObject(marcaO, "modeloM", new String[]{"idmodelo", "codigo"});
+                   String idmarca = Utils.getStringOfJSONObject(marcaO, "idmarca");
+                                    String nombre = Utils.getStringOfJSONObject(marcaO, "nombre");
+                                    String numeropedido = Utils.getStringOfJSONObject(marcaO, "numeropedido");
+                                    String opcion = Utils.getStringOfJSONObject(marcaO, "opcion");
+ String contador = Utils.getStringOfJSONObject(marcaO, "contador");
+ String nomoficina = Utils.getStringOfJSONObject(marcaO, "nomofi");
+String nomoficina1 = Utils.getStringOfJSONObject(marcaO, "nomofi1");
+String nomoficina2 = Utils.getStringOfJSONObject(marcaO, "nomofi2");
+String nomoficina3 = Utils.getStringOfJSONObject(marcaO, "nomofi3");
+String nomoficina4 = Utils.getStringOfJSONObject(marcaO, "nomofi4");
+String nomoficina5 = Utils.getStringOfJSONObject(marcaO, "nomofi5");
+String nomoficina6 = Utils.getStringOfJSONObject(marcaO, "nomofi6");
+String nomoficina7 = Utils.getStringOfJSONObject(marcaO, "nomofi7");
+
+
+
+//PanelPedidoMuestra pan_compraDirecta = new PanelPedidoMuestra(idmarca, nombre, numeropedido, opcion,modelos, coleccion1,oficina,nomoficina, oficina1,nomoficina1,oficina2,nomoficina2,oficina3,nomoficina3,oficina4,nomoficina4,oficina5,nomoficina5,oficina6,nomoficina6,oficina7,nomoficina7,contador, SeleccionMarcaOficina.this);
+  //                                  padre.seleccionarOpcion(null, "fun5020", e, pan_compraDirecta);
+                                    SeleccionMarcaOficina.this.clear();
+                                    SeleccionMarcaOficina.this.close();
+//
+                                    Utils.setErrorPrincipal("Se cargaron los parametros Correctamente" + opcion, "mensaje");
+                                } else {
+                                    MessageBox.alert("No Hay datos en la consulta");
+                                }
+                            }
+                        } else {
+                        }
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+
+                    public void onError(Request request, Throwable exception) {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+                });
+
+            } catch (RequestException ea) {
+                ea.getMessage();
+                MessageBox.alert("Ocurrio un error al conectarse con el SERVIDOR");
+            }
+
+        }
+
+    }
+
+   
+}

@@ -1,0 +1,196 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.emergentes;
+
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Position;
+import com.gwtext.client.data.Record;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.grid.CheckboxSelectionModel;
+import com.gwtext.client.widgets.TabPanel;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import org.balderrama.client.MainEntryPoint;
+import org.balderrama.client.util.KMenu;
+import com.gwtext.client.widgets.form.event.ComboBoxListenerAdapter;
+import org.balderrama.client.pedido.ControlPreciosPedido;
+import org.balderrama.client.pedido.Pedido;
+
+/**
+ *
+ * @author buggy
+ */
+public class ControlPrecioPedidoForm extends Window {
+
+    private final int ANCHO = 300;
+    private final int ALTO = 90;
+    private final AnchorLayoutData ANCHO_LAYOUT_DATA = new AnchorLayoutData("90%");
+    private final int WINDOW_PADDING = 5;
+    private FormPanel formPanel;
+    private ComboBox com_pedido;
+    private ComboBox com_marca;
+    private Button but_aceptarP;
+    private Button but_cancelarP;
+    private Object[][] pedidoM;
+    private Object[][] marcaM;
+    CheckboxSelectionModel cbSelectionModel;
+    private boolean nuevo;
+    //para crear un nuevo tab
+    public TabPanel tap_panel;
+    public KMenu padre;
+    public MainEntryPoint panel;
+    Pedido ped;
+
+    public ControlPrecioPedidoForm(Object[][] marca, Object[][] pedido, KMenu kmenu) {
+
+        padre = kmenu;
+        pedidoM = pedido;
+        marcaM = marca;
+        //kmenu = menu;
+        String tituloTabla = "Control de Precios Por Pedido";
+        this.setClosable(true);
+        this.setId("TPfun300401");
+        setIconCls("tab-icon");
+        setAutoScroll(true);
+        setTitle(tituloTabla);
+        setAutoWidth(true);
+        setAutoHeight(true);
+        setLayout(new FitLayout());
+        setPaddings(WINDOW_PADDING);
+        setButtonAlign(Position.CENTER);
+
+        setCloseAction(Window.CLOSE);
+        //setPlain(true);
+        onModuleLoad();
+
+    }
+
+    public void onModuleLoad() {
+
+        //setId("win-Clientes");
+
+        String nombreBoton1 = "Ingresar";
+        String nombreBoton2 = "Cerrar";
+
+        formPanel = new FormPanel();
+        formPanel.setBaseCls("x-plain");
+        //formPanel.setLabelWidth(ANCHO - 400);
+
+        but_aceptarP = new Button(nombreBoton1, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                GuardarEditarCliente(e);
+
+            }
+        });
+        but_cancelarP = new Button(nombreBoton2, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                ControlPrecioPedidoForm.this.destroy();
+                ControlPrecioPedidoForm.this.close();
+
+            }
+        });
+
+
+        com_marca = new ComboBox("Marca", "marca", 200);
+        com_pedido = new ComboBox("Numero Pedido", "idpedido", 200);
+        //com_tipoC.setPosition(50, 50);
+
+        // formPanel.setLabelWidth(ANCHO - 400 - 5);
+
+
+        //formPanel.add(formpanel1);
+        formPanel.add(com_marca);
+        formPanel.add(com_pedido);
+        addButton(but_aceptarP);
+        addButton(but_cancelarP);
+        add(formPanel);
+        initCombos();
+
+    }
+
+    private void initCombos() {
+
+
+        com_marca.setValueField("idmarca");
+        com_marca.setDisplayField("nombre");
+        com_marca.setMinChars(1);
+        com_marca.setFieldLabel("nombre");
+        com_marca.setMode(ComboBox.LOCAL);
+        com_marca.setEmptyText("Seleccione una marca");
+        com_marca.setLoadingText("Buscando");
+        com_marca.setTypeAhead(true);
+        com_marca.setSelectOnFocus(true);
+        com_marca.setHideTrigger(true);
+
+        SimpleStore cotegoriaStore = new SimpleStore(new String[]{"idmarca", "nombre"}, marcaM);
+        cotegoriaStore.load();
+        com_marca.setStore(cotegoriaStore);
+
+        final SimpleStore proveedorStore1 = new SimpleStore(new String[]{"idpedido", "numeropedido", "idmarca"}, pedidoM);
+        proveedorStore1.load();
+        com_pedido.setMinChars(1);
+        //com_empresa.setFieldLabel("Ciudad");
+
+        com_pedido.setValueField("idpedido");
+        com_pedido.setDisplayField("numeropedido");
+        com_pedido.setForceSelection(true);
+        com_pedido.setMode(ComboBox.LOCAL);
+        com_pedido.setEmptyText("Seleccione pedido");
+        com_pedido.setLoadingText("buscando...");
+        com_pedido.setTypeAhead(true);
+        com_pedido.setSelectOnFocus(true);
+        com_pedido.setWidth(200);
+        com_pedido.setLinked(true);
+        com_pedido.setHideTrigger(true);
+
+        com_pedido.setStore(proveedorStore1);
+
+        com_marca.addListener(new ComboBoxListenerAdapter() {
+
+            public void onSelect(ComboBox comboBox, Record record, int index) {
+                
+                proveedorStore1.filter("idmarca", comboBox.getValue());
+            }
+        });
+
+
+    }
+
+    public Button getBut_aceptar() {
+        return but_aceptarP;
+    }
+
+    public Button getBut_cancelar() {
+        return but_cancelarP;
+    }
+
+    public void GuardarEditarCliente(EventObject e) {
+
+
+        String marca = com_marca.getValue();
+        String idpedido = com_pedido.getValue();
+        ControlPreciosPedido pan_compraDirecta = new ControlPreciosPedido(idpedido,marca);
+        padre.seleccionarOpcion(null, "fun300410", e, pan_compraDirecta);
+
+        ControlPrecioPedidoForm.this.clear();
+        ControlPrecioPedidoForm.this.close();
+
+//
+
+
+
+
+
+    }
+}

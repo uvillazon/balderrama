@@ -1,0 +1,4241 @@
+-- phpMyAdmin SQL Dump
+-- version 2.11.5
+-- http://www.phpmyadmin.net
+--
+-- Servidor: localhost
+-- Tiempo de generación: 03-05-2011 a las 09:37:29
+-- Versión del servidor: 5.0.51
+-- Versión de PHP: 5.2.5
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- Base de datos: `admin`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `adiciondetalleingreso`
+--
+
+CREATE TABLE `adiciondetalleingreso` (
+  `idmodelo` varchar(20) default NULL,
+  `totalpares` int(11) default NULL,
+  `totalbs` decimal(22,11) default NULL,
+  `idingreso` varchar(20) default NULL,
+  `iddetalleingreso` varchar(40) NOT NULL,
+  `color` varchar(200) NOT NULL,
+  `material` varchar(200) NOT NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`iddetalleingreso`),
+  KEY `idingreso` (`idingreso`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `adiciondetalleingreso`
+--
+
+INSERT INTO `adiciondetalleingreso` (`idmodelo`, `totalpares`, `totalbs`, `idingreso`, `iddetalleingreso`, `color`, `material`, `numero`) VALUES
+('mod-1', 6, NULL, 'ing-1', 'din-1', '', '', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `adiciondetalleingresotalla`
+--
+
+CREATE TABLE `adiciondetalleingresotalla` (
+  `iddetalleingresotalla` int(50) NOT NULL auto_increment,
+  `talla` int(11) default NULL,
+  `idmodelo` varchar(20) default NULL,
+  `iddetalleingreso` varchar(20) default NULL,
+  `cantidad` int(11) default NULL,
+  PRIMARY KEY  (`iddetalleingresotalla`),
+  KEY `iddetalleingreso` (`iddetalleingreso`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=5 ;
+
+--
+-- Volcar la base de datos para la tabla `adiciondetalleingresotalla`
+--
+
+INSERT INTO `adiciondetalleingresotalla` (`iddetalleingresotalla`, `talla`, `idmodelo`, `iddetalleingreso`, `cantidad`) VALUES
+(1, 35, 'mod-1', 'din-1', 2),
+(2, 36, 'mod-1', 'din-1', 1),
+(3, 37, 'mod-1', 'din-1', 2),
+(4, 38, 'mod-1', 'din-1', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `adicioningresotienda`
+--
+
+CREATE TABLE `adicioningresotienda` (
+  `idingreso` varchar(20) NOT NULL,
+  `codigo` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `totalpares` int(11) default NULL,
+  `totalbs` decimal(22,11) default NULL,
+  `responsable` varchar(20) default NULL,
+  `observacion` varchar(200) default NULL,
+  `idmarca` varchar(20) default NULL,
+  `idtienda` varchar(20) default NULL,
+  PRIMARY KEY  (`idingreso`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `adicioningresotienda`
+--
+
+INSERT INTO `adicioningresotienda` (`idingreso`, `codigo`, `numero`, `estado`, `fecha`, `hora`, `totalpares`, `totalbs`, `responsable`, `observacion`, `idmarca`, `idtienda`) VALUES
+('ing-1', '9/2011', 1, 'ACTIVO', '2011-04-29', '18:05:59', 6, NULL, 'usr-1000', NULL, 'mar-1', 'tie-1');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `adicionkardextienda`
+--
+
+CREATE TABLE `adicionkardextienda` (
+  `idkardextienda` varchar(20) NOT NULL,
+  `idmodelodetalle` varchar(20) default NULL,
+  `idtienda` varchar(20) default NULL,
+  `codigobarra` varchar(20) default NULL,
+  `saldocantidad` int(11) default NULL,
+  `cantidad` int(11) default NULL,
+  `numero` int(11) default NULL,
+  `talla` int(11) default NULL,
+  `precio1bs` decimal(22,11) default NULL,
+  `precio2bs` decimal(22,11) default NULL,
+  `precio3bs` decimal(22,11) default NULL,
+  `precio1sus` decimal(22,11) default NULL,
+  `precio2sus` decimal(22,11) default NULL,
+  `precio3sus` decimal(22,11) default NULL,
+  `idcalzado` varchar(20) default NULL,
+  `idoperacion` varchar(20) default NULL,
+  `codigobarraean13` varchar(20) default NULL,
+  PRIMARY KEY  (`idkardextienda`),
+  KEY `idmodelodetalle` (`idmodelodetalle`),
+  KEY `idtienda` (`idtienda`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `adicionkardextienda`
+--
+
+INSERT INTO `adicionkardextienda` (`idkardextienda`, `idmodelodetalle`, `idtienda`, `codigobarra`, `saldocantidad`, `cantidad`, `numero`, `talla`, `precio1bs`, `precio2bs`, `precio3bs`, `precio1sus`, `precio2sus`, `precio3sus`, `idcalzado`, `idoperacion`, `codigobarraean13`) VALUES
+('kar-1', 'mod-1', 'tie-1', '01110000355', 2, 2, 1, 35, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-1', '0111000035'),
+('kar-2', 'mod-1', 'tie-1', '01110000362', 1, 1, 2, 36, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-1', '0111000036'),
+('kar-3', 'mod-1', 'tie-1', '01110000379', 2, 2, 3, 37, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-1', '0111000037'),
+('kar-4', 'mod-1', 'tie-1', '01110000386', 1, 1, 4, 38, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-1', '0111000038');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `adicionmovimientokardextienda`
+--
+
+CREATE TABLE `adicionmovimientokardextienda` (
+  `idmovimientokardextienda` varchar(20) NOT NULL,
+  `idkardextienda` varchar(20) default NULL,
+  `idtienda` varchar(20) default NULL,
+  `entrada` int(11) default NULL,
+  `salida` int(11) default NULL,
+  `saldo` int(11) default NULL,
+  `costounitario` decimal(22,11) default NULL,
+  `ingreso` decimal(22,11) default NULL,
+  `egreso` decimal(22,11) default NULL,
+  `saldobs` decimal(22,11) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `descripcion` varchar(200) default NULL,
+  `numero` int(11) default NULL,
+  `saldocantidad` int(11) NOT NULL,
+  PRIMARY KEY  (`idmovimientokardextienda`,`saldocantidad`),
+  KEY `idkardextienda` (`idkardextienda`),
+  KEY `idtienda` (`idtienda`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `adicionmovimientokardextienda`
+--
+
+INSERT INTO `adicionmovimientokardextienda` (`idmovimientokardextienda`, `idkardextienda`, `idtienda`, `entrada`, `salida`, `saldo`, `costounitario`, `ingreso`, `egreso`, `saldobs`, `fecha`, `hora`, `descripcion`, `numero`, `saldocantidad`) VALUES
+('mkt-1', 'kar-1', 'tie-1', 2, 0, 2, NULL, '0.00000000000', '0.00000000000', '0.00000000000', '2011-04-29', '18:05:59', 'ing-1', 1, 2),
+('mkt-2', 'kar-2', 'tie-1', 1, 0, 1, NULL, '0.00000000000', '0.00000000000', '0.00000000000', '2011-04-29', '18:05:59', 'ing-1', 2, 1),
+('mkt-3', 'kar-3', 'tie-1', 2, 0, 2, NULL, '0.00000000000', '0.00000000000', '0.00000000000', '2011-04-29', '18:05:59', 'ing-1', 3, 2),
+('mkt-4', 'kar-4', 'tie-1', 1, 0, 1, NULL, '0.00000000000', '0.00000000000', '0.00000000000', '2011-04-29', '18:05:59', 'ing-1', 4, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `almacenes`
+--
+
+CREATE TABLE `almacenes` (
+  `idalmacen` varchar(20) NOT NULL,
+  `idciudad` varchar(20) default NULL,
+  `nombre` varchar(50) default NULL,
+  `codigo` varchar(30) default NULL,
+  `direccion` varchar(50) default NULL,
+  `tipo` varchar(10) default NULL,
+  `numero` int(11) default NULL,
+  `telefono` varchar(20) default NULL,
+  `fax` varchar(20) default NULL,
+  `opcion` int(2) NOT NULL,
+  PRIMARY KEY  (`idalmacen`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `almacenes`
+--
+
+INSERT INTO `almacenes` (`idalmacen`, `idciudad`, `nombre`, `codigo`, `direccion`, `tipo`, `numero`, `telefono`, `fax`, `opcion`) VALUES
+('alm-1', 'ciu-1000', 'HHH', '1', '11', 'TIENDA', 1, '11', '11', 0),
+('alm-2', 'ciu-1001', 'ALMACEN STA CRUZ', 'SCRZ', NULL, 'ALMACEN', 2, NULL, NULL, 1),
+('alm-3', 'ciu-1000', 'ALMACEN CBBA', 'CBBA', NULL, 'ALMACEN', 3, NULL, NULL, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `anio`
+--
+
+CREATE TABLE `anio` (
+  `anio` int(11) NOT NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`anio`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `anio`
+--
+
+INSERT INTO `anio` (`anio`, `estado`) VALUES
+(2006, 'pendiente'),
+(2007, 'pendiente'),
+(2008, 'pendiente'),
+(2009, 'pendiente'),
+(2010, 'activo'),
+(2011, 'pendiente');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `bitacora_delete`
+--
+
+CREATE TABLE `bitacora_delete` (
+  `FECHA` varchar(50) default NULL,
+  `USUARIO_ACTUAL` varchar(50) default NULL,
+  `TABLA` text,
+  `NUMERO` varchar(10) default NULL,
+  `ANTIGUO_REGISTRO` text,
+  `CODIGO` varchar(10) default NULL,
+  `IMPORTE` varchar(10) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `bitacora_delete`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `bitacora_delete_item`
+--
+
+CREATE TABLE `bitacora_delete_item` (
+  `FECHA` varchar(50) default NULL,
+  `CODIGO` varchar(50) default NULL,
+  `TABLA` text,
+  `NUMERO` varchar(10) default NULL,
+  `IDKARDEX` varchar(10) default NULL,
+  `ANTIGUO_REGISTRO` text,
+  `IMPORTE` varchar(10) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `bitacora_delete_item`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `caja`
+--
+
+CREATE TABLE `caja` (
+  `idcaja` varchar(20) NOT NULL,
+  `saldocaja` decimal(7,2) default NULL,
+  `estado` char(20) default NULL,
+  `numero` int(11) default NULL,
+  `efecbs` decimal(7,2) default NULL,
+  `efecsus` decimal(7,2) default NULL,
+  `efecmonedas` decimal(7,2) default NULL,
+  `depbs` decimal(7,2) default NULL,
+  `depsus` decimal(7,2) default NULL,
+  `cajanueva` decimal(7,2) default NULL,
+  `pagadoregistro` decimal(7,2) default NULL,
+  `fechaarqueo` date default NULL,
+  `fecharegistro` date default NULL,
+  `idtienda` varchar(20) default NULL,
+  `idusuario` varchar(20) default NULL,
+  `turno` varchar(20) NOT NULL,
+  PRIMARY KEY  (`idcaja`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `caja`
+--
+
+INSERT INTO `caja` (`idcaja`, `saldocaja`, `estado`, `numero`, `efecbs`, `efecsus`, `efecmonedas`, `depbs`, `depsus`, `cajanueva`, `pagadoregistro`, `fechaarqueo`, `fecharegistro`, `idtienda`, `idusuario`, `turno`) VALUES
+('cuec-0', '0.00', 'activado', 0, '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0000-00-00', NULL, 'tie-1', 'usr-1000', '');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `calzados`
+--
+
+CREATE TABLE `calzados` (
+  `idcalzado` varchar(20) NOT NULL,
+  `idcaracteristica` varchar(20) default '\r\n\r\n',
+  `idmodelo` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `precio1bs` decimal(22,11) default NULL,
+  `precio2bs` decimal(22,11) default NULL,
+  `precio3bs` decimal(22,11) default NULL,
+  `precio1sus` decimal(22,11) default NULL,
+  `precio2sus` decimal(22,11) default NULL,
+  `precio3sus` decimal(22,11) default NULL,
+  `imagen` varchar(500) default NULL,
+  `stockminimo` int(11) default NULL,
+  PRIMARY KEY  (`idcalzado`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `calzados`
+--
+
+INSERT INTO `calzados` (`idcalzado`, `idcaracteristica`, `idmodelo`, `numero`, `precio1bs`, `precio2bs`, `precio3bs`, `precio1sus`, `precio2sus`, `precio3sus`, `imagen`, `stockminimo`) VALUES
+('cal-1', '\r\ncar-1', 'mod-1', 1, '20.00000000000', '20.00000000000', '20.00000000000', '20.00000000000', '20.00000000000', '20.00000000000', NULL, 20);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `calzadostallas`
+--
+
+CREATE TABLE `calzadostallas` (
+  `idcalzadotalla` varchar(30) NOT NULL COMMENT 'IDCALZADO TALLA (IDCALZADO-CODIGOTALLA)',
+  `idcalzado` varchar(20) default NULL,
+  `idtalla` varchar(20) default NULL,
+  PRIMARY KEY  (`idcalzadotalla`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `calzadostallas`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `categoriafuncion`
+--
+
+CREATE TABLE `categoriafuncion` (
+  `idcategoriafuncion` char(10) NOT NULL,
+  `nombre` varchar(50) default NULL,
+  `codigo` varchar(20) default NULL,
+  `seguridad` varchar(100) default NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`idcategoriafuncion`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `categoriafuncion`
+--
+
+INSERT INTO `categoriafuncion` (`idcategoriafuncion`, `nombre`, `codigo`, `seguridad`, `estado`) VALUES
+('caf1000', 'Archivos', NULL, NULL, 'Activo'),
+('caf1001', 'Configuracion', NULL, NULL, 'Activo'),
+('caf1002', 'Pedidos', NULL, NULL, 'Activo'),
+('caf1003', 'Muestras', NULL, NULL, 'Inactivo'),
+('caf1004', 'Venta -Detalle', NULL, NULL, 'Activo'),
+('caf1005', 'Venta-Mayor', NULL, NULL, 'Activo'),
+('caf1006', 'SistemaCredito', NULL, NULL, 'Inactivo'),
+('caf1008', 'Almacenes', NULL, NULL, 'Activo'),
+('caf1009', 'Muestras', NULL, NULL, 'Activo'),
+('caf1010', 'Reportes', NULL, NULL, 'Activo'),
+('caf1011', 'Inventario-Detalle', NULL, NULL, 'Activo'),
+('caf1012', 'Inventario-Mayor', NULL, NULL, 'Activo'),
+('caf1013', 'Herramientas', NULL, NULL, 'Activo'),
+('caf1014', 'Configuracion De Articulos', NULL, NULL, 'Activo'),
+('caf1015', 'Cobros', NULL, NULL, 'Inactivo'),
+('caf1016', 'Ventas - Credito', NULL, NULL, 'Inactivo'),
+('caf1017', 'Planillas', NULL, NULL, 'Inactivo'),
+('caf1018', 'Consultas', NULL, NULL, 'Inactivo'),
+('caf1019', 'Control Etapas', NULL, NULL, 'Activo'),
+('caf1020', 'Procesos', NULL, NULL, 'Inactivo'),
+('caf1021', 'Reportes', NULL, NULL, 'Inactivo'),
+('caf1022', 'Mantenimiento', NULL, NULL, 'Inactivo'),
+('caf1023', 'Ingresos Tienda/Cod Barras', NULL, NULL, 'Activo');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `categorias`
+--
+
+CREATE TABLE `categorias` (
+  `idcategoria` varchar(20) NOT NULL,
+  `nombre` varchar(30) default NULL,
+  `codigo` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idcategoria`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `categorias`
+--
+
+INSERT INTO `categorias` (`idcategoria`, `nombre`, `codigo`, `numero`) VALUES
+('caf1001', 'Calzados Para Varones', NULL, 1001),
+('caf1002', 'Calzados Unisex', NULL, 1002),
+('cat-1000', 'Calzados para Mujer', 'zpt1', 1000);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ciudades`
+--
+
+CREATE TABLE `ciudades` (
+  `idciudad` varchar(20) NOT NULL,
+  `nombre` varchar(30) default NULL,
+  `numero` int(11) default NULL,
+  `codigo` varchar(6) default NULL,
+  PRIMARY KEY  (`idciudad`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `ciudades`
+--
+
+INSERT INTO `ciudades` (`idciudad`, `nombre`, `numero`, `codigo`) VALUES
+('ciu-1', 'TARIJA', 1, 'TRJ'),
+('ciu-1000', 'Cochabamba', NULL, 'CBBA'),
+('ciu-1001', 'Santa Cruz', NULL, 'SCZ'),
+('ciu-1002', 'Lapaz', NULL, 'LPZ'),
+('ciu-1003', 'Sucre', NULL, 'SCr'),
+('ciu-1004', 'Oruro', NULL, 'ORU'),
+('ciu-2', 'POTOSI', 2, 'PTS'),
+('ciu-3', 'PUNATA', 3, 'pnt');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `clienteempresa`
+--
+
+CREATE TABLE `clienteempresa` (
+  `idclienteempresa` int(11) NOT NULL auto_increment,
+  `codigo` varchar(20) default NULL,
+  `nombre` varchar(30) default NULL,
+  `apellido` varchar(20) default NULL,
+  `nit` int(10) NOT NULL,
+  `direccion` varchar(30) NOT NULL,
+  `telefono` int(20) NOT NULL,
+  `mail` varchar(30) NOT NULL,
+  `referencia` varchar(30) NOT NULL,
+  `idempresa` varchar(20) default NULL,
+  `estado` varchar(20) default NULL,
+  `item` varchar(20) NOT NULL,
+  `numero` int(10) NOT NULL,
+  `saldoanterior` decimal(7,2) NOT NULL default '0.00',
+  `saldoactual` decimal(7,2) NOT NULL default '0.00',
+  PRIMARY KEY  (`idclienteempresa`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=12 ;
+
+--
+-- Volcar la base de datos para la tabla `clienteempresa`
+--
+
+INSERT INTO `clienteempresa` (`idclienteempresa`, `codigo`, `nombre`, `apellido`, `nit`, `direccion`, `telefono`, `mail`, `referencia`, `idempresa`, `estado`, `item`, `numero`, `saldoanterior`, `saldoactual`) VALUES
+(0, 'Sin Codigo', '0', '0', 0, '0', 0, '0', '0', 'epr-0', 'Activo', '0', 0, '0.00', '0.00'),
+(5, 'tie-15', 'Julian', 'ramos', 123, 'kkk', 123, 'mm', 'responsable', 'epr-4', 'ACTIVO', '', 0, '0.00', '0.00'),
+(6, 'Sin Codigo', 'No existe', 'el Cliente', 0, '-', 0, '-', 'empresa', 'epr-4', 'ACTIVO', '0', 6, '0.00', '0.00'),
+(7, 'tie-17', 'juan ', 'rios', 123, '12', 123, '12', 'responsable', 'epr-5', 'ACTIVO', '', 0, '0.00', '90.00'),
+(8, 'Sin Codigo', 'No existe', 'el Cliente', 0, '-', 0, '-', 'empresa', 'epr-5', 'ACTIVO', '0', 8, '0.00', '0.00'),
+(9, 'tie-19', 'ana', 'crespo', 123, '12', 123, '12', 'responsable', 'epr-6', 'ACTIVO', '', 0, '0.00', '0.00'),
+(10, 'Sin Codigo', 'No existe', 'el Cliente', 0, '-', 0, '-', 'empresa', 'epr-6', 'ACTIVO', '0', 10, '0.00', '0.00'),
+(11, 'tie-111', 'alejandra', 'guzman', 12, '12', 12, '', '', 'epr-5', 'ACTIVO', '12', 11, '0.00', '0.00');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `clientemarca`
+--
+
+CREATE TABLE `clientemarca` (
+  `idclientemarca` varchar(20) NOT NULL,
+  `idcliente` varchar(20) NOT NULL,
+  `idmarca` varchar(20) default NULL,
+  `saldoafavor` decimal(7,2) NOT NULL default '0.00',
+  `saldooanterior` decimal(7,2) NOT NULL default '0.00',
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `ventas` decimal(7,2) NOT NULL default '0.00',
+  `cobros` decimal(7,2) NOT NULL default '0.00',
+  `devoluciones` decimal(7,2) NOT NULL default '0.00',
+  `saldoactual` decimal(7,2) NOT NULL default '0.00',
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  `mesemitido` varchar(30) default NULL,
+  `emitido` varchar(2) default NULL,
+  PRIMARY KEY  (`idclientemarca`),
+  KEY `idciudad` (`idcliente`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `clientemarca`
+--
+
+INSERT INTO `clientemarca` (`idclientemarca`, `idcliente`, `idmarca`, `saldoafavor`, `saldooanterior`, `fecha`, `hora`, `ventas`, `cobros`, `devoluciones`, `saldoactual`, `numero`, `estado`, `mesemitido`, `emitido`) VALUES
+('climar-1', 'cli-1', 'mar-2', '0.00', '0.00', '2011-04-22', '00:02:27', '1080.00', '0.00', '0.00', '1080.00', 1, 'VIGENTE', '04/2011', '0');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `clientes`
+--
+
+CREATE TABLE `clientes` (
+  `idcliente` varchar(20) NOT NULL,
+  `idtipocliente` varchar(20) default NULL,
+  `codigo` varchar(20) default NULL,
+  `nombre` varchar(50) default NULL,
+  `telefono` varchar(20) default NULL,
+  `direccion` varchar(100) default NULL,
+  `mail` varchar(30) default NULL,
+  `fax` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  `apellido` varchar(30) default NULL,
+  `idciudad` varchar(20) default NULL,
+  `idlocalidad` varchar(20) NOT NULL,
+  `saldototal` decimal(7,2) NOT NULL default '0.00',
+  `saldoafavor` decimal(7,2) NOT NULL default '0.00',
+  `mes_planilla` varchar(8) NOT NULL,
+  PRIMARY KEY  (`idcliente`),
+  KEY `fk_relationship_20` (`idtipocliente`),
+  KEY `idciudad` (`idciudad`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `clientes`
+--
+
+INSERT INTO `clientes` (`idcliente`, `idtipocliente`, `codigo`, `nombre`, `telefono`, `direccion`, `mail`, `fax`, `numero`, `estado`, `apellido`, `idciudad`, `idlocalidad`, `saldototal`, `saldoafavor`, `mes_planilla`) VALUES
+('cli-1', 'tcl-1000', 'JLB', 'JOSE LUIS', NULL, NULL, NULL, NULL, 1, 'INACTIVO', 'balderrama', 'ciu-1000', 'loc-1', '14040.00', '0.00', '04/2011'),
+('cli-2', 'tcl-1000', 'UVV', 'UBALDO', '909090', '909090', NULL, '909090', 2, 'PENDIENTE', 'villazon', 'ciu-1', 'loc-1', '0.00', '0.00', ''),
+('cli-3', 'tcl-1000', 'JIV', 'JHOVANA', '72708767', 'C/MOXOS # 2006', NULL, NULL, 3, 'ACTIVO', 'inca', 'ciu-1000', 'loc-2', '0.00', '0.00', '');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `codigobarramodelodetalle`
+--
+
+CREATE TABLE `codigobarramodelodetalle` (
+  `idcbmd` int(11) NOT NULL auto_increment,
+  `idkardextienda` varchar(20) default NULL,
+  `codigobarra` varchar(20) default NULL,
+  `codigomodelo` varchar(20) default NULL,
+  PRIMARY KEY  (`idcbmd`),
+  KEY `idkardextienda` (`idkardextienda`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+
+--
+-- Volcar la base de datos para la tabla `codigobarramodelodetalle`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `codigocoleccion`
+--
+
+CREATE TABLE `codigocoleccion` (
+  `idcodigocoleccion` int(11) NOT NULL auto_increment,
+  `idmarca` varchar(20) default NULL,
+  `idcoleccion` varchar(20) default NULL,
+  `codigobarra` int(11) default NULL,
+  PRIMARY KEY  (`idcodigocoleccion`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=2 ;
+
+--
+-- Volcar la base de datos para la tabla `codigocoleccion`
+--
+
+INSERT INTO `codigocoleccion` (`idcodigocoleccion`, `idmarca`, `idcoleccion`, `codigobarra`) VALUES
+(1, 'mad-1', 'col-1', 100);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `codigonumeracion`
+--
+
+CREATE TABLE `codigonumeracion` (
+  `idcodigonumeracion` int(30) NOT NULL auto_increment,
+  `idcoleccion` varchar(20) default NULL,
+  `codigobarra` int(30) NOT NULL default '10000',
+  PRIMARY KEY  (`idcodigonumeracion`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Volcar la base de datos para la tabla `codigonumeracion`
+--
+
+INSERT INTO `codigonumeracion` (`idcodigonumeracion`, `idcoleccion`, `codigobarra`) VALUES
+(1, 'col-1', 10000);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `codigonumeracionmarca`
+--
+
+CREATE TABLE `codigonumeracionmarca` (
+  `idcodigonumeracion` int(30) NOT NULL auto_increment,
+  `idcoleccion` varchar(20) default NULL,
+  `idmarca` varchar(20) default NULL,
+  `codigobarra` int(30) NOT NULL default '10000',
+  PRIMARY KEY  (`idcodigonumeracion`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Volcar la base de datos para la tabla `codigonumeracionmarca`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `coleccion`
+--
+
+CREATE TABLE `coleccion` (
+  `idcoleccion` varchar(20) NOT NULL,
+  `anio` int(11) default NULL,
+  `detalle` varchar(100) default NULL,
+  `numero` int(11) default NULL,
+  `codigo` varchar(20) default NULL,
+  `idmarca` varchar(20) default NULL,
+  `estado` varchar(20) default NULL COMMENT '(VIGENTE/PASADO) cuando se crea una nueva coleecion la coleccion nueva pasa a ser VIGENTE y las otras a PASADO',
+  `codigobarra` int(11) default NULL,
+  `codigobarra1` int(11) default NULL,
+  PRIMARY KEY  (`idcoleccion`),
+  KEY `fk_relationship_30` (`anio`),
+  KEY `idmarca` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `coleccion`
+--
+
+INSERT INTO `coleccion` (`idcoleccion`, `anio`, `detalle`, `numero`, `codigo`, `idmarca`, `estado`, `codigobarra`, `codigobarra1`) VALUES
+('col-1', 2009, NULL, 1, '01-2009', 'mar-1', 'VIGENTE', 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `colores`
+--
+
+CREATE TABLE `colores` (
+  `idcolor` varchar(20) NOT NULL,
+  `nombre` varchar(100) default NULL,
+  `descripcion` varchar(200) default NULL,
+  `codigo` varchar(50) default NULL,
+  `numero` int(11) default NULL,
+  `codigobarra` varchar(30) default NULL,
+  `idmarca` varchar(20) default NULL,
+  PRIMARY KEY  (`idcolor`),
+  KEY `idmarca` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `colores`
+--
+
+INSERT INTO `colores` (`idcolor`, `nombre`, `descripcion`, `codigo`, `numero`, `codigobarra`, `idmarca`) VALUES
+('col-1', 'BRANCO', NULL, NULL, 1, NULL, 'mar-1'),
+('col-10', 'ROSA/PRETO', NULL, NULL, 10, NULL, 'mar-1'),
+('col-11', 'CARAMELO', NULL, NULL, 11, NULL, 'mar-1'),
+('col-12', 'MARFIL', NULL, NULL, 12, NULL, 'mar-1'),
+('col-13', 'MARFIL/PRETO', NULL, NULL, 13, NULL, 'mar-1'),
+('col-14', 'FUCSIA', NULL, NULL, 14, NULL, 'mar-1'),
+('col-15', 'BRANCO/CASTAÃ‘O', NULL, NULL, 15, NULL, 'mar-1'),
+('col-16', 'LARANJA', NULL, NULL, 16, NULL, 'mar-1'),
+('col-17', 'ORQUIDEA', NULL, NULL, 17, NULL, 'mar-1'),
+('col-18', 'AMENDOA', NULL, NULL, 18, NULL, 'mar-1'),
+('col-19', 'COBRE', NULL, NULL, 19, NULL, 'mar-1'),
+('col-2', 'CASTAÃ‘O/PRETO', NULL, NULL, 2, NULL, 'mar-1'),
+('col-20', 'ARENA', NULL, NULL, 20, NULL, 'mar-1'),
+('col-21', 'CHAMPAGNE', NULL, NULL, 21, NULL, 'mar-1'),
+('col-22', 'BRONZE', NULL, NULL, 22, NULL, 'mar-1'),
+('col-23', 'PRETO METAL', NULL, NULL, 23, NULL, 'mar-1'),
+('col-24', 'VIOLETA', NULL, NULL, 24, NULL, 'mar-1'),
+('col-3', 'MARRON', NULL, NULL, 3, NULL, 'mar-1'),
+('col-4', 'GELO', NULL, NULL, 4, NULL, 'mar-1'),
+('col-5', 'GELO/PRETO', NULL, NULL, 5, NULL, 'mar-1'),
+('col-6', 'PRETO', NULL, NULL, 6, NULL, 'mar-1'),
+('col-7', 'MARRON/PRETO', NULL, NULL, 7, NULL, 'mar-1'),
+('col-8', 'LILA', NULL, NULL, 8, NULL, 'mar-1'),
+('col-9', 'ROSA', NULL, NULL, 9, NULL, 'mar-1');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `color_marca`
+--
+
+CREATE TABLE `color_marca` (
+  `idcolor` varchar(20) NOT NULL,
+  `idmarca` varchar(20) NOT NULL,
+  `codigo` varchar(20) default NULL,
+  `existe` varchar(20) default NULL,
+  PRIMARY KEY  (`idcolor`,`idmarca`),
+  KEY `fk_relationship_7` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `color_marca`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `comisiones`
+--
+
+CREATE TABLE `comisiones` (
+  `idcomision` varchar(20) NOT NULL,
+  `idempresa` varchar(20) NOT NULL,
+  `idresponsable` varchar(20) NOT NULL,
+  `idempleado` varchar(20) NOT NULL,
+  `mes_planilla` varchar(10) default NULL,
+  `numero` int(11) default NULL,
+  `montocomision` varchar(20) default NULL,
+  `recibo` varchar(20) NOT NULL,
+  `porcentajecomision` varchar(10) default NULL,
+  `fecharegistro` date default NULL,
+  `observacion` varchar(70) default NULL,
+  PRIMARY KEY  (`idcomision`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `comisiones`
+--
+
+INSERT INTO `comisiones` (`idcomision`, `idempresa`, `idresponsable`, `idempleado`, `mes_planilla`, `numero`, `montocomision`, `recibo`, `porcentajecomision`, `fecharegistro`, `observacion`) VALUES
+('com-1', 'nuevo', '', '', NULL, 1, '100', '123', NULL, '2011-03-21', NULL),
+('com-2', 'epr-5', '7', 'emp-8', '04/2011', 2, '100', '123', '0000-00-00', '2011-03-21', NULL),
+('com-3', 'epr-5', '7', 'emp-8', '04/2011', 3, '100', '123', '5', '2011-03-21', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `confirmarpedidos`
+--
+
+CREATE TABLE `confirmarpedidos` (
+  `idconfirmarpedido` varchar(20) NOT NULL,
+  `numerofactura` varchar(20) default NULL,
+  `numeroproforma` varchar(20) default NULL,
+  `responsable` varchar(20) default NULL,
+  `estado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `idpedido` varchar(20) default NULL,
+  `observacion` varchar(200) default NULL,
+  `montosus` decimal(22,11) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `totalcajas` int(11) default NULL,
+  `totalpares` int(11) default NULL,
+  `montototal` decimal(22,11) default NULL,
+  `marca` varchar(20) default NULL,
+  PRIMARY KEY  (`idconfirmarpedido`),
+  KEY `idpedido` (`idpedido`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `confirmarpedidos`
+--
+
+INSERT INTO `confirmarpedidos` (`idconfirmarpedido`, `numerofactura`, `numeroproforma`, `responsable`, `estado`, `numero`, `idpedido`, `observacion`, `montosus`, `fecha`, `hora`, `totalcajas`, `totalpares`, `montototal`, `marca`) VALUES
+('conf-1', NULL, '1', 'usr-1000', 'COMPLETADO', 1, 'ped-1', NULL, NULL, '2011-03-30', '10:23:36', 1, 4, NULL, 'RAMARIN'),
+('conf-2', NULL, '1', 'usr-1000', 'COMPLETADO', 2, 'ped-2', NULL, NULL, '2011-03-30', '20:05:12', 1, 12, NULL, 'RAMARIN'),
+('conf-3', NULL, '111', 'usr-1000', 'COMPLETADO', 3, 'ped-3', NULL, NULL, '2011-03-31', '19:13:07', 1, 10, NULL, 'RAMARIN');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `credito`
+--
+
+CREATE TABLE `credito` (
+  `idcredito` varchar(20) NOT NULL,
+  `idventadetalle` varchar(20) default NULL,
+  `no_planilla` varchar(20) default NULL,
+  `idempresa` varchar(20) default NULL,
+  `idclienteempresa` varchar(20) default NULL,
+  `no_pares` int(11) default NULL,
+  `montototal` decimal(11,2) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `factura` int(11) default NULL,
+  `devolucion` varchar(10) default NULL,
+  `observacion` text,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  `saldo` decimal(11,2) default NULL,
+  `papeleta` decimal(11,2) NOT NULL default '0.00',
+  `tiempocredito` int(10) NOT NULL default '0',
+  PRIMARY KEY  (`idcredito`),
+  KEY `fk_relationship_39` (`idclienteempresa`),
+  KEY `fk_relationship_40` (`idempresa`),
+  KEY `idventa` (`idventadetalle`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `credito`
+--
+
+INSERT INTO `credito` (`idcredito`, `idventadetalle`, `no_planilla`, `idempresa`, `idclienteempresa`, `no_pares`, `montototal`, `fecha`, `hora`, `factura`, `devolucion`, `observacion`, `numero`, `estado`, `saldo`, `papeleta`, `tiempocredito`) VALUES
+('cre-1', 'ven-id-1', '03/2011', 'epr-5', '7', 1, '90.00', '2011-03-18', '00:26:57', NULL, NULL, 'validado', 1, 'Activo', '90.00', '0.00', 1),
+('cre-2', 'ven-id-3', '04/2011', 'epr-6', '9', 1, '90.00', '2011-04-01', '22:53:21', NULL, NULL, 'validado', 2, 'Activo', '90.00', '0.00', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `creditomayor`
+--
+
+CREATE TABLE `creditomayor` (
+  `idcredito` varchar(20) NOT NULL,
+  `idventamayordetalle` varchar(20) default NULL,
+  `idventamayor` varchar(20) default NULL,
+  `idmarca` varchar(20) default NULL,
+  `idcliente` varchar(20) default NULL,
+  `preciototal` decimal(10,2) NOT NULL,
+  `totalcajas` decimal(10,2) NOT NULL,
+  `totalpares` decimal(10,2) NOT NULL,
+  `precioventa` decimal(10,2) NOT NULL,
+  `preciooficina` decimal(10,2) NOT NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `factura` int(11) default NULL,
+  `devolucion` varchar(10) default NULL,
+  `observacion` text,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  `saldo` decimal(11,2) default NULL,
+  `papeleta` decimal(11,2) NOT NULL default '0.00',
+  `fechacredito` date default NULL,
+  `fechamoroso` date default NULL,
+  PRIMARY KEY  (`idcredito`),
+  KEY `fk_relationship_39` (`idcliente`),
+  KEY `fk_relationship_40` (`idmarca`),
+  KEY `idventamayor` (`idventamayor`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `creditomayor`
+--
+
+INSERT INTO `creditomayor` (`idcredito`, `idventamayordetalle`, `idventamayor`, `idmarca`, `idcliente`, `preciototal`, `totalcajas`, `totalpares`, `precioventa`, `preciooficina`, `fecha`, `hora`, `factura`, `devolucion`, `observacion`, `numero`, `estado`, `saldo`, `papeleta`, `fechacredito`, `fechamoroso`) VALUES
+('cre-1', NULL, 'ven-1', 'mar-2', 'cli-1', '1080.00', '1.00', '12.00', '1080.00', '0.00', '2011-04-22', '23:48:23', 100001, '0.00', NULL, 1, 'ACTIVO', NULL, '0.00', '2011-04-23', '2011-07-23'),
+('cre-2', NULL, 'ven-2', 'mar-2', 'cli-1', '1080.00', '1.00', '12.00', '1080.00', '0.00', '2011-04-22', '23:51:40', 100001, '0.00', NULL, 2, 'ACTIVO', NULL, '0.00', '2011-04-23', '2011-07-23'),
+('cre-3', NULL, 'ven-3', 'mar-2', 'cli-1', '1080.00', '1.00', '12.00', '1080.00', '0.00', '2011-04-22', '23:52:22', 100001, '0.00', NULL, 3, 'ACTIVO', NULL, '0.00', '2011-04-23', '2011-07-23'),
+('cre-4', NULL, 'ven-4', 'mar-2', 'cli-1', '1080.00', '1.00', '12.00', '1080.00', '0.00', '2011-04-22', '23:52:38', 100001, '0.00', NULL, 4, 'ACTIVO', NULL, '0.00', '2011-04-23', '2011-07-23'),
+('cre-5', NULL, 'ven-5', 'mar-2', 'cli-1', '1080.00', '1.00', '12.00', '1080.00', '0.00', '2011-04-22', '23:55:51', 100001, '0.00', NULL, 5, 'ACTIVO', NULL, '0.00', '2011-04-23', '2011-07-23'),
+('cre-6', NULL, 'ven-6', 'mar-2', 'cli-1', '1080.00', '1.00', '12.00', '1080.00', '0.00', '2011-04-22', '23:58:03', 100001, '0.00', NULL, 6, 'ACTIVO', NULL, '0.00', '2011-04-23', '2011-07-23'),
+('cre-7', NULL, 'ven-7', 'mar-2', 'cli-1', '1080.00', '1.00', '12.00', '1080.00', '0.00', '2011-04-22', '00:01:22', 100001, '0.00', NULL, 7, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-8', NULL, 'ven-8', 'mar-2', 'cli-1', '1080.00', '1.00', '12.00', '1080.00', '0.00', '2011-04-22', '00:01:37', 100001, '0.00', NULL, 8, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-9', NULL, 'ven-9', 'mar-2', 'cli-1', '1080.00', '1.00', '12.00', '1080.00', '0.00', '2011-04-22', '00:01:57', 100001, '0.00', NULL, 9, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-10', NULL, 'ven-10', 'mar-2', 'cli-1', '1080.00', '1.00', '12.00', '1080.00', '0.00', '2011-04-22', '00:02:27', 100001, '0.00', NULL, 10, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-11', NULL, 'ven-11', 'mar-2', 'cli-1', '1080.00', '1.00', '12.00', '1080.00', '0.00', '2011-04-22', '00:03:20', 100001, '0.00', NULL, 11, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-12', NULL, 'ven-12', 'mar-2', 'cli-1', '1080.00', '1.00', '12.00', '1080.00', '0.00', '2011-04-22', '00:04:20', 100001, '0.00', NULL, 12, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-13', NULL, 'ven-13', 'mar-2', 'cli-1', '1080.00', '1.00', '12.00', '1080.00', '0.00', '2011-04-22', '00:06:21', 100001, '0.00', NULL, 13, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-14', NULL, 'ven-13', 'mar-2', 'cli-1', '1080.00', '1.00', '12.00', '1080.00', '0.00', '2011-04-22', '00:06:37', 100001, '0.00', NULL, 14, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-15', NULL, 'ven-13', 'mar-2', 'cli-1', '90.00', '1.00', '10.00', '100.00', '0.00', '2011-04-24', '11:00:08', 100001, '0.00', NULL, 15, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-16', NULL, 'ven-13', 'mar-2', 'cli-1', '90.00', '1.00', '10.00', '100.00', '0.00', '2011-04-24', '11:00:37', 100001, '0.00', NULL, 16, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-17', NULL, 'ven-13', 'mar-2', 'cli-1', '90.00', '1.00', '10.00', '100.00', '0.00', '2011-04-24', '11:01:01', 100001, '0.00', NULL, 17, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-18', NULL, 'ven-13', 'mar-2', 'cli-1', '90.00', '1.00', '10.00', '100.00', '0.00', '2011-04-24', '11:01:08', 100001, '0.00', NULL, 18, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-19', NULL, 'ven-13', 'mar-2', 'cli-1', '90.00', '1.00', '10.00', '100.00', '0.00', '2011-04-24', '11:01:55', 100001, '0.00', NULL, 19, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-20', NULL, 'ven-14', 'mar-2', 'cli-1', '90.00', '1.00', '10.00', '100.00', '0.00', '2011-04-24', '11:32:17', 100001, '0.00', NULL, 20, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-21', NULL, 'ven-14', 'mar-2', 'cli-1', '90.00', '1.00', '10.00', '100.00', '0.00', '2011-04-24', '11:41:07', 100001, '0.00', NULL, 21, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-22', NULL, 'ven-14', 'mar-2', 'cli-1', '90.00', '1.00', '10.00', '100.00', '0.00', '2011-04-24', '11:41:41', 100001, '0.00', NULL, 22, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-23', NULL, 'ven-14', 'mar-2', 'cli-1', '90.00', '1.00', '10.00', '100.00', '0.00', '2011-04-24', '11:41:57', 100001, '0.00', NULL, 23, 'ACTIVO', NULL, '0.00', '2011-04-24', '2011-07-24'),
+('cre-24', NULL, 'ven-2', 'mar-2', 'cli-1', '1080.00', '1.00', '12.00', '1080.00', '0.00', '2011-04-25', '23:22:43', 100001, '0.00', NULL, 24, 'ACTIVO', NULL, '0.00', '2011-04-25', '2011-07-25'),
+('cre-25', NULL, 'ven-2', 'mar-2', 'cli-1', '1080.00', '1.00', '12.00', '1080.00', '0.00', '2011-04-25', '23:22:57', 100001, '0.00', '22', 25, 'ACTIVO', NULL, '0.00', '2011-04-25', '2011-07-25');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalleconfirmarpedidos`
+--
+
+CREATE TABLE `detalleconfirmarpedidos` (
+  `iddetalleconfirmarpedido` varchar(20) NOT NULL,
+  `numerocajas` int(11) default NULL,
+  `numeropares` int(11) default NULL,
+  `precio1sus` decimal(22,11) default NULL,
+  `precio2sus` decimal(22,11) default NULL,
+  `precio3sus` decimal(22,11) default NULL,
+  `codigobarra` int(12) default NULL,
+  `idcalzado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `idcliente` varchar(20) default NULL,
+  `idvendedor` varchar(20) default NULL,
+  `idconfirmarpedido` varchar(20) default NULL,
+  PRIMARY KEY  (`iddetalleconfirmarpedido`),
+  KEY `idcalzado` (`idcalzado`),
+  KEY `idconfirmarpedido` (`idconfirmarpedido`),
+  KEY `idcliente` (`idcliente`),
+  KEY `idvendedor` (`idvendedor`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `detalleconfirmarpedidos`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalledevolucion`
+--
+
+CREATE TABLE `detalledevolucion` (
+  `iddetalledevolucion` int(11) NOT NULL auto_increment,
+  `idventadetalle` varchar(20) default NULL,
+  `iditemventa` varchar(20) default NULL,
+  `idkardextienda` varchar(20) NOT NULL,
+  `idtienda` varchar(20) default NULL,
+  `idusuario` varchar(20) default NULL,
+  `numerorecibo` int(11) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `valorcalzado` decimal(22,2) default NULL,
+  `montodevuelto` decimal(22,2) default NULL,
+  `observacion` varchar(100) default NULL,
+  `numero` int(11) default NULL,
+  `arqueo` int(1) NOT NULL,
+  PRIMARY KEY  (`iddetalledevolucion`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Volcar la base de datos para la tabla `detalledevolucion`
+--
+
+INSERT INTO `detalledevolucion` (`iddetalledevolucion`, `idventadetalle`, `iditemventa`, `idkardextienda`, `idtienda`, `idusuario`, `numerorecibo`, `fecha`, `hora`, `valorcalzado`, `montodevuelto`, `observacion`, `numero`, `arqueo`) VALUES
+(1, 'ven-id-4', 'ivt-8', 'kar-6', 'tie-1', 'usr-1000', 111, '2011-02-05', '11:32:26', '90.00', '90.00', 'dd', 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalleingreso`
+--
+
+CREATE TABLE `detalleingreso` (
+  `idmodelo` varchar(20) default NULL,
+  `totalpares` int(11) default NULL,
+  `totalbs` decimal(22,11) default NULL,
+  `idingreso` varchar(20) default NULL,
+  `iddetalleingreso` varchar(40) NOT NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`iddetalleingreso`),
+  KEY `idingreso` (`idingreso`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `detalleingreso`
+--
+
+INSERT INTO `detalleingreso` (`idmodelo`, `totalpares`, `totalbs`, `idingreso`, `iddetalleingreso`, `numero`) VALUES
+('mod-1', 122, '10980.00000000000', 'ing-10', 'din-1', 1),
+('mod-1', 0, '0.00000000000', 'ing-17', 'din-10', 10),
+('mod-1', 0, '0.00000000000', 'ing-18', 'din-11', 11),
+('mod-1', 0, '0.00000000000', 'ing-19', 'din-12', 12),
+('mod-1', 10, '900.00000000000', 'ing-20', 'din-13', 13),
+('mod-1', 10, '900.00000000000', 'ing-21', 'din-14', 14),
+('mod-1', 90, '8100.00000000000', 'ing-11', 'din-2', 2),
+('mod-1', 6, '540.00000000000', 'ing-12', 'din-3', 3),
+('mod-1', 0, '0.00000000000', 'ing-13', 'din-4', 4),
+('mod-1', 0, '0.00000000000', 'ing-13', 'din-5', 5),
+('mod-1', 0, '0.00000000000', 'ing-14', 'din-6', 6),
+('mod-1', 0, '0.00000000000', 'ing-14', 'din-7', 7),
+('mod-1', 0, '0.00000000000', 'ing-15', 'din-8', 8),
+('mod-1', 0, '0.00000000000', 'ing-16', 'din-9', 9);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalleingresoalmacen`
+--
+
+CREATE TABLE `detalleingresoalmacen` (
+  `iddetalleingresoalmacen` varchar(40) NOT NULL,
+  `idmodelo` varchar(20) default NULL,
+  `totalpares` int(11) default NULL,
+  `totalcajas` int(11) default NULL,
+  `totalbs` decimal(22,11) default NULL,
+  `precio1sus` decimal(22,11) default NULL,
+  `precio2sus` decimal(22,11) default NULL,
+  `precio3sus` decimal(22,11) default NULL,
+  `idcliente` varchar(20) default NULL,
+  `idvendedor` varchar(20) default NULL,
+  `idingreso` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `idkardexalmacen` varchar(20) NOT NULL,
+  `observacion` varchar(100) NOT NULL,
+  PRIMARY KEY  (`iddetalleingresoalmacen`),
+  KEY `idingreso` (`idingreso`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `detalleingresoalmacen`
+--
+
+INSERT INTO `detalleingresoalmacen` (`iddetalleingresoalmacen`, `idmodelo`, `totalpares`, `totalcajas`, `totalbs`, `precio1sus`, `precio2sus`, `precio3sus`, `idcliente`, `idvendedor`, `idingreso`, `numero`, `idkardexalmacen`, `observacion`) VALUES
+('din-1', 'mod-1', 4, 1, '360.00000000000', '0.00000000000', '0.00000000000', '0.00000000000', 'JLB/CBBA', 'V1/CBBA', 'ing-1', 1, '', '90'),
+('din-2', 'mod-1', 4, 1, '0.00000000000', '0.00000000000', '0.00000000000', '0.00000000000', 'JLB/CBBA', 'V1/CBBA', 'ing-2', 2, '', '90'),
+('din-3', 'mod-3', 12, 1, '0.00000000000', '0.00000000000', '0.00000000000', '0.00000000000', 'JLB/CBBA', 'V1/CBBA', 'ing-3', 3, '', '90'),
+('din-4', 'mod-2', 10, 1, '0.00000000000', '0.00000000000', '0.00000000000', '0.00000000000', 'JLB/CBBA', 'V1/CBBA', 'ing-4', 4, '', '90');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalleingresotalla`
+--
+
+CREATE TABLE `detalleingresotalla` (
+  `iddetalleingresotalla` int(50) NOT NULL auto_increment,
+  `talla` int(11) default NULL,
+  `idmodelo` varchar(20) default NULL,
+  `iddetalleingreso` varchar(20) default NULL,
+  `cantidad` int(11) default NULL,
+  PRIMARY KEY  (`iddetalleingresotalla`),
+  KEY `iddetalleingreso` (`iddetalleingreso`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=24 ;
+
+--
+-- Volcar la base de datos para la tabla `detalleingresotalla`
+--
+
+INSERT INTO `detalleingresotalla` (`iddetalleingresotalla`, `talla`, `idmodelo`, `iddetalleingreso`, `cantidad`) VALUES
+(1, 16, 'mod-1', 'din-1', 20),
+(2, 17, 'mod-1', 'din-1', 20),
+(3, 18, 'mod-1', 'din-1', 20),
+(4, 19, 'mod-1', 'din-1', 10),
+(5, 20, 'mod-1', 'din-1', 20),
+(6, 21, 'mod-1', 'din-1', 30),
+(7, 22, 'mod-1', 'din-1', 2),
+(8, 14, 'mod-1', 'din-2', 30),
+(9, 15, 'mod-1', 'din-2', 30),
+(10, 16, 'mod-1', 'din-2', 30),
+(11, 14, 'mod-1', 'din-3', 1),
+(12, 15, 'mod-1', 'din-3', 2),
+(13, 16, 'mod-1', 'din-3', 3),
+(14, 18, 'mod-1', 'din-13', 2),
+(15, 19, 'mod-1', 'din-13', 2),
+(16, 20, 'mod-1', 'din-13', 2),
+(17, 21, 'mod-1', 'din-13', 2),
+(18, 22, 'mod-1', 'din-13', 2),
+(19, 18, 'mod-1', 'din-14', 2),
+(20, 19, 'mod-1', 'din-14', 2),
+(21, 20, 'mod-1', 'din-14', 2),
+(22, 21, 'mod-1', 'din-14', 2),
+(23, 22, 'mod-1', 'din-14', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detallepedido`
+--
+
+CREATE TABLE `detallepedido` (
+  `iddetallepedido` varchar(20) NOT NULL,
+  `numerocajas` int(11) default NULL,
+  `numeropares` int(11) default NULL,
+  `cliente` varchar(20) default NULL,
+  `vendedor` varchar(20) default NULL,
+  `idmodelo` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `color` varchar(120) default NULL,
+  `material` varchar(120) default NULL,
+  `totalSus` decimal(11,2) default NULL,
+  `costounitario` decimal(11,2) default NULL,
+  `stylename` varchar(50) default NULL,
+  `linea` varchar(20) default NULL,
+  `idpedido` varchar(20) default NULL,
+  `codigo` varchar(20) default NULL,
+  `idconfirmarpedido` varchar(20) default NULL,
+  `idfacturapedido` varchar(20) default NULL,
+  `idkardexalmacen` varchar(20) default NULL,
+  PRIMARY KEY  (`iddetallepedido`),
+  KEY `idpedido` (`idpedido`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `detallepedido`
+--
+
+INSERT INTO `detallepedido` (`iddetallepedido`, `numerocajas`, `numeropares`, `cliente`, `vendedor`, `idmodelo`, `numero`, `color`, `material`, `totalSus`, `costounitario`, `stylename`, `linea`, `idpedido`, `codigo`, `idconfirmarpedido`, `idfacturapedido`, `idkardexalmacen`) VALUES
+('dpe-1', 1, 4, 'JLB/CBBA', 'V1/CBBA', 'mod-1', 2, 'AMARILLO', 'hola', '0.00', '90.00', NULL, NULL, 'ped-1', '15102', 'conf-1', 'fac-5', 'kara-2'),
+('dpe-10', 1, 12, 'JLB/CBBA', 'V1/CBBA', 'mod-1', 10, 'AMARILLO', 'hola', '0.00', '0.00', NULL, NULL, 'ped-8', '15102', NULL, NULL, NULL),
+('dpe-11', 1, 12, 'JLB/CBBA', 'V1/CBBA', 'mod-1', 11, 'AMARILLO', 'hola', '0.00', '0.00', NULL, NULL, 'ped-9', '15102', NULL, NULL, NULL),
+('dpe-12', 1, 12, 'JLB/CBBA', 'V1/CBBA', 'mod-1', 12, 'AMARILLO', 'hola', '0.00', '0.00', NULL, NULL, 'ped-10', '15102', NULL, NULL, NULL),
+('dpe-3', 1, 12, 'JLB/CBBA', 'V1/CBBA', 'mod-3', 3, 'AMARILLO/AZUL', 'hola', '0.00', '0.00', NULL, NULL, 'ped-2', '15103', 'conf-2', 'fac-6', 'kara-3'),
+('dpe-4', 1, 10, 'JLB/CBBA', 'V1/CBBA', 'mod-2', 4, 'AMARILLO', 'hola', '0.00', '10.00', NULL, NULL, 'ped-3', '15132', 'conf-3', 'fac-7', 'kara-4'),
+('dpe-5', 1, 12, 'JLB/CBBA', 'V2/CBBA', 'mod-1', 5, 'AMARILLO', 'hola', '0.00', '0.00', NULL, NULL, 'ped-3', '15102', NULL, NULL, NULL),
+('dpe-6', 1, 12, 'JLB/CBBA', 'V1/CBBA', 'mod-1', 6, 'AMARILLO', 'hola', '0.00', '0.00', NULL, NULL, 'ped-4', '15102', NULL, NULL, NULL),
+('dpe-7', 1, 6, 'JLB/CBBA', 'V1/CBBA', 'mod-1', 7, 'AMARILLO', 'hola', '0.00', '0.00', NULL, NULL, 'ped-5', '15102', NULL, NULL, NULL),
+('dpe-8', 1, 6, 'JLB/CBBA', 'V1/CBBA', 'mod-1', 8, 'AMARILLO', 'hola', '0.00', '0.00', NULL, NULL, 'ped-6', '15102', NULL, NULL, NULL),
+('dpe-9', 1, 26, NULL, NULL, 'mod-1', 9, NULL, NULL, '0.00', '0.00', NULL, NULL, 'ped-7', '15102', NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detallepedidotalla`
+--
+
+CREATE TABLE `detallepedidotalla` (
+  `iddetallepedidotalla` int(11) NOT NULL auto_increment,
+  `idmodelo` varchar(20) default NULL,
+  `talla` varchar(3) default NULL,
+  `cantidad` int(11) default NULL,
+  `iddetallepedido` varchar(20) default NULL,
+  PRIMARY KEY  (`iddetallepedidotalla`),
+  KEY `iddetallepedido` (`iddetallepedido`),
+  KEY `idmodelo` (`idmodelo`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=51 ;
+
+--
+-- Volcar la base de datos para la tabla `detallepedidotalla`
+--
+
+INSERT INTO `detallepedidotalla` (`iddetallepedidotalla`, `idmodelo`, `talla`, `cantidad`, `iddetallepedido`) VALUES
+(1, 'mod-1', '33', 2, 'dpe-1'),
+(2, 'mod-1', '34', 2, 'dpe-1'),
+(3, 'mod-3', '33', 2, 'dpe-3'),
+(4, 'mod-3', '34', 2, 'dpe-3'),
+(5, 'mod-3', '35', 2, 'dpe-3'),
+(6, 'mod-3', '36', 2, 'dpe-3'),
+(7, 'mod-3', '37', 2, 'dpe-3'),
+(8, 'mod-3', '38', 2, 'dpe-3'),
+(9, 'mod-2', '33', 2, 'dpe-4'),
+(10, 'mod-2', '34', 2, 'dpe-4'),
+(11, 'mod-2', '35', 2, 'dpe-4'),
+(12, 'mod-2', '36', 2, 'dpe-4'),
+(13, 'mod-2', '37', 2, 'dpe-4'),
+(14, 'mod-1', '33', 3, 'dpe-5'),
+(15, 'mod-1', '34', 3, 'dpe-5'),
+(16, 'mod-1', '35', 3, 'dpe-5'),
+(17, 'mod-1', '36', 3, 'dpe-5'),
+(18, 'mod-1', '33', 2, 'dpe-6'),
+(19, 'mod-1', '34', 2, 'dpe-6'),
+(20, 'mod-1', '35', 2, 'dpe-6'),
+(21, 'mod-1', '36', 2, 'dpe-6'),
+(22, 'mod-1', '37', 2, 'dpe-6'),
+(23, 'mod-1', '38', 2, 'dpe-6'),
+(24, 'mod-1', '33', 2, 'dpe-7'),
+(25, 'mod-1', '34', 2, 'dpe-7'),
+(26, 'mod-1', '35', 2, 'dpe-7'),
+(27, 'mod-1', '33', 2, 'dpe-8'),
+(28, 'mod-1', '34', 2, 'dpe-8'),
+(29, 'mod-1', '35', 2, 'dpe-8'),
+(30, 'mod-1', '33', 2, 'dpe-9'),
+(31, 'mod-1', '34', 2, 'dpe-9'),
+(32, 'mod-1', '35', 22, 'dpe-9'),
+(33, 'mod-1', '33', 2, 'dpe-10'),
+(34, 'mod-1', '34', 2, 'dpe-10'),
+(35, 'mod-1', '35', 2, 'dpe-10'),
+(36, 'mod-1', '37', 2, 'dpe-10'),
+(37, 'mod-1', '38', 2, 'dpe-10'),
+(38, 'mod-1', '39', 2, 'dpe-10'),
+(39, 'mod-1', '33', 2, 'dpe-11'),
+(40, 'mod-1', '34', 2, 'dpe-11'),
+(41, 'mod-1', '35', 2, 'dpe-11'),
+(42, 'mod-1', '37', 2, 'dpe-11'),
+(43, 'mod-1', '38', 2, 'dpe-11'),
+(44, 'mod-1', '39', 2, 'dpe-11'),
+(45, 'mod-1', '33', 2, 'dpe-12'),
+(46, 'mod-1', '34', 2, 'dpe-12'),
+(47, 'mod-1', '35', 2, 'dpe-12'),
+(48, 'mod-1', '37', 2, 'dpe-12'),
+(49, 'mod-1', '38', 2, 'dpe-12'),
+(50, 'mod-1', '39', 2, 'dpe-12');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalletraspaso`
+--
+
+CREATE TABLE `detalletraspaso` (
+  `iddetalletraspaso` varchar(20) NOT NULL,
+  `idkardextienda` varchar(20) default NULL,
+  `idtraspaso` varchar(20) default NULL,
+  `cantidad` int(11) default NULL,
+  `costounitario` decimal(24,14) default NULL,
+  `numero` int(11) default NULL,
+  `preciobs1` decimal(11,2) default NULL,
+  `preciobs2` decimal(11,2) default NULL,
+  PRIMARY KEY  (`iddetalletraspaso`),
+  KEY `fk_relationship_18` (`idkardextienda`),
+  KEY `fk_relationship_19` (`idtraspaso`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `detalletraspaso`
+--
+
+INSERT INTO `detalletraspaso` (`iddetalletraspaso`, `idkardextienda`, `idtraspaso`, `cantidad`, `costounitario`, `numero`, `preciobs1`, `preciobs2`) VALUES
+('idt-1', 'kar-13', 'tra-1', 1, NULL, 1, NULL, NULL),
+('idt-2', 'kar-13', 'tra-2', 1, NULL, 2, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalleventamayortalla`
+--
+
+CREATE TABLE `detalleventamayortalla` (
+  `iddetalleventamayortalla` int(11) NOT NULL auto_increment,
+  `idmarca` varchar(20) default NULL,
+  `talla` varchar(3) default NULL,
+  `cantidad` int(11) default NULL,
+  `variable` varchar(20) default NULL,
+  `idventamayordetalle` varchar(20) default NULL,
+  PRIMARY KEY  (`iddetalleventamayortalla`),
+  KEY `idventamayordetalle` (`idventamayordetalle`),
+  KEY `idmarca` (`idmarca`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=73 ;
+
+--
+-- Volcar la base de datos para la tabla `detalleventamayortalla`
+--
+
+INSERT INTO `detalleventamayortalla` (`iddetalleventamayortalla`, `idmarca`, `talla`, `cantidad`, `variable`, `idventamayordetalle`) VALUES
+(1, 'mar-2', '33', 2, NULL, 'vmd-1'),
+(2, 'mar-2', '34', 2, NULL, 'vmd-1'),
+(3, 'mar-2', '35', 2, NULL, 'vmd-1'),
+(4, 'mar-2', '36', 2, NULL, 'vmd-1'),
+(5, 'mar-2', '37', 2, NULL, 'vmd-1'),
+(6, 'mar-2', '38', 2, NULL, 'vmd-1'),
+(31, 'mar-2', '33', NULL, NULL, 'vmd-6'),
+(32, 'mar-2', '34', NULL, NULL, 'vmd-6'),
+(33, 'mar-2', '35', NULL, NULL, 'vmd-6'),
+(34, 'mar-2', '36', NULL, NULL, 'vmd-6'),
+(35, 'mar-2', '37', NULL, NULL, 'vmd-6'),
+(36, 'mar-2', '38', NULL, NULL, 'vmd-6'),
+(37, 'mar-2', '33', NULL, NULL, 'vmd-7'),
+(38, 'mar-2', '34', NULL, NULL, 'vmd-7'),
+(39, 'mar-2', '35', NULL, NULL, 'vmd-7'),
+(40, 'mar-2', '36', NULL, NULL, 'vmd-7'),
+(41, 'mar-2', '37', NULL, NULL, 'vmd-7'),
+(42, 'mar-2', '38', NULL, NULL, 'vmd-7'),
+(43, 'mar-2', '33', NULL, NULL, 'vmd-8'),
+(44, 'mar-2', '34', NULL, NULL, 'vmd-8'),
+(45, 'mar-2', '35', NULL, NULL, 'vmd-8'),
+(46, 'mar-2', '36', NULL, NULL, 'vmd-8'),
+(47, 'mar-2', '37', NULL, NULL, 'vmd-8'),
+(48, 'mar-2', '38', NULL, NULL, 'vmd-8'),
+(49, 'mar-2', '33', NULL, NULL, 'vmd-9'),
+(50, 'mar-2', '34', NULL, NULL, 'vmd-9'),
+(51, 'mar-2', '35', NULL, NULL, 'vmd-9'),
+(52, 'mar-2', '36', NULL, NULL, 'vmd-9'),
+(53, 'mar-2', '37', NULL, NULL, 'vmd-9'),
+(54, 'mar-2', '38', NULL, NULL, 'vmd-9'),
+(55, 'mar-2', '33', NULL, NULL, 'vmd-10'),
+(56, 'mar-2', '34', NULL, NULL, 'vmd-10'),
+(57, 'mar-2', '35', NULL, NULL, 'vmd-10'),
+(58, 'mar-2', '36', NULL, NULL, 'vmd-10'),
+(59, 'mar-2', '37', NULL, NULL, 'vmd-10'),
+(60, 'mar-2', '38', NULL, NULL, 'vmd-10'),
+(61, 'mar-2', '33', NULL, NULL, 'vmd-11'),
+(62, 'mar-2', '34', NULL, NULL, 'vmd-11'),
+(63, 'mar-2', '35', NULL, NULL, 'vmd-11'),
+(64, 'mar-2', '36', NULL, NULL, 'vmd-11'),
+(65, 'mar-2', '37', NULL, NULL, 'vmd-11'),
+(66, 'mar-2', '38', NULL, NULL, 'vmd-11'),
+(67, 'mar-2', '33', NULL, NULL, 'vmd-12'),
+(68, 'mar-2', '34', NULL, NULL, 'vmd-12'),
+(69, 'mar-2', '35', NULL, NULL, 'vmd-12'),
+(70, 'mar-2', '36', NULL, NULL, 'vmd-12'),
+(71, 'mar-2', '37', NULL, NULL, 'vmd-12'),
+(72, 'mar-2', '38', NULL, NULL, 'vmd-12');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `empleados`
+--
+
+CREATE TABLE `empleados` (
+  `idempleado` varchar(20) NOT NULL,
+  `codigo` varchar(20) default NULL,
+  `nombres` varchar(50) default NULL,
+  `apellidos` varchar(30) default NULL,
+  `telefeno` varchar(20) default NULL,
+  `celular` varchar(20) default NULL,
+  `direccion` varchar(50) default NULL,
+  `idtipoempleado` varchar(20) default NULL COMMENT 'VENDEDOR = V\r\nCOBRADOR = C\r\nPLANTA = P',
+  `estado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `observacion` varchar(100) default NULL,
+  `email` varchar(50) default NULL,
+  `idtienda` varchar(20) default NULL,
+  `idalmacen` varchar(20) default NULL,
+  `idciudad` varchar(20) default NULL,
+  `fechainicio` date default NULL,
+  `fechabaja` date default NULL,
+  PRIMARY KEY  (`idempleado`),
+  KEY `tipoempleado` (`idtipoempleado`),
+  KEY `idciudad` (`idciudad`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `empleados`
+--
+
+INSERT INTO `empleados` (`idempleado`, `codigo`, `nombres`, `apellidos`, `telefeno`, `celular`, `direccion`, `idtipoempleado`, `estado`, `numero`, `observacion`, `email`, `idtienda`, `idalmacen`, `idciudad`, `fechainicio`, `fechabaja`) VALUES
+('emp-0', '0', '0', '0', '0', '0', '0', 'tip-1001', 'Activo', 0, '0', '0', 'tie-1', 'alm-1000', 'ciu-1000', NULL, NULL),
+('emp-1', 'V1', 'haydee', 'piza', '123', '1234', 'av. peru', 'tip-1000', 'Activo', 1, 'usr-1000', NULL, 'tie-1', 'alm-1000', 'ciu-1000', NULL, NULL),
+('emp-5', 'V121', 'UBALDO 1', 'VILLAZON1', '90909091', '90090901', 'C/MOXOS1', 'tip-1003', NULL, 5, NULL, 'uuvillazon@doptila.com1', NULL, NULL, 'ciu-1000', '2007-12-18', NULL),
+('emp-6', 'V2', 'ROY', 'BALDERRAMA', NULL, NULL, 'ISMAEL VASQUEZ 982', 'tip-1000', NULL, 6, NULL, NULL, NULL, NULL, 'ciu-1000', '2011-01-10', NULL),
+('emp-7', 'UVV', 'UBALDO', 'VILLAZON', '909090', '909090', NULL, 'tip-1006', NULL, 7, NULL, NULL, NULL, NULL, 'ciu-1000', '2011-01-01', NULL),
+('emp-8', 'C1', 'VERONICA', 'CASTRO', '12345', '123455', 'AV.', 'tip-1001', NULL, 8, NULL, NULL, 'tie-1', NULL, 'ciu-1000', '2011-01-01', NULL),
+('emp-9', 'C2', 'TATIANA', 'TELLEZ', '2', '2', '2', 'tip-1001', NULL, 9, NULL, NULL, 'tie-1', NULL, 'ciu-1000', '2011-01-02', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `empresas`
+--
+
+CREATE TABLE `empresas` (
+  `idempresa` varchar(20) NOT NULL,
+  `codigo` varchar(10) default NULL,
+  `nombre` varchar(30) default NULL,
+  `direccion` varchar(50) default NULL,
+  `telefono` varchar(20) default NULL,
+  `fax` varchar(20) default NULL,
+  `responsable` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `comision` varchar(20) default NULL,
+  `fecha` date default NULL,
+  `fechacontrato` date default NULL,
+  `fechafin` date default NULL,
+  `email` varchar(20) default NULL,
+  `idciudad` varchar(20) default NULL,
+  `observacion` varchar(70) default NULL,
+  `tipo_planilla` varchar(1) default NULL,
+  `idempleado` varchar(20) default NULL,
+  `mes_planillla` varchar(7) default NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`idempresa`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `empresas`
+--
+
+INSERT INTO `empresas` (`idempresa`, `codigo`, `nombre`, `direccion`, `telefono`, `fax`, `responsable`, `numero`, `comision`, `fecha`, `fechacontrato`, `fechafin`, `email`, `idciudad`, `observacion`, `tipo_planilla`, `idempleado`, `mes_planillla`, `estado`) VALUES
+('epr-0', '0', 'Sin empresa', '0', '0', '0', '0', 0, '0', NULL, NULL, NULL, '0', 'ciu-1000', NULL, 'P', 'emp-0', '0', 'Activo'),
+('epr-6', '2', 'udabol', 'sacaba', '12', '2', '9', 6, '5', '2011-03-17', '2011-03-17', '2011-03-17', '12', 'ciu-1000', NULL, 'P', 'emp-9', '04/2011', 'ACTIVO'),
+('epr-5', '1', 'umss', 'jordan', '123', '1', '7', 5, '5', '2011-03-17', '2011-03-17', '2011-03-17', '12', 'ciu-1000', NULL, 'P', 'emp-8', '04/2011', 'ACTIVO'),
+('epr-4', '4', 'almanza', '11', '111', '22', '5', 4, '5', '2011-03-17', '2011-03-17', '2011-03-17', 'mm', 'ciu-1000', NULL, 'P', 'emp-9', '03/2011', 'ACTIVO');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `empresa_planilla`
+--
+
+CREATE TABLE `empresa_planilla` (
+  `idempplanilla` varchar(20) NOT NULL,
+  `idempresa` varchar(20) NOT NULL,
+  `mes_planillla` varchar(7) default NULL,
+  `numero` int(10) NOT NULL,
+  `no_planillaant` int(10) NOT NULL,
+  `no_planilla` int(10) NOT NULL,
+  PRIMARY KEY  (`idempplanilla`),
+  KEY `idempresa` (`idempresa`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `empresa_planilla`
+--
+
+INSERT INTO `empresa_planilla` (`idempplanilla`, `idempresa`, `mes_planillla`, `numero`, `no_planillaant`, `no_planilla`) VALUES
+('pla-1', 'epr-1', NULL, 1, 0, 0),
+('pla-2', 'epr-1', '03/2011', 2, 1, 3),
+('pla-3', 'epr-2', '03/2011', 3, 2, 3),
+('pla-4', 'epr-3', '03/2011', 4, 3, 3),
+('pla-5', 'epr-4', '03/2011', 5, 4, 3),
+('pla-6', 'epr-5', '03/2011', 6, 5, 3),
+('pla-7', 'epr-6', '03/2011', 7, 6, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `estilomarca`
+--
+
+CREATE TABLE `estilomarca` (
+  `idmarca` varchar(20) NOT NULL,
+  `idestilo` varchar(20) NOT NULL,
+  `existe` varchar(2) default NULL,
+  PRIMARY KEY  (`idmarca`,`idestilo`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `estilomarca`
+--
+
+INSERT INTO `estilomarca` (`idmarca`, `idestilo`, `existe`) VALUES
+('mar-1', 'est-1', 'si'),
+('mar-1', 'est-10', 'si'),
+('mar-1', 'est-11', 'si'),
+('mar-1', 'est-2', 'si'),
+('mar-1', 'est-3', 'si'),
+('mar-1', 'est-4', 'si'),
+('mar-1', 'est-5', 'si'),
+('mar-1', 'est-6', 'si'),
+('mar-1', 'est-7', 'si'),
+('mar-1', 'est-8', 'si'),
+('mar-1', 'est-9', 'si');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `estilos`
+--
+
+CREATE TABLE `estilos` (
+  `idestilo` varchar(20) NOT NULL,
+  `nombre` varchar(30) default NULL,
+  `descripcion` varchar(100) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idestilo`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `estilos`
+--
+
+INSERT INTO `estilos` (`idestilo`, `nombre`, `descripcion`, `numero`) VALUES
+('est-1', 'CERRADO PLANO', NULL, 1),
+('est-10', 'OFERTAS', NULL, 10),
+('est-11', 'MUESTRAS RAMARIN', NULL, 11),
+('est-2', 'TERRAPLEN SANDALIAS', NULL, 2),
+('est-3', 'TERRAPLEN CONFORT', NULL, 3),
+('est-4', 'TACO CALADO', NULL, 4),
+('est-5', 'TACO CONFORT', NULL, 5),
+('est-6', 'BOTAS PLANAS', NULL, 6),
+('est-7', 'BOTAS TERRAPLEN', NULL, 7),
+('est-8', 'BOTAS TACO', NULL, 8),
+('est-9', 'BOTAS OFERTA', NULL, 9);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `etapas`
+--
+
+CREATE TABLE `etapas` (
+  `idetapa` varchar(20) NOT NULL,
+  `nombre` varchar(30) default NULL,
+  `observacion` varchar(200) default NULL,
+  `numero` int(11) default NULL,
+  UNIQUE KEY `idetapa` (`idetapa`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `etapas`
+--
+
+INSERT INTO `etapas` (`idetapa`, `nombre`, `observacion`, `numero`) VALUES
+('eta-1', 'SALIDA DE FABRICA', 'SALIDA DE FABRICA', 1),
+('eta-2', 'LLEGADA A FRONTERA', 'LLEGADA A FRONTERA', 2),
+('eta-3', 'LLEGADA A ZONA FRANCA', 'LLEGADA A ZONA FRANCA', 3),
+('eta-4', 'CRUCE DE FRONTERA', 'CRECE DE FRONTERA', 4),
+('eta-5', 'LLEGADA A SANTA CRUZ', 'LLEGADA A SANTA CRUZ', 5),
+('eta-6', 'LLEGADA A COCHABAMBA', 'LLEGADA A COCHABAMBA', 6),
+('eta-7', 'LLEGADA DESTINO FINAL', 'LLEGADA DESTINO FINAL', 7);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `etapaspedidosconfirmados`
+--
+
+CREATE TABLE `etapaspedidosconfirmados` (
+  `idetapapedidoconfirmado` varchar(20) NOT NULL,
+  `idetapa` varchar(20) default NULL,
+  `idconfirmarpedido` varchar(20) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `responsable` varchar(20) default NULL,
+  `obervacion` varchar(200) default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL COMMENT 'PENDIENTE / CONFIRMADO / PROGRESO\r\n',
+  PRIMARY KEY  (`idetapapedidoconfirmado`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `etapaspedidosconfirmados`
+--
+
+INSERT INTO `etapaspedidosconfirmados` (`idetapapedidoconfirmado`, `idetapa`, `idconfirmarpedido`, `fecha`, `hora`, `responsable`, `obervacion`, `numero`, `estado`) VALUES
+('detconf-1', 'eta-1', 'conf-1', NULL, NULL, 'milenka', 'faltan 2', 1, 'Activo'),
+('detconf-2', 'eta-2', 'conf-1', NULL, NULL, 'ariel', 'completo', 2, 'Activo'),
+('detconf-3', 'eta-4', 'conf-1', NULL, NULL, 'ariel', 'falta', 3, 'PENDIENTE'),
+('detconf-4', 'eta-5', 'conf-1', NULL, NULL, 'cesar', 'none', 4, 'PENDIENTE'),
+('detconf-5', 'eta-7', 'conf-1', NULL, NULL, 'sander', 'none2', 5, 'PENDIENTE');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `facturapedido`
+--
+
+CREATE TABLE `facturapedido` (
+  `idfacturapedido` varchar(20) NOT NULL,
+  `numerofactura` varchar(20) default NULL,
+  `numeroproforma` varchar(20) default NULL,
+  `estado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `idpedido` varchar(20) NOT NULL,
+  `observacion` varchar(200) default NULL,
+  `responsable` varchar(20) default NULL,
+  `totalsus` decimal(11,2) default NULL,
+  `totalcajas` int(11) default NULL,
+  `totalpares` int(11) default NULL,
+  `montotal` decimal(11,2) default NULL,
+  `hora` time default NULL,
+  `marca` varchar(20) default NULL,
+  `fecha` date default NULL,
+  PRIMARY KEY  (`idfacturapedido`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `facturapedido`
+--
+
+INSERT INTO `facturapedido` (`idfacturapedido`, `numerofactura`, `numeroproforma`, `estado`, `numero`, `idpedido`, `observacion`, `responsable`, `totalsus`, `totalcajas`, `totalpares`, `montotal`, `hora`, `marca`, `fecha`) VALUES
+('fac-5', '2', '1', 'COMPLETADO', 5, 'ped-1', NULL, 'usr-1000', '0.00', 1, 4, '0.00', '10:24:08', 'RAMARIN', '2011-03-30'),
+('fac-6', '777', '1', 'COMPLETADO', 6, 'ped-2', NULL, 'usr-1000', '0.00', 1, 12, '0.00', '21:59:05', 'RAMARIN', '2011-03-30'),
+('fac-7', '111', '111', 'COMPLETADO', 7, 'ped-3', NULL, 'usr-1000', '0.00', 1, 10, '0.00', '20:27:18', 'RAMARIN', '2011-03-31');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `funcion`
+--
+
+CREATE TABLE `funcion` (
+  `idfuncion` varchar(20) NOT NULL,
+  `idcategoriafuncion` char(10) default NULL,
+  `descripcion` varchar(100) default NULL,
+  `mostrar` varchar(20) default NULL,
+  PRIMARY KEY  (`idfuncion`),
+  KEY `fk_relationship_25` (`idcategoriafuncion`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `funcion`
+--
+
+INSERT INTO `funcion` (`idfuncion`, `idcategoriafuncion`, `descripcion`, `mostrar`) VALUES
+('fun1000', 'caf1000', 'Proveedores', 'si'),
+('fun1001', 'caf1000', 'Marca , Nuevo Editar Eliminar', 'no'),
+('fun1002', 'caf1000', 'Clientes', 'si'),
+('fun1003', 'caf1000', 'Modelos ,  Editar Eliminar', 'no'),
+('fun1004', 'caf1000', 'Almacenes', 'si'),
+('fun1005', 'caf1001', 'Usuarios', 'si'),
+('fun1006', 'caf1000', 'Usuarios Administradores', 'no'),
+('fun1007', 'caf1001', 'Roles', 'si'),
+('fun1008', 'caf1000', 'Cargar Datos', 'no'),
+('fun1009', 'caf1000', 'COntrol de precios', 'si'),
+('fun1010', 'caf1000', 'Lista de Calzados, Editar Eliminar', 'no'),
+('fun1011', 'caf1000', 'Tienda , Editar Eliminar', 'no'),
+('fun1012', 'caf1000', 'Empleados', 'si'),
+('fun1013', 'caf1001', 'Cargos', 'si'),
+('fun1014', 'caf1001', 'Ciudades', 'si'),
+('fun1015', 'caf1000', 'Empresas', 'si'),
+('fun1019', 'caf1002', 'Control - Etapas', 'si'),
+('fun1020', 'caf1000', 'Configuracion Articulos', 'no'),
+('fun10201', 'caf1020', 'Cambio de Periodo', 'si'),
+('fun10202', 'caf1020', '2', 'si'),
+('fun10203', 'caf1020', '3', 'si'),
+('fun10204', 'caf1020', '4', 'si'),
+('fun1030', 'caf1008', 'Kardex Almacen', 'si'),
+('fun1031', 'caf1008', 'InventarioAlmacen', 'si'),
+('fun1040', 'caf1009', 'Lista Registros', 'si'),
+('fun1041', 'caf1009', 'Registrar Muestras', 'si'),
+('fun1042', 'caf1009', 'Kardex Impares', 'si'),
+('fun1043', 'caf1009', 'Traspasos', 'si'),
+('fun1044', 'caf1009', 'Pareo', 'si'),
+('fun1045', 'caf1009', 'Kardex Pares', 'si'),
+('fun1046', 'caf1009', 'Mantenimiento Muestras', 'si'),
+('fun1101', 'caf1010', 'Reporte de Almacenes', 'si'),
+('fun1102', 'caf1010', 'Reporte de Ventas', 'si'),
+('fun1103', 'caf1010', 'Reporte de Clientes', 'si'),
+('fun1104', 'caf1010', 'Reporte de Pedidos', 'si'),
+('fun1105', 'caf1010', 'Reporte de Pedidos Confirmados', 'si'),
+('fun1106', 'caf1001', 'Estilos , Nuevo Editar Eliminar', 'no'),
+('fun1500', 'caf1014', 'Colecciones', 'no'),
+('fun1501', 'caf1014', 'Lineas', 'si'),
+('fun1502', 'caf1014', 'Modelos', 'si'),
+('fun1503', 'caf1014', 'Estilos', 'si'),
+('fun1504', 'caf1014', 'Marcas', 'si'),
+('fun1505', 'caf1014', 'Colores', 'no'),
+('fun1506', 'caf1014', 'Materiales', 'no'),
+('fun1507', 'caf1014', 'Articulos', 'si'),
+('fun1508', 'caf1014', 'Modelos Locales', 'si'),
+('fun1509', 'caf1014', 'Marcas Locales', 'si'),
+('fun1510', 'caf1014', 'Lineas Locales', 'si'),
+('fun1601', 'caf1016', 'Confirmar Ventas Credito', 'si'),
+('fun1602', 'caf1015', 'Registrar Cobros', 'no'),
+('fun1603', 'caf1015', 'ConsultasXcliente/empresa', 'si'),
+('fun1604', 'caf1001', 'Tipos de Gastos', 'si'),
+('fun1605', 'caf1015', 'Cobro Planilla', 'si'),
+('fun1606', 'caf1015', 'Cobros por tienda', 'si'),
+('fun1607', 'caf1015', 'Cobro Planilla Empresa', 'no'),
+('fun1608', 'caf1016', 'Buscador Creditos', 'si'),
+('fun1609', 'caf1016', 'Cambiar Algunas Ventas', 'si'),
+('fun1610', 'caf1016', 'Cambiar Saldos', 'si'),
+('fun1611', 'caf1016', 'cambiar....', 'si'),
+('fun1701', 'caf1017', 'Emision Planilla', 'si'),
+('fun1702', 'caf1017', 'Revertir Planilla', 'si'),
+('fun1703', 'caf1017', 'Modificar Planilla', 'si'),
+('fun1704', 'caf1017', 'Reimpresion Planilla', 'si'),
+('fun1705', 'caf1018', 'Por Empresa/ Planilla', 'si'),
+('fun1801', 'caf1018', 'De Empresa', 'si'),
+('fun1802', 'caf1018', 'De Cliente', 'si'),
+('fun1803', 'caf1018', 'Por Empresa', 'si'),
+('fun1804', 'caf1018', 'Por Cliente', 'si'),
+('fun2001', 'caf1001', 'Colores, Nuevo Editar Eliminar', 'no'),
+('fun2002', 'caf1001', 'Lineas Editar Eliminar ', 'no'),
+('fun2003', 'caf1001', 'Materiales. Nuevo Editar Eliminar', 'no'),
+('fun2005', 'caf1001', 'Colecciones, Nuevo Editar Eliminar', 'no'),
+('fun2007', 'caf1001', 'Configuracion de Parametros', 'si'),
+('fun2009', 'caf1002', 'Control de Precios', 'no'),
+('fun2101', 'caf1021', '1', 'si'),
+('fun2201', 'caf1022', '1', 'si'),
+('fun2202', 'caf1022', '2', 'si'),
+('fun2203', 'caf1022', '3', 'si'),
+('fun2204', 'caf1022', '4', 'si'),
+('fun3001', 'caf1002', '2.Confirmar Pedidos', 'si'),
+('fun3002', 'caf1002', '3. Pedidos Confirmados-Factura', 'si'),
+('fun3003', 'caf1002', '1.Realizar Pedido', 'si'),
+('fun3004', 'caf1008', 'Control de Precios Pedido', 'si'),
+('fun3009', 'caf1002', '4.Ingreso a Almacen', 'si'),
+('fun3010', 'caf1002', '5.Lista de Ingresos- Cod Barra Almacen', 'si'),
+('fun4000', 'caf1009', 'Listar Muestras', 'si'),
+('fun4001', 'caf1004', 'Gastos Tienda, Nuevo Editar Eliminar', 'si'),
+('fun5001', 'caf1004', 'Marca al Detalle, Nuevo Editar Eliminar', 'no'),
+('fun5002', 'caf1004', 'Compra De Mercaderia', 'si'),
+('fun5003', 'caf1004', 'Modelo Detalle ,Nuevo Editar Eliminar', 'no'),
+('fun5004', 'caf1004', 'Ingreso a Tienda', 'si'),
+('fun5005', 'caf1004', 'Lista De Ingresos Editar Eliminar', 'si'),
+('fun5006', 'caf1004', 'Ingreso A tienda De Pedido Confirmado', 'si'),
+('fun5007', 'caf1004', 'Vendedor Tienda , Nuevo Editar Eliminar', 'si'),
+('fun5009', 'caf1002', 'PanelConfirmarPedido', 'no'),
+('fun5011', 'caf1002', 'PanelPedidoFacturado', 'no'),
+('fun5012', 'caf1002', 'PanelIngresarAlmacen', 'no'),
+('fun5013', 'caf1023', 'Extra Ingreso a tienda', 'si'),
+('fun5016', 'caf1023', 'Panel Ingreso a tienda', 'no'),
+('fun5017', 'caf1023', 'Lista ingresos extra', 'si'),
+('fun5020', 'caf1009', 'PanelMuestras', 'no'),
+('fun6000', 'caf1005', 'Ventas al Mayor', 'si'),
+('fun6001', 'caf1005', 'PanelVenta', 'no'),
+('fun6002', 'caf1005', 'Entregas', 'si'),
+('fun6003', 'caf1005', 'Pagos/Cobros', 'si'),
+('fun6005', 'caf1005', 'Confirmar Entregas', 'si'),
+('fun60051', 'caf1005', 'panelentregas', 'no'),
+('fun7000', 'caf1015', 'PanelCobros', 'no'),
+('fun7002', 'caf1017', 'PanelModificar Planilla', 'no'),
+('fun7003', 'caf1017', 'PanelConsultaPlanilla', 'no'),
+('fun7004', 'caf1016', 'PanelModificarVenta', 'no'),
+('fun7005', 'caf1016', 'PanelModificarSaldos', 'no'),
+('fun7006', 'caf1018', 'PanelCobrosEmpresaCliente', 'no');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `gastoscaja`
+--
+
+CREATE TABLE `gastoscaja` (
+  `idgastocaja` int(11) NOT NULL auto_increment,
+  `idusuario` varchar(20) default NULL,
+  `idtienda` varchar(20) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `monto` decimal(22,2) default NULL,
+  `idtipogasto` varchar(20) default NULL,
+  `estado` varchar(20) NOT NULL default 'Abierto',
+  `numero` int(11) default NULL,
+  `arqueo` int(1) NOT NULL,
+  PRIMARY KEY  (`idgastocaja`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=2 ;
+
+--
+-- Volcar la base de datos para la tabla `gastoscaja`
+--
+
+INSERT INTO `gastoscaja` (`idgastocaja`, `idusuario`, `idtienda`, `fecha`, `hora`, `monto`, `idtipogasto`, `estado`, `numero`, `arqueo`) VALUES
+(1, 'usr-1000', 'tie-1', '2011-03-03', '09:52:58', '25.00', '1', 'Abierto', 1, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `imparkar_alm_1`
+--
+
+CREATE TABLE `imparkar_alm_1` (
+  `idkardexalmacen` varchar(20) NOT NULL,
+  `idmodelo` varchar(20) default NULL,
+  `idmarca` varchar(20) default NULL,
+  `detalle` varchar(20) default NULL,
+  `saldocantidadunidad` int(11) default NULL,
+  `saldocantidadizq` int(11) default NULL,
+  `saldocantidadder` int(11) default NULL,
+  `izquierdos` int(11) default NULL,
+  `derechos` int(11) default NULL,
+  `numero` int(11) default NULL,
+  `idoperacion` varchar(20) default NULL,
+  `confirmado` int(1) NOT NULL default '0',
+  PRIMARY KEY  (`idkardexalmacen`),
+  KEY `idmodelo` (`idmodelo`),
+  KEY `idmarca` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `imparkar_alm_1`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `imparkar_alm_2`
+--
+
+CREATE TABLE `imparkar_alm_2` (
+  `idkardexalmacen` varchar(20) NOT NULL,
+  `idmodelo` varchar(20) default NULL,
+  `idmarca` varchar(20) default NULL,
+  `detalle` varchar(20) default NULL,
+  `saldocantidadunidad` int(11) default NULL,
+  `saldocantidadizq` int(11) default NULL,
+  `saldocantidadder` int(11) default NULL,
+  `izquierdos` int(11) default NULL,
+  `derechos` int(11) default NULL,
+  `numero` int(11) default NULL,
+  `idoperacion` varchar(20) default NULL,
+  `confirmado` int(1) NOT NULL default '0',
+  PRIMARY KEY  (`idkardexalmacen`),
+  KEY `idmodelo` (`idmodelo`),
+  KEY `idmarca` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `imparkar_alm_2`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `imparmov_alm_1`
+--
+
+CREATE TABLE `imparmov_alm_1` (
+  `idmovimientokardexalmacen` varchar(20) NOT NULL,
+  `idkardexalmacen` varchar(20) default NULL,
+  `idoficina` varchar(20) default NULL,
+  `entradaizq` int(11) default NULL,
+  `salidaizq` int(11) default NULL,
+  `saldoizq` int(11) default NULL,
+  `costounitario` decimal(22,11) default NULL,
+  `entradader` int(11) default NULL,
+  `salidader` int(11) default NULL,
+  `saldoder` int(11) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `descripcion` varchar(200) default NULL,
+  `operacion` varchar(50) default NULL,
+  `idalmacenorigen` varchar(20) default NULL,
+  `idalmacendestino` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `saldocantidad` int(11) NOT NULL,
+  PRIMARY KEY  (`idmovimientokardexalmacen`,`saldocantidad`),
+  KEY `idkardexalmacen` (`idkardexalmacen`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `imparmov_alm_1`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `imparmov_alm_2`
+--
+
+CREATE TABLE `imparmov_alm_2` (
+  `idmovimientokardexalmacen` varchar(20) NOT NULL,
+  `idkardexalmacen` varchar(20) default NULL,
+  `idoficina` varchar(20) default NULL,
+  `entradaizq` int(11) default NULL,
+  `salidaizq` int(11) default NULL,
+  `saldoizq` int(11) default NULL,
+  `costounitario` decimal(22,11) default NULL,
+  `entradader` int(11) default NULL,
+  `salidader` int(11) default NULL,
+  `saldoder` int(11) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `descripcion` varchar(200) default NULL,
+  `operacion` varchar(50) default NULL,
+  `idalmacenorigen` varchar(20) default NULL,
+  `idalmacendestino` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `saldocantidad` int(11) NOT NULL,
+  PRIMARY KEY  (`idmovimientokardexalmacen`,`saldocantidad`),
+  KEY `idkardexalmacen` (`idkardexalmacen`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `imparmov_alm_2`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `inf_empresa`
+--
+
+CREATE TABLE `inf_empresa` (
+  `idinfempresa` varchar(20) NOT NULL,
+  `idempresa` varchar(20) NOT NULL,
+  `mes_planillla` varchar(7) default NULL,
+  `saldo_anterior` decimal(10,2) NOT NULL,
+  `importe_boleta` decimal(10,2) NOT NULL,
+  `importe_cobro` decimal(10,2) NOT NULL,
+  `importe_devolucion` decimal(10,2) NOT NULL,
+  `importe_castigo` decimal(10,2) NOT NULL,
+  `importe_descuento` decimal(10,2) NOT NULL,
+  `comision` decimal(10,2) NOT NULL,
+  `diferencia` decimal(10,2) NOT NULL,
+  `saldo_empresa` decimal(10,2) NOT NULL,
+  `saldo_planilla` decimal(10,2) NOT NULL,
+  `estado` varchar(20) default NULL,
+  `planilla` varchar(5) default NULL,
+  `fecha_planilla` date default NULL,
+  `numero` int(10) NOT NULL,
+  PRIMARY KEY  (`idinfempresa`),
+  KEY `idempresa` (`idempresa`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `inf_empresa`
+--
+
+INSERT INTO `inf_empresa` (`idinfempresa`, `idempresa`, `mes_planillla`, `saldo_anterior`, `importe_boleta`, `importe_cobro`, `importe_devolucion`, `importe_castigo`, `importe_descuento`, `comision`, `diferencia`, `saldo_empresa`, `saldo_planilla`, `estado`, `planilla`, `fecha_planilla`, `numero`) VALUES
+('inf-5', 'epr-4', '03/2011', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', 'ACTIVO', '5', '2011-03-17', 5),
+('inf-6', 'epr-5', '03/2011', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', 'ACTIVO', '6', '2011-03-17', 6);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ingresoalmacen`
+--
+
+CREATE TABLE `ingresoalmacen` (
+  `idingreso` varchar(20) NOT NULL,
+  `numerofactura` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `idpedido` varchar(20) default NULL,
+  `idconfirmarpedido` varchar(20) default NULL,
+  `estado` varchar(20) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `totalcajas` int(11) default NULL,
+  `totalpares` int(11) default NULL,
+  `totalbs` decimal(22,11) default NULL,
+  `totalsus` decimal(22,11) default NULL,
+  `montototal` decimal(22,11) default NULL,
+  `responsable` varchar(20) default NULL,
+  `observacion` varchar(200) default NULL,
+  `idmarca` varchar(20) default NULL,
+  `idempleado` varchar(20) default NULL,
+  `idalmacen` varchar(20) default NULL,
+  `generado` int(1) NOT NULL default '0',
+  PRIMARY KEY  (`idingreso`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `ingresoalmacen`
+--
+
+INSERT INTO `ingresoalmacen` (`idingreso`, `numerofactura`, `numero`, `idpedido`, `idconfirmarpedido`, `estado`, `fecha`, `hora`, `totalcajas`, `totalpares`, `totalbs`, `totalsus`, `montototal`, `responsable`, `observacion`, `idmarca`, `idempleado`, `idalmacen`, `generado`) VALUES
+('ing-1', '2', 1, 'ped-1', NULL, 'Activo', '2011-03-30', '10:25:52', 1, 4, '360.00000000000', NULL, '360.00000000000', 'usr-1000', 'prueba', 'mar-2', 'usr-1000', 'tie-1', 1),
+('ing-2', '2', 2, 'ped-1', NULL, 'Activo', '2011-03-30', '11:27:45', 1, 4, '0.00000000000', NULL, '0.00000000000', 'usr-1000', NULL, 'mar-2', 'usr-1000', 'tie-1', 0),
+('ing-3', '777', 3, 'ped-2', NULL, 'Activo', '2011-03-30', '22:02:13', 1, 12, '0.00000000000', NULL, '0.00000000000', 'usr-1000', NULL, 'mar-2', 'usr-1000', 'tie-1', 1),
+('ing-4', '111', 4, 'ped-3', NULL, 'EN ALMACEN', '2011-03-31', '21:11:44', 1, 10, '0.00000000000', NULL, '0.00000000000', 'usr-1000', NULL, 'mar-2', 'usr-1000', 'tie-1', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ingresotienda`
+--
+
+CREATE TABLE `ingresotienda` (
+  `idingreso` varchar(20) NOT NULL,
+  `codigo` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `totalpares` int(11) default NULL,
+  `totalbs` decimal(22,11) default NULL,
+  `responsable` varchar(20) default NULL,
+  `observacion` varchar(200) default NULL,
+  `idmarca` varchar(20) default NULL,
+  `idtienda` varchar(20) default NULL,
+  PRIMARY KEY  (`idingreso`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `ingresotienda`
+--
+
+INSERT INTO `ingresotienda` (`idingreso`, `codigo`, `numero`, `estado`, `fecha`, `hora`, `totalpares`, `totalbs`, `responsable`, `observacion`, `idmarca`, `idtienda`) VALUES
+('ing-1', 'I-3', 1, 'Activo', '2010-10-04', '11:21:16', 529, '47610.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-4'),
+('ing-10', 'I-3', 10, 'Activo', '2011-01-31', '20:41:10', 122, '10980.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-11', 'I-3', 11, 'Activo', '2011-02-10', '21:18:36', 90, '8100.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-12', '1/2011', 12, 'Activo', '2011-03-23', '21:12:11', 6, '540.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-13', '2/2011', 13, 'Activo', '2011-04-13', '11:39:48', 0, '0.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-14', '2/2011', 14, 'Activo', '2011-04-13', '11:40:20', 0, '0.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-15', '2/2011', 15, 'Activo', '2011-04-13', '12:43:07', 0, '0.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-16', '2/2011', 16, 'Activo', '2011-04-13', '12:43:42', 0, '0.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-17', '2/2011', 17, 'Activo', '2011-04-13', '18:28:38', 0, '0.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-18', '2/2011', 18, 'Activo', '2011-04-14', '08:48:47', 0, '0.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-19', '2/2011', 19, 'Activo', '2011-04-14', '16:39:27', 0, '0.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-2', 'I-3', 2, 'Activo', '2010-10-22', '12:59:29', 48, '4320.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-4'),
+('ing-20', '9/2011', 20, 'Activo', '2011-04-17', '16:55:23', 10, '900.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-21', '9/2011', 21, 'Activo', '2011-04-17', '16:59:27', 10, '900.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-3', 'I-3', 3, 'Activo', '2010-12-07', '11:11:44', 7, '630.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-4', 'I-3', 4, 'Activo', '2010-12-07', '11:13:58', 6, '540.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-5', 'I-3', 5, 'Activo', '2010-12-07', '11:15:34', 9, '810.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-6', 'I-3', 6, 'Activo', '2010-12-07', '11:19:18', 8, '720.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-7', 'I-3', 7, 'Activo', '2010-12-07', '11:20:10', 8, '720.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-8', 'I-3', 8, 'Activo', '2010-12-07', '11:21:17', 47, '4230.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-1'),
+('ing-9', 'I-3', 9, 'Activo', '2010-12-08', '10:51:40', 104, '9360.00000000000', 'usr-1000', NULL, 'mad-1', 'tie-2');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `itemsdetalleconfirmarpedido`
+--
+
+CREATE TABLE `itemsdetalleconfirmarpedido` (
+  `iditemsdetalleconfirmarpedido` varchar(20) NOT NULL,
+  `iddetalleconfirmarpedido` varchar(20) default NULL,
+  `idcalzadotalla` varchar(20) default NULL,
+  `cantidad` int(11) default NULL,
+  `numero` int(11) default NULL,
+  `precio1sus` decimal(22,11) default NULL,
+  PRIMARY KEY  (`iditemsdetalleconfirmarpedido`),
+  KEY `iddetalleconfirmarpedido` (`iddetalleconfirmarpedido`),
+  KEY `idcalzadotalla` (`idcalzadotalla`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `itemsdetalleconfirmarpedido`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `itemsdetallepedido`
+--
+
+CREATE TABLE `itemsdetallepedido` (
+  `iditemsdetallepedido` varchar(20) NOT NULL,
+  `numero` int(11) default NULL,
+  `idcalzadotalla` varchar(20) default NULL,
+  `iddetallepedido` varchar(20) default NULL,
+  `cantidad` int(11) default NULL,
+  PRIMARY KEY  (`iditemsdetallepedido`),
+  KEY `idcalzadotalla` (`idcalzadotalla`),
+  KEY `iddetallepedido` (`iddetallepedido`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `itemsdetallepedido`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `itemventa`
+--
+
+CREATE TABLE `itemventa` (
+  `iditemventa` varchar(20) NOT NULL,
+  `cantidad` decimal(10,2) NOT NULL,
+  `precio` decimal(10,2) NOT NULL,
+  `tipocambio` double NOT NULL,
+  `descuento` decimal(10,2) NOT NULL,
+  `descuentoporcentaje` int(3) NOT NULL,
+  `total` decimal(10,2) NOT NULL,
+  `numero` int(11) default NULL,
+  `idcalzado` varchar(20) default NULL,
+  `idventa` varchar(20) default NULL,
+  `idempleado` varchar(20) default NULL,
+  `idkardextienda` varchar(20) default NULL,
+  `saldo` int(11) default NULL,
+  `estado` varchar(10) NOT NULL default 'vendido',
+  PRIMARY KEY  (`iditemventa`),
+  KEY `idventa` (`idventa`),
+  KEY `itemventa_fk1` (`idempleado`),
+  KEY `idcalzado` (`idcalzado`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `itemventa`
+--
+
+INSERT INTO `itemventa` (`iditemventa`, `cantidad`, `precio`, `tipocambio`, `descuento`, `descuentoporcentaje`, `total`, `numero`, `idcalzado`, `idventa`, `idempleado`, `idkardextienda`, `saldo`, `estado`) VALUES
+('ivt-1', '1.00', '90.00', 8, '0.00', 0, '90.00', 1, NULL, 'ven-id-1', 'emp-1', 'kar-1', 0, 'vendido'),
+('ivt-2', '1.00', '90.00', 8, '0.00', 0, '90.00', 2, NULL, 'ven-id-2', 'emp-1', 'kar-10', 0, 'vendido'),
+('ivt-3', '1.00', '90.00', 8, '0.00', 0, '90.00', 3, NULL, 'ven-id-3', 'emp-1', 'kar-10', 0, 'vendido');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `kardexalmacen`
+--
+
+CREATE TABLE `kardexalmacen` (
+  `idkardexalmacen` varchar(20) NOT NULL,
+  `idmodelo` varchar(20) default NULL,
+  `idmarca` varchar(20) default NULL,
+  `codigobarra` varchar(20) default NULL,
+  `saldocantidadcaja` int(11) default NULL,
+  `cantidadcaja` int(11) default NULL,
+  `cantidadpares` int(11) default NULL,
+  `numero` int(11) default NULL,
+  `precio1bs` decimal(7,2) default NULL,
+  `precio2bs` decimal(7,2) default NULL,
+  `precio3bs` decimal(7,2) default NULL,
+  `precio1sus` decimal(7,2) default NULL,
+  `precio2sus` decimal(7,2) default NULL,
+  `precio3sus` decimal(7,2) default NULL,
+  `idoperacion` varchar(20) default NULL,
+  `codigobarraean13` varchar(20) default NULL,
+  `generado` int(1) NOT NULL default '0',
+  PRIMARY KEY  (`idkardexalmacen`),
+  KEY `idmodelodetalle` (`idmodelo`),
+  KEY `idmarca` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `kardexalmacen`
+--
+
+INSERT INTO `kardexalmacen` (`idkardexalmacen`, `idmodelo`, `idmarca`, `codigobarra`, `saldocantidadcaja`, `cantidadcaja`, `cantidadpares`, `numero`, `precio1bs`, `precio2bs`, `precio3bs`, `precio1sus`, `precio2sus`, `precio3sus`, `idoperacion`, `codigobarraean13`, `generado`) VALUES
+('kara-1', 'mod-1', 'mar-2', '0210010001041', 1, 1, 4, 1, '90.00', '360.00', NULL, NULL, NULL, NULL, 'ing-1', '021001000104', 1),
+('kara-2', 'mod-1', 'mar-2', '0210010002040', 0, 1, 4, 2, '90.00', '0.00', NULL, NULL, NULL, NULL, 'ing-3', '02100100024', 1),
+('kara-3', 'mod-3', 'mar-2', '0210010003124', 1, 1, 12, 3, '0.00', '0.00', NULL, '90.00', '1080.00', '2000.00', 'ing-3', '021001000312', 1),
+('kara-4', 'mod-2', 'mar-2', '0210010004107', 3, 1, 10, 4, '0.00', '0.00', NULL, '10.00', '100.00', '110.00', 'ing-4', '021001000410', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `kardextienda`
+--
+
+CREATE TABLE `kardextienda` (
+  `idkardextienda` varchar(20) NOT NULL,
+  `idmodelodetalle` varchar(20) default NULL,
+  `idtienda` varchar(20) default NULL,
+  `codigobarra` varchar(20) default NULL,
+  `saldocantidad` int(11) default NULL,
+  `cantidad` int(11) default NULL,
+  `numero` int(11) default NULL,
+  `talla` int(11) default NULL,
+  `precio1bs` decimal(22,11) default NULL,
+  `precio2bs` decimal(22,11) default NULL,
+  `precio3bs` decimal(22,11) default NULL,
+  `precio1sus` decimal(22,11) default NULL,
+  `precio2sus` decimal(22,11) default NULL,
+  `precio3sus` decimal(22,11) default NULL,
+  `idcalzado` varchar(20) default NULL,
+  `idoperacion` varchar(20) default NULL,
+  `codigobarraean13` varchar(20) default NULL,
+  PRIMARY KEY  (`idkardextienda`),
+  KEY `idmodelodetalle` (`idmodelodetalle`),
+  KEY `idtienda` (`idtienda`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `kardextienda`
+--
+
+INSERT INTO `kardextienda` (`idkardextienda`, `idmodelodetalle`, `idtienda`, `codigobarra`, `saldocantidad`, `cantidad`, `numero`, `talla`, `precio1bs`, `precio2bs`, `precio3bs`, `precio1sus`, `precio2sus`, `precio3sus`, `idcalzado`, `idoperacion`, `codigobarraean13`) VALUES
+('kar-1', 'mod-1', 'tie-1', '9010010001165', 12, 20, 1, 16, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-10', '901001000116'),
+('kar-10', 'mod-1', 'tie-1', '9010010002162', 23, 30, 10, 16, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-11', '901001000216'),
+('kar-11', 'mod-1', 'tie-1', '9010010003145', 1, 1, 11, 14, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-12', '901001000314'),
+('kar-12', 'mod-1', 'tie-1', '9010010003152', 2, 2, 12, 15, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-12', '901001000315'),
+('kar-13', 'mod-1', 'tie-1', '9010010003169', 3, 3, 13, 16, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-12', '901001000316'),
+('kar-14', 'mod-1', 'tie-1', '9010010014189', 2, 2, 14, 18, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-20', '901001001418'),
+('kar-15', 'mod-1', 'tie-1', '9010010014196', 2, 2, 15, 19, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-20', '901001001419'),
+('kar-16', 'mod-1', 'tie-1', '9010010014202', 2, 2, 16, 20, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-20', '901001001420'),
+('kar-17', 'mod-1', 'tie-1', '9010010014219', 2, 2, 17, 21, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-20', '901001001421'),
+('kar-18', 'mod-1', 'tie-1', '9010010014226', 2, 2, 18, 22, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-20', '901001001422'),
+('kar-19', 'mod-1', 'tie-1', '9010010015186', 2, 2, 19, 18, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-21', '901001001518'),
+('kar-2', 'mod-1', 'tie-1', '9010010001172', 0, 20, 2, 17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-10', '901001000117'),
+('kar-20', 'mod-1', 'tie-1', '9010010015193', 2, 2, 20, 19, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-21', '901001001519'),
+('kar-21', 'mod-1', 'tie-1', '9010010015209', 2, 2, 21, 20, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-21', '901001001520'),
+('kar-22', 'mod-1', 'tie-1', '9010010015216', 2, 2, 22, 21, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-21', '901001001521'),
+('kar-23', 'mod-1', 'tie-1', '9010010015223', 2, 2, 23, 22, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-21', '901001001522'),
+('kar-3', 'mod-1', 'tie-1', '9010010001189', 17, 20, 3, 18, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-10', '901001000118'),
+('kar-4', 'mod-1', 'tie-1', '9010010001196', 7, 10, 4, 19, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-10', '901001000119'),
+('kar-5', 'mod-1', 'tie-1', '9010010001202', 17, 20, 5, 20, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-10', '901001000120'),
+('kar-6', 'mod-1', 'tie-1', '9010010001219', 14, 30, 6, 21, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-10', '901001000121'),
+('kar-7', 'mod-1', 'tie-1', '9010010001226', 1, 2, 7, 22, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-10', '901001000122'),
+('kar-8', 'mod-1', 'tie-1', '9010010002148', 26, 30, 8, 14, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-11', '901001000214'),
+('kar-9', 'mod-1', 'tie-1', '9010010002155', 14, 30, 9, 15, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ing-11', '901001000215');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `linealocal`
+--
+
+CREATE TABLE `linealocal` (
+  `idlinealocal` varchar(20) NOT NULL,
+  `codigo` varchar(6) default NULL,
+  `nombre` varchar(30) default NULL,
+  `descripcion` varchar(100) default NULL,
+  `numero` int(11) default NULL,
+  `idmarcadetalle` varchar(20) default NULL,
+  PRIMARY KEY  (`idlinealocal`),
+  KEY `idmarcadetalle` (`idmarcadetalle`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `linealocal`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `lineas`
+--
+
+CREATE TABLE `lineas` (
+  `idlinea` varchar(20) NOT NULL,
+  `codigo` varchar(30) default NULL,
+  `descripcion` varchar(200) default NULL,
+  `numero` int(11) default NULL,
+  `idmarca` varchar(20) default NULL,
+  `idestilo` varchar(20) default NULL,
+  `idcoleccion` varchar(20) default NULL,
+  PRIMARY KEY  (`idlinea`),
+  KEY `idmarca` (`idmarca`),
+  KEY `idestilo` (`idestilo`),
+  KEY `idcoleccion` (`idcoleccion`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `lineas`
+--
+
+INSERT INTO `lineas` (`idlinea`, `codigo`, `descripcion`, `numero`, `idmarca`, `idestilo`, `idcoleccion`) VALUES
+('lin-1', '1100', NULL, 1, 'mar-1', 'est-1', 'col-1'),
+('lin-10', '63200', NULL, 10, 'mar-1', 'est-4', 'col-1'),
+('lin-11', '64200', NULL, 11, 'mar-1', 'est-4', 'col-1'),
+('lin-12', '66200', NULL, 12, 'mar-1', 'est-4', 'col-1'),
+('lin-13', '7100', NULL, 13, 'mar-1', 'est-5', 'col-1'),
+('lin-14', '17100', NULL, 14, 'mar-1', 'est-5', 'col-1'),
+('lin-15', '46200', NULL, 15, 'mar-1', 'est-5', 'col-1'),
+('lin-16', '47100', NULL, 16, 'mar-1', 'est-5', 'col-1'),
+('lin-17', '65201', NULL, 17, 'mar-1', 'est-5', 'col-1'),
+('lin-18', '22100', NULL, 18, 'mar-1', 'est-6', 'col-1'),
+('lin-19', '15100', NULL, 19, 'mar-1', 'est-8', 'col-1'),
+('lin-2', '32100', NULL, 2, 'mar-1', 'est-1', 'col-1'),
+('lin-20', '16100', NULL, 20, 'mar-1', 'est-8', 'col-1'),
+('lin-21', '67100', NULL, 21, 'mar-1', 'est-8', 'col-1'),
+('lin-22', '2200', NULL, 22, 'mar-1', 'est-1', 'col-2'),
+('lin-23', '82100', NULL, 23, 'mar-1', 'est-1', 'col-2'),
+('lin-3', '53100', NULL, 3, 'mar-1', 'est-1', 'col-1'),
+('lin-4', '68100', NULL, 4, 'mar-1', 'est-1', 'col-1'),
+('lin-5', '93200', NULL, 5, 'mar-1', 'est-1', 'col-1'),
+('lin-6', '40200', NULL, 6, 'mar-1', 'est-2', 'col-1'),
+('lin-7', '85200', NULL, 7, 'mar-1', 'est-2', 'col-1'),
+('lin-8', '88200', NULL, 8, 'mar-1', 'est-2', 'col-1'),
+('lin-9', '24100', NULL, 9, 'mar-1', 'est-4', 'col-1');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `listaprecios`
+--
+
+CREATE TABLE `listaprecios` (
+  `idprecio` char(10) NOT NULL,
+  `fecha` date default NULL,
+  `numero` int(11) default NULL,
+  `responsable` varchar(30) default NULL,
+  `descripcion` varchar(200) default NULL,
+  `idcoleecion` varchar(20) default NULL,
+  `fechaini` date default NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`idprecio`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `listaprecios`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `localidades`
+--
+
+CREATE TABLE `localidades` (
+  `idlocalidad` varchar(20) NOT NULL,
+  `idciudad` varchar(20) NOT NULL,
+  `nombre` varchar(30) default NULL,
+  `numero` int(11) default NULL,
+  `codigo` varchar(6) default NULL,
+  PRIMARY KEY  (`idlocalidad`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `localidades`
+--
+
+INSERT INTO `localidades` (`idlocalidad`, `idciudad`, `nombre`, `numero`, `codigo`) VALUES
+('loc-1', 'ciu-1000', 'PUNATA', 1, 'PNT'),
+('loc-2', 'ciu-1000', 'SACABA', 2, 'SCB'),
+('loc-3', 'ciu-1', 'BERMEJO', 3, 'BMJ'),
+('loc-4', 'ciu-1', 'YACUIBA', 4, 'YCB');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `marcadetalle`
+--
+
+CREATE TABLE `marcadetalle` (
+  `idmarcadetalle` varchar(20) NOT NULL,
+  `codigo` varchar(20) default NULL,
+  `nombre` varchar(30) default NULL,
+  `codigobarra` varchar(2) default NULL,
+  `imagen` varchar(500) default NULL,
+  `talla` varchar(20) default NULL,
+  `idciudad` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `opcion` int(11) default NULL,
+  PRIMARY KEY  (`idmarcadetalle`),
+  KEY `idciudad` (`idciudad`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `marcadetalle`
+--
+
+INSERT INTO `marcadetalle` (`idmarcadetalle`, `codigo`, `nombre`, `codigobarra`, `imagen`, `talla`, `idciudad`, `numero`, `opcion`) VALUES
+('mad-1', 'M1', 'MARCAINTERNA1', '90', 'c:/balderrama/imagenes.ramadim.jpg', '14-38', 'ciu-1000', 1, 1),
+('mad-2', '9090', NULL, NULL, 'c:/balderrama/imagenes/ramadin.jpg', NULL, NULL, 2, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `marcaetapas`
+--
+
+CREATE TABLE `marcaetapas` (
+  `idetapa` varchar(20) NOT NULL,
+  `idmarca` varchar(20) NOT NULL,
+  `existe` varchar(2) default NULL,
+  `nivel` int(11) default NULL,
+  PRIMARY KEY  (`idetapa`,`idmarca`),
+  KEY `idetapa` (`idetapa`),
+  KEY `idmarca` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `marcaetapas`
+--
+
+INSERT INTO `marcaetapas` (`idetapa`, `idmarca`, `existe`, `nivel`) VALUES
+('eta-1', 'mar-1', 'si', 1),
+('eta-1', 'mar-2', 'si', 1),
+('eta-1', 'mar-7', 'si', 1),
+('eta-2', 'mar-1', 'si', 2),
+('eta-2', 'mar-2', 'si', 2),
+('eta-2', 'mar-7', 'si', 2),
+('eta-4', 'mar-1', 'si', 3),
+('eta-4', 'mar-2', 'si', 3),
+('eta-4', 'mar-7', 'si', 3),
+('eta-5', 'mar-1', 'si', 4),
+('eta-5', 'mar-2', 'si', 4),
+('eta-5', 'mar-7', 'si', 4),
+('eta-7', 'mar-1', 'si', 5),
+('eta-7', 'mar-2', 'si', 5),
+('eta-7', 'mar-7', 'si', 5);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `marcas`
+--
+
+CREATE TABLE `marcas` (
+  `idmarca` varchar(20) NOT NULL,
+  `idproveedor` varchar(20) default NULL,
+  `codigo` varchar(50) default NULL,
+  `codigobarra` varchar(50) default NULL,
+  `nombre` varchar(50) default NULL,
+  `imagen` varchar(500) default NULL,
+  `numero` int(11) default NULL,
+  `idalmacen` varchar(20) default NULL,
+  `pedido` varchar(50) default NULL,
+  `origen` varchar(50) default NULL,
+  `talla` varchar(20) default NULL,
+  `opcion` int(11) default NULL,
+  PRIMARY KEY  (`idmarca`),
+  KEY `fk_2` (`idproveedor`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `marcas`
+--
+
+INSERT INTO `marcas` (`idmarca`, `idproveedor`, `codigo`, `codigobarra`, `nombre`, `imagen`, `numero`, `idalmacen`, `pedido`, `origen`, `talla`, `opcion`) VALUES
+('mar-1', 'prv-1', 'RAMARN', '01', 'RAMARIN', 'd:/iMAGENES/RAMARIN', 1, 'alm-2', 'CODIGO-COLOR-MATERIAL', 'BRAZIL', '33-45', 6);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `materiales`
+--
+
+CREATE TABLE `materiales` (
+  `idmateria` varchar(20) NOT NULL,
+  `codigo` varchar(30) default NULL,
+  `nombre` varchar(30) default NULL,
+  `numero` int(11) default NULL,
+  `descripcion` varchar(100) default NULL,
+  `idmarca` varchar(20) default NULL,
+  PRIMARY KEY  (`idmateria`),
+  KEY `idmarca` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `materiales`
+--
+
+INSERT INTO `materiales` (`idmateria`, `codigo`, `nombre`, `numero`, `descripcion`, `idmarca`) VALUES
+('mat-1000', '1001', 'CONFORT SOFT', 1000, 'CONFORTSOFT/ NAPA SOFT / VEMIZ PLUS', NULL),
+('mat-1001', '2001', 'Napa Soft', 1001, 'napa soft usado en ramadim', NULL),
+('mat-1002', '3001', 'VERNIZ SOFT', 1002, 'VERNIS SOFT', NULL),
+('mat-1003', '4001', 'nobuksahne', 1003, 'nobukoshane', NULL),
+('mat-1004', '5001', 'Napa Vestuario Plus', 1004, 'vestuario pluss', NULL),
+('mat-1005', '6001', 'Relax Soft', 1005, 'Relax Soft Relax Soft', NULL),
+('mat-1006', '6002', 'Napa Vestuario', 1006, 'Napa Vestuario / Ramadis', NULL),
+('mat-1008', '8001', 'Tejos Soft', 1008, 'Tejos  Soft', NULL),
+('mat-1010', '1010', 'Toronto Plus', 1010, 'Toronto Plus', NULL),
+('mat-1011', '1020', 'CONFORT SOFT/RELAX SOFT/FLORAL', 1011, 'CONFORT SOFT/RELAX SOFT/FLORAL', NULL),
+('mat-1012', NULL, 'Relax Soft', 1012, 'Relax Soft', NULL),
+('mat-1013', NULL, 'Napa Soft Plus', 1013, 'Napa Soft Plus', NULL),
+('mat-1014', NULL, 'Napa Vestuario Pluz', 1014, 'Napa Vestuario Pluz', NULL),
+('mat-1015', NULL, 'Floral Metal Soft', 1015, 'Floral Metal Soft', NULL),
+('mat-1016', NULL, 'Nobuk Snake Soft', 1016, 'Nobuk Snake Soft', NULL),
+('mat-1017', NULL, 'Verniz Soft', 1017, 'Verniz Soft', NULL),
+('mat-1018', NULL, 'Verniz Vestuario', 1018, 'Verniz Vestuario', NULL),
+('mat-1019', NULL, 'Verniz Pluz', 1019, 'Verniz Pluz', NULL),
+('mat-1020', NULL, 'Croco Soft', 1020, 'Croco Soft', NULL),
+('mat-1021', NULL, 'Piton Metal Soft', 1021, 'Piton Metal Soft', NULL),
+('mat-1022', NULL, 'Camurga Plus', 1022, 'Camurga Plus', NULL),
+('mat-1023', NULL, 'Safari Plus', 1023, 'Safari Plus', NULL),
+('mat-1024', NULL, 'prueba', 1024, 'prueba', NULL),
+('mat-1025', NULL, 'prueba1 ', 1025, 'prueba1', NULL),
+('mat-1028', NULL, 'hola', 1028, 'hola', 'mar-2'),
+('mat-1029', NULL, '005388', 1029, NULL, 'mar-3'),
+('mat-1030', NULL, '007976', 1030, NULL, 'mar-3'),
+('mat-1031', NULL, '005388', 1031, NULL, 'mar-3'),
+('mat-1032', NULL, 'cuero', 1032, NULL, 'mar-7');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `materia_marca`
+--
+
+CREATE TABLE `materia_marca` (
+  `idmarca` varchar(20) NOT NULL,
+  `idmateria` varchar(20) NOT NULL,
+  `codigo` varchar(30) default NULL,
+  `existe` varchar(20) default NULL,
+  PRIMARY KEY  (`idmarca`,`idmateria`),
+  KEY `fk_relationship_12` (`idmateria`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `materia_marca`
+--
+
+INSERT INTO `materia_marca` (`idmarca`, `idmateria`, `codigo`, `existe`) VALUES
+('mar-1', 'mat-1000', '0', 'no'),
+('mar-1', 'mat-1001', '0', 'no'),
+('mar-1', 'mat-1002', '0', 'no'),
+('mar-1', 'mat-1003', '0', 'no'),
+('mar-1', 'mat-1004', '0', 'no'),
+('mar-1', 'mat-1005', '0', 'no'),
+('mar-1', 'mat-1006', '0', 'no'),
+('mar-1', 'mat-1008', '0', 'no'),
+('mar-1', 'mat-1010', '0', 'no'),
+('mar-1', 'mat-1011', '0', 'no'),
+('mar-1', 'mat-1012', '0', 'no'),
+('mar-1', 'mat-1013', '0', 'no'),
+('mar-1', 'mat-1014', '0', 'no'),
+('mar-1', 'mat-1015', '0', 'no'),
+('mar-1', 'mat-1016', '0', 'no'),
+('mar-1', 'mat-1017', '0', 'no'),
+('mar-1', 'mat-1018', '0', 'no'),
+('mar-1', 'mat-1019', '0', 'no'),
+('mar-1', 'mat-1020', '0', 'no'),
+('mar-1', 'mat-1021', '0', 'no'),
+('mar-1', 'mat-1022', '0', 'no'),
+('mar-1', 'mat-1023', '0', 'no'),
+('mar-1', 'mat-1024', '0', 'no'),
+('mar-1', 'mat-1025', '0', 'no'),
+('mar-1', 'mat-1028', '0', 'no'),
+('mar-1', 'mat-1029', '0', 'no'),
+('mar-1', 'mat-1030', '0', 'no'),
+('mar-1', 'mat-1031', '0', 'no'),
+('mar-1', 'mat-1032', '0', 'no');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `modelodetalle`
+--
+
+CREATE TABLE `modelodetalle` (
+  `idmodelodetalle` varchar(20) NOT NULL,
+  `idmarcadetalle` varchar(20) default NULL,
+  `codigo` varchar(20) default NULL,
+  `stylename` varchar(50) default NULL,
+  `color` varchar(50) default NULL,
+  `material` varchar(50) default NULL,
+  `detalle` varchar(100) default NULL,
+  `imagen` varchar(200) default NULL,
+  `numero` int(11) default NULL,
+  `precio1` decimal(22,2) default NULL,
+  `precio2` decimal(22,2) default NULL,
+  `precio3` decimal(22,2) default NULL,
+  PRIMARY KEY  (`idmodelodetalle`),
+  KEY `idmarcadetalle` (`idmarcadetalle`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `modelodetalle`
+--
+
+INSERT INTO `modelodetalle` (`idmodelodetalle`, `idmarcadetalle`, `codigo`, `stylename`, `color`, `material`, `detalle`, `imagen`, `numero`, `precio1`, `precio2`, `precio3`) VALUES
+('mod-1', 'mad-1', '9090', 'adulto', 'rojo', 'cuero', 'ninguno', NULL, 1, '90.00', '90.00', '90.00');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `modelos`
+--
+
+CREATE TABLE `modelos` (
+  `idmodelo` varchar(20) NOT NULL,
+  `idmarca` varchar(20) default NULL,
+  `codigo` varchar(30) default NULL,
+  `numero` int(11) default NULL,
+  `precio` decimal(22,2) default NULL,
+  `stylename` varchar(50) default NULL,
+  `idcoleccion` varchar(20) default NULL,
+  `idlinea` varchar(20) default NULL,
+  `detalle` varchar(200) default NULL,
+  `imagen` varchar(500) default NULL,
+  PRIMARY KEY  (`idmodelo`),
+  KEY `fk_relationship_3` (`idmarca`),
+  KEY `idcoleccion` (`idcoleccion`),
+  KEY `idlinea` (`idlinea`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `modelos`
+--
+
+INSERT INTO `modelos` (`idmodelo`, `idmarca`, `codigo`, `numero`, `precio`, `stylename`, `idcoleccion`, `idlinea`, `detalle`, `imagen`) VALUES
+('mod-1', 'mar-1', '1102', 1, NULL, NULL, 'col-1', 'lin-1', NULL, NULL),
+('mod-10', 'mar-1', '85203', 10, NULL, NULL, 'col-1', 'lin-7', NULL, NULL),
+('mod-11', 'mar-1', '88203', 11, NULL, NULL, 'col-1', 'lin-8', NULL, NULL),
+('mod-12', 'mar-1', '24106', 12, NULL, NULL, 'col-1', 'lin-9', NULL, NULL),
+('mod-13', 'mar-1', '63203', 13, NULL, NULL, 'col-1', 'lin-10', NULL, NULL),
+('mod-14', 'mar-1', '63206', 14, NULL, NULL, 'col-1', 'lin-10', NULL, NULL),
+('mod-15', 'mar-1', '64205', 15, NULL, NULL, 'col-1', 'lin-11', NULL, NULL),
+('mod-16', 'mar-1', '66206', 16, NULL, NULL, 'col-1', 'lin-12', NULL, NULL),
+('mod-17', 'mar-1', '7102', 17, NULL, NULL, 'col-1', 'lin-13', NULL, NULL),
+('mod-18', 'mar-1', '17105', 18, NULL, NULL, 'col-1', 'lin-14', NULL, NULL),
+('mod-19', 'mar-1', '46206', 19, NULL, NULL, 'col-1', 'lin-15', NULL, NULL),
+('mod-2', 'mar-1', '32106', 2, NULL, NULL, 'col-1', 'lin-2', NULL, NULL),
+('mod-20', 'mar-1', '47102', 20, NULL, NULL, 'col-1', 'lin-16', NULL, NULL),
+('mod-21', 'mar-1', '65201', 21, NULL, NULL, 'col-1', 'lin-17', NULL, NULL),
+('mod-22', 'mar-1', '22104', 22, NULL, NULL, 'col-1', 'lin-18', NULL, NULL),
+('mod-23', 'mar-1', '15105', 23, NULL, NULL, 'col-1', 'lin-19', NULL, NULL),
+('mod-24', 'mar-1', '16107', 24, NULL, NULL, 'col-1', 'lin-20', NULL, NULL),
+('mod-25', 'mar-1', '16108', 25, NULL, NULL, 'col-1', 'lin-20', NULL, NULL),
+('mod-26', 'mar-1', '67107', 26, NULL, NULL, 'col-1', 'lin-21', NULL, NULL),
+('mod-3', 'mar-1', '53104', 3, NULL, NULL, 'col-1', 'lin-3', NULL, NULL),
+('mod-4', 'mar-1', '68103', 4, NULL, NULL, 'col-1', 'lin-4', NULL, NULL),
+('mod-5', 'mar-1', '93201', 5, NULL, NULL, 'col-1', 'lin-5', NULL, NULL),
+('mod-6', 'mar-1', '93203', 6, NULL, NULL, 'col-1', 'lin-5', NULL, NULL),
+('mod-7', 'mar-1', '93206', 7, NULL, NULL, 'col-1', 'lin-5', NULL, NULL),
+('mod-8', 'mar-1', '93207', 8, NULL, NULL, 'col-1', 'lin-5', NULL, NULL),
+('mod-9', 'mar-1', '40201', 9, NULL, NULL, 'col-1', 'lin-6', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `modelo_muestra`
+--
+
+CREATE TABLE `modelo_muestra` (
+  `idmodelomuestra` varchar(20) NOT NULL,
+  `idmodelo` varchar(20) default NULL,
+  `idmuestra` varchar(20) default NULL,
+  `cantidad` int(11) default NULL,
+  `preciooficina` decimal(22,11) default NULL,
+  `preciomayor` decimal(11,3) default NULL,
+  `estado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idmodelomuestra`),
+  KEY `fk_relationship_36` (`idmuestra`),
+  KEY `fk_relationship_37` (`idmodelo`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `modelo_muestra`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `moneda`
+--
+
+CREATE TABLE `moneda` (
+  `idmoneda` varchar(20) NOT NULL,
+  `nombre` varchar(100) default NULL,
+  `numero` int(11) default NULL,
+  `estado` char(20) default NULL,
+  PRIMARY KEY  (`idmoneda`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `moneda`
+--
+
+INSERT INTO `moneda` (`idmoneda`, `nombre`, `numero`, `estado`) VALUES
+('mon-1000', 'Boliviano', 1000, 'activo'),
+('mon-1001', 'Dolar', 1001, 'activo');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `movimientocredito`
+--
+
+CREATE TABLE `movimientocredito` (
+  `idmovimientocredito` varchar(20) NOT NULL,
+  `idcredito` varchar(20) default NULL,
+  `deposito` decimal(11,2) default NULL,
+  `saldo` decimal(11,2) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idmovimientocredito`),
+  KEY `idcredito` (`idcredito`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `movimientocredito`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `movimientocreditocliente`
+--
+
+CREATE TABLE `movimientocreditocliente` (
+  `idmovimiento` varchar(20) NOT NULL,
+  `idcliente` varchar(20) default NULL,
+  `numerocuenta` varchar(20) default NULL,
+  `boleta` varchar(20) default NULL,
+  `idoperacion` varchar(20) default NULL,
+  `montoentrada` decimal(11,2) default NULL,
+  `montosalida` decimal(11,2) default NULL,
+  `cantidad` int(11) default NULL,
+  `descripcion` varchar(200) default NULL,
+  `saldosus` decimal(22,11) default NULL,
+  `saldobs` decimal(22,11) default NULL,
+  `tipocambio` decimal(22,11) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `operacion` varchar(50) default NULL,
+  `numero` int(11) default NULL,
+  `validado` int(11) NOT NULL,
+  `estado` varchar(50) default NULL,
+  PRIMARY KEY  (`idmovimiento`),
+  KEY `idcliente` (`idcliente`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `movimientocreditocliente`
+--
+
+INSERT INTO `movimientocreditocliente` (`idmovimiento`, `idcliente`, `numerocuenta`, `boleta`, `idoperacion`, `montoentrada`, `montosalida`, `cantidad`, `descripcion`, `saldosus`, `saldobs`, `tipocambio`, `fecha`, `hora`, `operacion`, `numero`, `validado`, `estado`) VALUES
+('mov-1', 'cli-1', '100001', NULL, 'cre-1', '1080.00', '0.00', 12, 'CREDITO', NULL, NULL, '7.01000000000', '2011-04-22', '23:48:23', 'ven-1', 1, 0, 'VIGENTE'),
+('mov-10', 'cli-1', '100001', NULL, 'cre-10', '1080.00', '0.00', 12, 'CREDITO', NULL, NULL, '7.01000000000', '2011-04-22', '00:02:27', 'ven-10', 10, 0, 'VIGENTE'),
+('mov-11', 'cli-1', '100001', NULL, 'cre-11', '1080.00', '0.00', 12, 'CREDITO', NULL, NULL, '7.01000000000', '2011-04-22', '00:03:20', 'ven-11', 11, 0, 'VIGENTE'),
+('mov-12', 'cli-1', '100001', NULL, 'cre-12', '1080.00', '0.00', 12, 'CREDITO', NULL, NULL, '7.01000000000', '2011-04-22', '00:04:20', 'ven-12', 12, 0, 'VIGENTE'),
+('mov-2', 'cli-1', '100001', NULL, 'cre-2', '1080.00', '0.00', 12, 'CREDITO', NULL, NULL, '7.01000000000', '2011-04-22', '23:51:40', 'ven-2', 2, 0, 'VIGENTE'),
+('mov-3', 'cli-1', '100001', NULL, 'cre-3', '1080.00', '0.00', 12, 'CREDITO', NULL, NULL, '7.01000000000', '2011-04-22', '23:52:22', 'ven-3', 3, 0, 'VIGENTE'),
+('mov-4', 'cli-1', '100001', NULL, 'cre-4', '1080.00', '0.00', 12, 'CREDITO', NULL, NULL, '7.01000000000', '2011-04-22', '23:52:38', 'ven-4', 4, 0, 'VIGENTE'),
+('mov-5', 'cli-1', '100001', NULL, 'cre-5', '1080.00', '0.00', 12, 'CREDITO', NULL, NULL, '7.01000000000', '2011-04-22', '23:55:51', 'ven-5', 5, 0, 'VIGENTE'),
+('mov-6', 'cli-1', '100001', NULL, 'cre-6', '1080.00', '0.00', 12, 'CREDITO', NULL, NULL, '7.01000000000', '2011-04-22', '23:58:03', 'ven-6', 6, 0, 'VIGENTE'),
+('mov-7', 'cli-1', '100001', NULL, 'cre-7', '1080.00', '0.00', 12, 'CREDITO', NULL, NULL, '7.01000000000', '2011-04-22', '00:01:22', 'ven-7', 7, 0, 'VIGENTE'),
+('mov-8', 'cli-1', '100001', NULL, 'cre-8', '1080.00', '0.00', 12, 'CREDITO', NULL, NULL, '7.01000000000', '2011-04-22', '00:01:37', 'ven-8', 8, 0, 'VIGENTE'),
+('mov-9', 'cli-1', '100001', NULL, 'cre-9', '1080.00', '0.00', 12, 'CREDITO', NULL, NULL, '7.01000000000', '2011-04-22', '00:01:57', 'ven-9', 9, 0, 'VIGENTE');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `movimientokardexalmacen`
+--
+
+CREATE TABLE `movimientokardexalmacen` (
+  `idmovimientokardexalmacen` varchar(20) NOT NULL,
+  `idkardexalmacen` varchar(20) default NULL,
+  `idoficina` varchar(20) default NULL,
+  `entrada` int(11) default NULL,
+  `entradapares` int(10) NOT NULL,
+  `salida` int(11) default NULL,
+  `salidapares` int(11) default NULL,
+  `saldo` int(11) default NULL,
+  `saldopares` int(11) default NULL,
+  `costounitario` decimal(22,11) default NULL,
+  `preciototal` decimal(22,11) default NULL,
+  `ingreso` decimal(22,11) default NULL,
+  `egreso` decimal(22,11) default NULL,
+  `saldobs` decimal(22,11) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `descripcion` varchar(200) default NULL,
+  `operacion` varchar(50) default NULL,
+  `numero` int(11) default NULL,
+  `saldocantidad` int(11) NOT NULL,
+  PRIMARY KEY  (`idmovimientokardexalmacen`,`saldocantidad`),
+  KEY `idkardexalmacen` (`idkardexalmacen`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `movimientokardexalmacen`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `movimientokardextienda`
+--
+
+CREATE TABLE `movimientokardextienda` (
+  `idmovimientokardextienda` varchar(20) NOT NULL,
+  `idkardextienda` varchar(20) default NULL,
+  `idtienda` varchar(20) default NULL,
+  `entrada` int(11) default NULL,
+  `salida` int(11) default NULL,
+  `saldo` int(11) default NULL,
+  `costounitario` decimal(22,11) default NULL,
+  `ingreso` decimal(22,11) default NULL,
+  `egreso` decimal(22,11) default NULL,
+  `saldobs` decimal(22,11) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `descripcion` varchar(200) default NULL,
+  `numero` int(11) default NULL,
+  `saldocantidad` int(11) NOT NULL,
+  PRIMARY KEY  (`idmovimientokardextienda`,`saldocantidad`),
+  KEY `idkardextienda` (`idkardextienda`),
+  KEY `idtienda` (`idtienda`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `movimientokardextienda`
+--
+
+INSERT INTO `movimientokardextienda` (`idmovimientokardextienda`, `idkardextienda`, `idtienda`, `entrada`, `salida`, `saldo`, `costounitario`, `ingreso`, `egreso`, `saldobs`, `fecha`, `hora`, `descripcion`, `numero`, `saldocantidad`) VALUES
+('mkt-1', 'kar-1', 'tie-1', 20, 0, 20, '90.00000000000', '1800.00000000000', '0.00000000000', '1800.00000000000', '2011-01-31', '20:41:10', 'ing-10', 1, 19),
+('mkt-10', 'kar-4', 'tie-1', 0, 1, 9, '90.00000000000', '0.00000000000', '90.00000000000', '810.00000000000', '2011-01-31', '21:22:49', 'ven-id-3', 10, 8),
+('mkt-100', 'kar-18', 'tie-1', 2, 0, 2, '90.00000000000', '180.00000000000', '0.00000000000', '180.00000000000', '2011-04-17', '16:55:23', 'ing-20', 100, 2),
+('mkt-101', 'kar-19', 'tie-1', 2, 0, 2, '90.00000000000', '180.00000000000', '0.00000000000', '180.00000000000', '2011-04-17', '16:59:27', 'ing-21', 101, 2),
+('mkt-102', 'kar-20', 'tie-1', 2, 0, 2, '90.00000000000', '180.00000000000', '0.00000000000', '180.00000000000', '2011-04-17', '16:59:27', 'ing-21', 102, 2),
+('mkt-103', 'kar-21', 'tie-1', 2, 0, 2, '90.00000000000', '180.00000000000', '0.00000000000', '180.00000000000', '2011-04-17', '16:59:27', 'ing-21', 103, 2),
+('mkt-104', 'kar-22', 'tie-1', 2, 0, 2, '90.00000000000', '180.00000000000', '0.00000000000', '180.00000000000', '2011-04-17', '16:59:27', 'ing-21', 104, 2),
+('mkt-105', 'kar-23', 'tie-1', 2, 0, 2, '90.00000000000', '180.00000000000', '0.00000000000', '180.00000000000', '2011-04-17', '16:59:27', 'ing-21', 105, 2),
+('mkt-11', 'kar-3', 'tie-1', 0, 1, 19, '90.00000000000', '0.00000000000', '90.00000000000', '1710.00000000000', '2011-01-31', '21:22:49', 'ven-id-3', 11, 18),
+('mkt-12', 'kar-4', 'tie-1', 0, 1, 8, '90.00000000000', '0.00000000000', '90.00000000000', '720.00000000000', '2011-01-31', '21:23:20', 'ven-id-4', 12, 7),
+('mkt-13', 'kar-1', 'tie-1', 0, 1, 18, '90.00000000000', '0.00000000000', '90.00000000000', '1620.00000000000', '2011-01-31', '21:24:39', 'ven-id-5', 13, 17),
+('mkt-14', 'kar-5', 'tie-1', 0, 1, 19, '90.00000000000', '0.00000000000', '90.00000000000', '1710.00000000000', '2011-01-31', '21:24:39', 'ven-id-5', 14, 18),
+('mkt-15', 'kar-4', 'tie-1', 0, 1, 7, '90.00000000000', '0.00000000000', '90.00000000000', '630.00000000000', '2011-01-31', '21:24:39', 'ven-id-5', 15, 7),
+('mkt-16', 'kar-1', 'tie-1', 0, 1, 17, '90.00000000000', '0.00000000000', '90.00000000000', '1530.00000000000', '2011-01-31', '21:25:09', 'ven-id-6', 16, 16),
+('mkt-17', 'kar-1', 'tie-1', 0, 1, 16, '90.00000000000', '0.00000000000', '90.00000000000', '1440.00000000000', '2011-02-02', '17:58:15', 'ven-id-7', 17, 15),
+('mkt-18', 'kar-1', 'tie-1', 0, 1, 15, '90.00000000000', '0.00000000000', '90.00000000000', '1350.00000000000', '2011-02-02', '17:59:16', 'ven-id-8', 18, 14),
+('mkt-19', 'kar-2', 'tie-1', 0, 1, 0, '90.00000000000', '0.00000000000', '90.00000000000', '0.00000000000', '0000-00-00', '18:43:10', 'ven-id-9', 19, 0),
+('mkt-2', 'kar-2', 'tie-1', 20, 0, 20, '90.00000000000', '1800.00000000000', '0.00000000000', '1800.00000000000', '2011-01-31', '20:41:10', 'ing-10', 2, 19),
+('mkt-20', 'kar-3', 'tie-1', 0, 1, 18, '90.00000000000', '0.00000000000', '90.00000000000', '1620.00000000000', '2011-02-02', '18:45:54', 'ven-id-10', 20, 18),
+('mkt-21', 'kar-3', 'tie-1', 0, 1, 17, '90.00000000000', '0.00000000000', '90.00000000000', '1530.00000000000', '2011-02-02', '18:45:54', 'ven-id-10', 21, 17),
+('mkt-22', 'kar-6', 'tie-1', 0, 1, 29, '90.00000000000', '0.00000000000', '90.00000000000', '2610.00000000000', '2011-02-04', '16:08:15', 'ven-id-11', 22, 29),
+('mkt-23', 'kar-6', 'tie-1', 0, 1, 28, '90.00000000000', '0.00000000000', '90.00000000000', '2520.00000000000', '2011-02-04', '16:08:16', 'ven-id-11', 23, 27),
+('mkt-24', 'kar-6', 'tie-1', 0, 1, 27, '90.00000000000', '0.00000000000', '90.00000000000', '2430.00000000000', '2011-02-04', '16:08:16', 'ven-id-11', 24, 27),
+('mkt-25', 'kar-6', 'tie-1', 0, 1, 26, '90.00000000000', '0.00000000000', '90.00000000000', '2340.00000000000', '2011-02-04', '16:08:16', 'ven-id-11', 25, 26),
+('mkt-26', 'kar-6', 'tie-1', 0, 1, 27, '90.00000000000', '0.00000000000', '90.00000000000', '2430.00000000000', '2011-02-04', '16:08:48', 'ven-id-12', 26, 26),
+('mkt-27', 'kar-6', 'tie-1', 0, 1, 26, '90.00000000000', '0.00000000000', '90.00000000000', '2340.00000000000', '2011-02-04', '16:08:48', 'ven-id-12', 27, 26),
+('mkt-28', 'kar-6', 'tie-1', 0, 1, 26, '90.00000000000', '0.00000000000', '90.00000000000', '2340.00000000000', '2011-02-04', '16:09:28', 'ven-id-13', 28, 25),
+('mkt-29', 'kar-6', 'tie-1', 0, 1, 25, '90.00000000000', '0.00000000000', '90.00000000000', '2250.00000000000', '2011-02-04', '16:09:28', 'ven-id-13', 29, 25),
+('mkt-3', 'kar-3', 'tie-1', 20, 0, 20, '90.00000000000', '1800.00000000000', '0.00000000000', '1800.00000000000', '2011-01-31', '20:41:10', 'ing-10', 3, 19),
+('mkt-30', 'kar-6', 'tie-1', 0, 1, 25, '90.00000000000', '0.00000000000', '90.00000000000', '2250.00000000000', '2011-02-04', '16:10:32', 'ven-id-14', 30, 24),
+('mkt-31', 'kar-6', 'tie-1', 0, 1, 24, '90.00000000000', '0.00000000000', '90.00000000000', '2160.00000000000', '2011-02-04', '23:28:38', 'ven-id-1', 31, 23),
+('mkt-32', 'kar-5', 'tie-1', 0, 1, 18, '90.00000000000', '0.00000000000', '90.00000000000', '1620.00000000000', '2011-02-04', '23:28:38', 'ven-id-1', 32, 17),
+('mkt-33', 'kar-6', 'tie-1', 0, 1, 23, '90.00000000000', '0.00000000000', '90.00000000000', '2070.00000000000', '2011-02-04', '23:28:38', 'ven-id-1', 33, 23),
+('mkt-34', 'kar-6', 'tie-1', 0, 1, 23, '90.00000000000', '0.00000000000', '90.00000000000', '2070.00000000000', '2011-02-04', '23:34:30', 'ven-id-2', 34, 22),
+('mkt-35', 'kar-6', 'tie-1', 0, 1, 22, '90.00000000000', '0.00000000000', '90.00000000000', '1980.00000000000', '2011-02-04', '23:34:30', 'ven-id-2', 35, 22),
+('mkt-36', 'kar-6', 'tie-1', 0, 1, 22, '90.00000000000', '0.00000000000', '90.00000000000', '1980.00000000000', '2011-02-05', '10:50:57', 'ven-id-3', 36, 21),
+('mkt-37', 'kar-6', 'tie-1', 0, 1, 21, '90.00000000000', '0.00000000000', '90.00000000000', '1890.00000000000', '2011-02-05', '10:50:57', 'ven-id-3', 37, 21),
+('mkt-38', 'kar-6', 'tie-1', 0, 1, 21, '90.00000000000', '0.00000000000', '90.00000000000', '1890.00000000000', '2011-02-05', '11:15:02', 'ven-id-4', 38, 21),
+('mkt-39', 'kar-6', 'tie-1', 0, 1, 20, '90.00000000000', '0.00000000000', '90.00000000000', '0.00000000000', '2011-02-08', NULL, 'tra-1', 39, 19),
+('mkt-4', 'kar-4', 'tie-1', 10, 0, 10, '90.00000000000', '900.00000000000', '0.00000000000', '900.00000000000', '2011-01-31', '20:41:10', 'ing-10', 4, 9),
+('mkt-40', 'kar-6', 'tie-1', 1, 0, 0, '90.00000000000', '90.00000000000', '0.00000000000', '0.00000000000', '2011-02-08', NULL, 'tra-1', 40, 1),
+('mkt-41', 'kar-8', 'tie-1', 30, 0, 30, '90.00000000000', '2700.00000000000', '0.00000000000', '2700.00000000000', '2011-02-10', '21:18:36', 'ing-11', 41, 29),
+('mkt-42', 'kar-9', 'tie-1', 30, 0, 30, '90.00000000000', '2700.00000000000', '0.00000000000', '2700.00000000000', '2011-02-10', '21:18:36', 'ing-11', 42, 29),
+('mkt-43', 'kar-10', 'tie-1', 30, 0, 30, '90.00000000000', '2700.00000000000', '0.00000000000', '2700.00000000000', '2011-02-10', '21:18:36', 'ing-11', 43, 29),
+('mkt-44', 'kar-9', 'tie-1', 0, 1, 29, '90.00000000000', '0.00000000000', '90.00000000000', '2610.00000000000', '2011-02-10', '22:35:09', 'ven-id-5', 44, 28),
+('mkt-45', 'kar-8', 'tie-1', 0, 1, 29, '90.00000000000', '0.00000000000', '90.00000000000', '2610.00000000000', '2011-02-10', '22:35:09', 'ven-id-5', 45, 28),
+('mkt-46', 'kar-9', 'tie-1', 0, 1, 28, '90.00000000000', '0.00000000000', '90.00000000000', '2520.00000000000', '2011-02-10', '22:48:14', 'ven-id-6', 46, 27),
+('mkt-47', 'kar-8', 'tie-1', 0, 1, 28, '90.00000000000', '0.00000000000', '90.00000000000', '2520.00000000000', '2011-02-10', '22:48:14', 'ven-id-6', 47, 27),
+('mkt-48', 'kar-9', 'tie-1', 0, 1, 27, '90.00000000000', '0.00000000000', '90.00000000000', '2430.00000000000', '2011-02-10', '22:58:19', 'ven-id-7', 48, 26),
+('mkt-49', 'kar-8', 'tie-1', 0, 1, 27, '90.00000000000', '0.00000000000', '90.00000000000', '2430.00000000000', '2011-02-10', '22:58:19', 'ven-id-7', 49, 26),
+('mkt-5', 'kar-5', 'tie-1', 20, 0, 20, '90.00000000000', '1800.00000000000', '0.00000000000', '1800.00000000000', '2011-01-31', '20:41:10', 'ing-10', 5, 19),
+('mkt-50', 'kar-9', 'tie-1', 0, 1, 26, '90.00000000000', '0.00000000000', '90.00000000000', '2340.00000000000', '2011-02-10', '23:16:10', 'ven-id-8', 50, 25),
+('mkt-51', 'kar-9', 'tie-1', 0, 1, 25, '90.00000000000', '0.00000000000', '90.00000000000', '2250.00000000000', '2011-02-10', '23:16:10', 'ven-id-8', 51, 25),
+('mkt-52', 'kar-9', 'tie-1', 0, 1, 24, '90.00000000000', '0.00000000000', '90.00000000000', '2160.00000000000', '2011-02-10', '23:16:10', 'ven-id-8', 52, 24),
+('mkt-53', 'kar-9', 'tie-1', 0, 1, 25, '90.00000000000', '0.00000000000', '90.00000000000', '2250.00000000000', '2011-02-10', '23:16:45', 'ven-id-9', 53, 24),
+('mkt-54', 'kar-9', 'tie-1', 0, 1, 24, '90.00000000000', '0.00000000000', '90.00000000000', '2160.00000000000', '2011-02-10', '23:16:45', 'ven-id-9', 54, 24),
+('mkt-55', 'kar-10', 'tie-1', 0, 1, 29, '90.00000000000', '0.00000000000', '90.00000000000', '2610.00000000000', '2011-02-11', '23:38:38', 'ven-id-10', 55, 28),
+('mkt-56', 'kar-10', 'tie-1', 0, 1, 28, '90.00000000000', '0.00000000000', '90.00000000000', '2520.00000000000', '2011-02-11', '23:38:38', 'ven-id-10', 56, 28),
+('mkt-57', 'kar-10', 'tie-1', 0, 1, 27, '90.00000000000', '0.00000000000', '90.00000000000', '2430.00000000000', '2011-02-11', '23:38:38', 'ven-id-10', 57, 27),
+('mkt-58', 'kar-9', 'tie-1', 0, 1, 24, '90.00000000000', '0.00000000000', '90.00000000000', '2160.00000000000', '2011-02-12', '00:03:10', 'ven-id-11', 58, 24),
+('mkt-59', 'kar-9', 'tie-1', 0, 1, 23, '90.00000000000', '0.00000000000', '90.00000000000', '2070.00000000000', '2011-02-12', '00:03:10', 'ven-id-11', 59, 22),
+('mkt-6', 'kar-6', 'tie-1', 30, 0, 30, '90.00000000000', '2700.00000000000', '0.00000000000', '2700.00000000000', '2011-01-31', '20:41:10', 'ing-10', 6, 29),
+('mkt-60', 'kar-10', 'tie-1', 0, 1, 28, '90.00000000000', '0.00000000000', '90.00000000000', '2520.00000000000', '2011-02-13', '21:26:23', 'ven-id-12', 60, 27),
+('mkt-61', 'kar-9', 'tie-1', 0, 1, 22, '90.00000000000', '0.00000000000', '90.00000000000', '1980.00000000000', '2011-02-13', '21:34:23', 'ven-id-13', 61, 22),
+('mkt-62', 'kar-9', 'tie-1', 0, 1, 21, '90.00000000000', '0.00000000000', '90.00000000000', '1890.00000000000', '2011-02-13', '21:34:23', 'ven-id-13', 62, 21),
+('mkt-63', 'kar-9', 'tie-1', 0, 1, 20, '90.00000000000', '0.00000000000', '90.00000000000', '1800.00000000000', '2011-02-13', '21:34:24', 'ven-id-13', 63, 20),
+('mkt-64', 'kar-9', 'tie-1', 0, 1, 19, '90.00000000000', '0.00000000000', '90.00000000000', '1710.00000000000', '2011-02-13', '21:34:24', 'ven-id-13', 64, 18),
+('mkt-65', 'kar-9', 'tie-1', 0, 1, 18, '90.00000000000', '0.00000000000', '90.00000000000', '1620.00000000000', '2011-02-13', '21:58:09', 'ven-id-14', 65, 18),
+('mkt-66', 'kar-9', 'tie-1', 0, 1, 17, '90.00000000000', '0.00000000000', '90.00000000000', '1530.00000000000', '2011-02-13', '21:58:09', 'ven-id-14', 66, 16),
+('mkt-67', 'kar-9', 'tie-1', 0, 1, 16, '90.00000000000', '0.00000000000', '90.00000000000', '1440.00000000000', '2011-02-16', '23:00:26', 'ven-id-15', 67, 15),
+('mkt-68', 'kar-6', 'tie-1', 0, 1, 20, '90.00000000000', '0.00000000000', '90.00000000000', '1800.00000000000', '2011-02-17', '14:33:01', 'ven-id-16', 68, 20),
+('mkt-69', 'kar-6', 'tie-1', 0, 1, 19, '90.00000000000', '0.00000000000', '90.00000000000', '1710.00000000000', '2011-02-17', '14:33:01', 'ven-id-16', 69, 19),
+('mkt-7', 'kar-7', 'tie-1', 2, 0, 2, '90.00000000000', '180.00000000000', '0.00000000000', '180.00000000000', '2011-01-31', '20:41:10', 'ing-10', 7, 1),
+('mkt-70', 'kar-6', 'tie-1', 0, 1, 18, '90.00000000000', '0.00000000000', '90.00000000000', '1620.00000000000', '2011-02-17', '14:33:01', 'ven-id-16', 70, 17),
+('mkt-71', 'kar-10', 'tie-1', 0, 1, 27, '90.00000000000', '0.00000000000', '90.00000000000', '2430.00000000000', '2011-02-18', '00:19:17', 'ven-id-17', 71, 26),
+('mkt-72', 'kar-1', 'tie-1', 0, 1, 14, '90.00000000000', '0.00000000000', '90.00000000000', '1260.00000000000', '2011-02-20', '21:04:02', 'ven-id-18', 72, 13),
+('mkt-73', 'kar-1', 'tie-1', 0, 1, 13, '90.00000000000', '0.00000000000', '90.00000000000', '1170.00000000000', '2011-02-20', '21:04:02', 'ven-id-18', 73, 13),
+('mkt-74', 'kar-5', 'tie-1', 0, 1, 17, '90.00000000000', '0.00000000000', '90.00000000000', '1530.00000000000', '2011-03-08', '18:11:25', 'ven-id-19', 74, 17),
+('mkt-75', 'kar-10', 'tie-1', 0, 1, 26, '90.00000000000', '0.00000000000', '90.00000000000', '2340.00000000000', '2011-03-08', '18:11:25', 'ven-id-19', 75, 25),
+('mkt-76', 'kar-7', 'tie-1', 0, 1, 1, '90.00000000000', '0.00000000000', '90.00000000000', '90.00000000000', '2011-03-08', '18:12:26', 'ven-id-20', 76, 1),
+('mkt-77', 'kar-8', 'tie-1', 0, 1, 26, '90.00000000000', '0.00000000000', '90.00000000000', '2340.00000000000', '2011-03-08', '18:12:26', 'ven-id-20', 77, 26),
+('mkt-78', 'kar-9', 'tie-1', 0, 1, 15, '90.00000000000', '0.00000000000', '90.00000000000', '1350.00000000000', '2011-03-08', '18:12:26', 'ven-id-20', 78, 14),
+('mkt-79', 'kar-9', 'tie-1', 0, 1, 14, '90.00000000000', '0.00000000000', '90.00000000000', '1260.00000000000', '2011-03-08', '18:23:10', 'ven-id-21', 79, 14),
+('mkt-8', 'kar-1', 'tie-1', 0, 1, 19, '90.00000000000', '0.00000000000', '90.00000000000', '1710.00000000000', '2011-01-31', '20:49:42', 'ven-id-1', 8, 18),
+('mkt-80', 'kar-6', 'tie-1', 0, 1, 17, '90.00000000000', '0.00000000000', '90.00000000000', '1530.00000000000', '2011-03-08', '18:23:10', 'ven-id-21', 80, 16),
+('mkt-81', 'kar-10', 'tie-1', 0, 1, 25, '90.00000000000', '0.00000000000', '90.00000000000', '2250.00000000000', '2011-03-08', '18:23:10', 'ven-id-21', 81, 24),
+('mkt-82', 'kar-6', 'tie-1', 0, 1, 16, '90.00000000000', '0.00000000000', '90.00000000000', '1440.00000000000', '2011-03-08', '23:11:17', 'ven-id-22', 82, 15),
+('mkt-83', 'kar-6', 'tie-1', 0, 1, 15, '90.00000000000', '0.00000000000', '90.00000000000', '1350.00000000000', '2011-03-09', '00:07:39', 'ven-id-23', 83, 14),
+('mkt-84', 'kar-6', 'tie-1', 0, 1, 14, '90.00000000000', '0.00000000000', '90.00000000000', '1260.00000000000', '2011-03-09', '17:28:52', 'ven-id-24', 84, 14),
+('mkt-85', 'kar-1', 'tie-1', 0, 1, 13, '90.00000000000', '0.00000000000', '90.00000000000', '1170.00000000000', '2011-03-10', '10:18:38', 'ven-id-25', 85, 12),
+('mkt-86', 'kar-1', 'tie-1', 0, 1, 12, '90.00000000000', '0.00000000000', '90.00000000000', '1080.00000000000', '2011-03-18', '00:26:57', 'ven-id-1', 86, 12),
+('mkt-87', 'kar-11', 'tie-1', 1, 0, 1, '90.00000000000', '90.00000000000', '0.00000000000', '90.00000000000', '2011-03-23', '21:12:11', 'ing-12', 87, 1),
+('mkt-88', 'kar-12', 'tie-1', 2, 0, 2, '90.00000000000', '180.00000000000', '0.00000000000', '180.00000000000', '2011-03-23', '21:12:11', 'ing-12', 88, 2),
+('mkt-89', 'kar-13', 'tie-1', 3, 0, 3, '90.00000000000', '270.00000000000', '0.00000000000', '270.00000000000', '2011-03-23', '21:12:11', 'ing-12', 89, 3),
+('mkt-9', 'kar-2', 'tie-1', 0, 1, 19, '90.00000000000', '0.00000000000', '90.00000000000', '1710.00000000000', '2011-01-31', '20:50:29', 'ven-id-2', 9, 18),
+('mkt-90', 'kar-10', 'tie-1', 0, 1, 24, '90.00000000000', '0.00000000000', '90.00000000000', '2160.00000000000', '2011-03-27', '19:02:41', 'ven-id-2', 90, 23),
+('mkt-91', 'kar-10', 'tie-1', 0, 1, 23, '90.00000000000', '0.00000000000', '90.00000000000', '2070.00000000000', '2011-04-01', '22:53:22', 'ven-id-3', 91, 23),
+('mkt-92', 'kar-13', 'tie-1', 0, 1, 2, '90.00000000000', '0.00000000000', '90.00000000000', '0.00000000000', '2011-04-13', NULL, 'tra-1', 92, 2),
+('mkt-93', 'kar-13', 'tie-1', 1, 0, 0, '90.00000000000', '90.00000000000', '0.00000000000', '0.00000000000', '2011-04-13', NULL, 'tra-1', 93, 1),
+('mkt-94', 'kar-13', 'tie-1', 0, 1, 1, '90.00000000000', '0.00000000000', '90.00000000000', '0.00000000000', '2011-04-13', NULL, 'tra-2', 94, 1),
+('mkt-95', 'kar-13', 'tie-1', 1, 0, 0, '90.00000000000', '90.00000000000', '0.00000000000', '0.00000000000', '2011-04-13', NULL, 'tra-2', 95, 1),
+('mkt-96', 'kar-14', 'tie-1', 2, 0, 2, '90.00000000000', '180.00000000000', '0.00000000000', '180.00000000000', '2011-04-17', '16:55:23', 'ing-20', 96, 2),
+('mkt-97', 'kar-15', 'tie-1', 2, 0, 2, '90.00000000000', '180.00000000000', '0.00000000000', '180.00000000000', '2011-04-17', '16:55:23', 'ing-20', 97, 2),
+('mkt-98', 'kar-16', 'tie-1', 2, 0, 2, '90.00000000000', '180.00000000000', '0.00000000000', '180.00000000000', '2011-04-17', '16:55:23', 'ing-20', 98, 2),
+('mkt-99', 'kar-17', 'tie-1', 2, 0, 2, '90.00000000000', '180.00000000000', '0.00000000000', '180.00000000000', '2011-04-17', '16:55:23', 'ing-20', 99, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `movimientoplanilla`
+--
+
+CREATE TABLE `movimientoplanilla` (
+  `numero` int(11) NOT NULL default '0',
+  `idplanillaemitida` varchar(20) NOT NULL,
+  `no_planilla` varchar(20) default NULL,
+  `idempresa` varchar(20) default NULL,
+  `fecha` date default NULL,
+  `detalle` varchar(12) default NULL,
+  `emitido` int(1) NOT NULL default '0',
+  `meses` int(2) NOT NULL default '0',
+  `saldototal` int(2) NOT NULL default '0',
+  `tipoplanilla` varchar(10) NOT NULL,
+  `tiporegistro` varchar(10) NOT NULL,
+  PRIMARY KEY  (`numero`),
+  UNIQUE KEY `numero` (`numero`),
+  KEY `fk_relationship_45` (`idplanillaemitida`),
+  KEY `fk_relationship_46` (`idempresa`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `movimientoplanilla`
+--
+
+INSERT INTO `movimientoplanilla` (`numero`, `idplanillaemitida`, `no_planilla`, `idempresa`, `fecha`, `detalle`, `emitido`, `meses`, `saldototal`, `tipoplanilla`, `tiporegistro`) VALUES
+(1, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'registro', 0, 2, 270, 'SS', 'E'),
+(2, '', '02/2011', 'epr-7', '2011-02-17', 'emision', 1, 2, 270, 'SS', 'E'),
+(3, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 4, 200, 'SS', 'M'),
+(4, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(5, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(6, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(7, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(8, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(9, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(10, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(11, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(12, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(13, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(14, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(15, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(16, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(17, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(18, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(19, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(20, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(21, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(22, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(23, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(24, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(25, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(26, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(27, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(28, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(29, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(30, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(31, '', '02/2011', 'epr-7', '2011-02-17', 'emision', 1, 0, 0, 'SS', 'E'),
+(32, '', '02/2011', 'epr-7', '2011-02-17', 'emision', 1, 0, 0, 'SS', 'E'),
+(33, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(34, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(35, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(36, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(37, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 6, 200, 'SS', 'M'),
+(38, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(39, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(40, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(41, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(42, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(43, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(44, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(45, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(46, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(47, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(48, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(49, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(50, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(51, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(52, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(53, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(54, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(55, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(56, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(57, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(58, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(59, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(60, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(61, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(62, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(63, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(64, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(65, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(66, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(67, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(68, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(69, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(70, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(71, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(72, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(73, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(74, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(75, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(76, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(77, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(78, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(79, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(80, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(81, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(82, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(83, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(84, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(85, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(86, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(87, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(88, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(89, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(90, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(91, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(92, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(93, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(94, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(95, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(96, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(97, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(98, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(99, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(100, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(101, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(102, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(103, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(104, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(105, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(106, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(107, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(108, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(109, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(110, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(111, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(112, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(113, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(114, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(115, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(116, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(117, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(118, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(119, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(120, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(121, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(122, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(123, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(124, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(125, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(126, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(127, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(128, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(129, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(130, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(131, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(132, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(133, 'pe-1', '02/2011', 'epr-7', '2011-02-17', 'modificacion', 1, 7, 200, 'SS', 'M'),
+(134, 'pe-2', '02/2011', 'epr-7', '2011-02-18', 'modificacion', 1, 2, 90, 'SS', 'M'),
+(135, 'pe-2', '02/2011', 'epr-7', '2011-02-18', 'modificacion', 1, 2, 90, 'SS', 'M'),
+(136, 'pe-1', '02/2011', 'epr-7', '2011-02-18', 'modificacion', 1, 4, 200, 'SS', 'M'),
+(137, 'pe-1', '02/2011', 'epr-7', '2011-02-18', 'modificacion', 1, 4, 200, 'SS', 'M'),
+(138, 'pe-1', '02/2011', 'epr-7', '2011-02-18', 'modificacion', 1, 4, 200, 'SS', 'M'),
+(139, 'pe-1', '02/2011', 'epr-7', '2011-02-18', 'modificacion', 1, 5, 200, 'SS', 'M'),
+(140, '', '03/2011', 'epr-7', '2011-02-18', 'emision', 1, 0, 0, 'SS', 'E'),
+(141, '', '03/2011', 'epr-6', '2011-02-18', 'emision', 1, 0, 0, 'SS', 'E'),
+(142, '', '04/2011', 'epr-7', '2011-03-07', 'emision', 1, 0, 0, 'SS', 'E'),
+(143, 'pe-8', '05/2011', 'epr-7', NULL, 'registro', 0, 0, 0, 'SS', 'E'),
+(144, 'pe-9', '02/2011', 'epr-1', '2011-03-08', 'registro', 0, 1, 180, 'SS', 'E'),
+(145, 'pe-10', '03/2011', 'epr-8', '2011-03-08', 'registro', 0, 2, 540, 'SS', 'E'),
+(146, '', '03/2011', 'epr-8', '2011-03-09', 'emision', 1, 4, 470, 'SS', 'E'),
+(149, 'pe-14', '06/2011', 'epr-7', '2011-03-10', 'registro', 0, 1, 90, 'SS', 'E'),
+(148, '', '03/2011', 'epr-8', '2011-03-09', 'emision', 1, 1, 0, 'SS', 'E'),
+(150, '', '06/2011', 'epr-7', '2011-03-14', 'emision', 1, 0, 0, 'SS', 'E'),
+(151, '', '07/2011', 'epr-7', '2011-03-17', 'emision', 1, 0, 0, 'SS', 'E'),
+(152, 'pe-1', '03/2011', 'epr-5', '2011-03-18', 'registro', 0, 1, 90, 'SS', 'E'),
+(153, '', '03/2011', 'epr-5', '2011-03-21', 'emision', 1, 1, 90, 'SS', 'E'),
+(154, '', '03/2011', 'epr-6', '2011-03-22', 'emision', 1, 0, 0, 'SS', 'E'),
+(155, 'pe-4', '04/2011', 'epr-6', '2011-04-15', 'registro', 0, 1, 90, 'SS', 'E');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `muestra`
+--
+
+CREATE TABLE `muestra` (
+  `idmuestra` varchar(20) NOT NULL,
+  `idmuestrageneral` varchar(20) NOT NULL,
+  `idmodelo` varchar(20) NOT NULL,
+  `idmarca` varchar(20) NOT NULL,
+  `idcoleccion` varchar(20) default NULL,
+  `detalle` varchar(50) NOT NULL,
+  `coleccion` varchar(200) default NULL,
+  `responsable` varchar(50) default NULL,
+  `codigo` varchar(20) default NULL,
+  `pares` int(11) default NULL,
+  `unidades` int(11) default NULL,
+  `numero` int(11) default NULL,
+  `almacen1` varchar(20) default NULL,
+  `almacen2` varchar(20) default NULL,
+  `almacen3` varchar(20) default NULL,
+  `almacen4` varchar(20) default NULL,
+  `almacen5` varchar(20) default NULL,
+  `almacen6` varchar(20) default NULL,
+  `almacen7` varchar(20) default NULL,
+  `almacen8` varchar(20) default NULL,
+  `almacen9` varchar(20) default NULL,
+  `estado` varchar(20) NOT NULL default 'sin confirmar',
+  PRIMARY KEY  (`idmuestra`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `muestra`
+--
+
+INSERT INTO `muestra` (`idmuestra`, `idmuestrageneral`, `idmodelo`, `idmarca`, `idcoleccion`, `detalle`, `coleccion`, `responsable`, `codigo`, `pares`, `unidades`, `numero`, `almacen1`, `almacen2`, `almacen3`, `almacen4`, `almacen5`, `almacen6`, `almacen7`, `almacen8`, `almacen9`, `estado`) VALUES
+('mu-1', 'mue-1', 'mod-1', 'mar-2', 'col-1', '', 'invierno', NULL, '10521', 1, 2, 1, '1/alm-2', '1/alm-3', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'sin confirmar');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `muestras`
+--
+
+CREATE TABLE `muestras` (
+  `idmuestra` varchar(20) NOT NULL,
+  `idmarca` varchar(20) default NULL,
+  `idcoleccion` varchar(20) NOT NULL,
+  `idalmacen` varchar(20) NOT NULL,
+  `idusuario` varchar(20) NOT NULL,
+  `observacion` varchar(200) default NULL,
+  `totalpares` int(20) NOT NULL,
+  `totalcalzados` int(20) NOT NULL,
+  `responsable` varchar(50) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  `coleccion` varchar(20) default NULL,
+  PRIMARY KEY  (`idmuestra`),
+  KEY `fk_relationship_35` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `muestras`
+--
+
+INSERT INTO `muestras` (`idmuestra`, `idmarca`, `idcoleccion`, `idalmacen`, `idusuario`, `observacion`, `totalpares`, `totalcalzados`, `responsable`, `fecha`, `hora`, `numero`, `estado`, `coleccion`) VALUES
+('mue-1', 'mar-2', 'col-1', 'alm-2', 'usr-1000', 'ingresoa kardex', 1, 2, 'usr-1000', NULL, NULL, 1, 'Activo', 'invierno');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `numeropedido`
+--
+
+CREATE TABLE `numeropedido` (
+  `idnumero` int(11) NOT NULL auto_increment,
+  `idmarca` varchar(20) NOT NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idnumero`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=77 ;
+
+--
+-- Volcar la base de datos para la tabla `numeropedido`
+--
+
+INSERT INTO `numeropedido` (`idnumero`, `idmarca`, `numero`) VALUES
+(1, 'mar-1', 0),
+(2, 'mar-1', 1),
+(3, 'mar-1', 2),
+(4, 'mar-1', 3),
+(5, 'mar-1', 4),
+(6, 'mar-1', 5),
+(7, 'mar-1', 6),
+(8, 'mar-1', 7),
+(9, 'mar-1', 8),
+(10, 'mar-2', 2),
+(11, 'mar-2', 3),
+(12, 'mar-2', 4),
+(13, 'mar-2', 5),
+(14, 'mar-2', 6),
+(15, 'mar-2', 7),
+(16, 'mar-2', 8),
+(17, 'mar-2', 9),
+(18, 'mar-2', 10),
+(19, 'mar-2', 11),
+(20, 'mar-2', 12),
+(21, 'mar-2', 13),
+(22, 'mar-2', 14),
+(23, 'mar-2', 15),
+(24, 'mar-2', 16),
+(25, 'mar-2', 17),
+(26, 'mar-2', 18),
+(27, 'mar-2', 19),
+(28, 'mad-1', 1),
+(29, 'mar-2', 20),
+(30, 'mar-2', 21),
+(31, 'mar-2', 22),
+(32, 'mar-2', 23),
+(33, 'mar-2', 24),
+(34, 'mar-2', 25),
+(36, 'mar-2', 26),
+(37, 'mar-2', 27),
+(38, 'mar-2', 28),
+(39, 'mar-2', 29),
+(40, 'mar-2', 30),
+(41, 'mar-2', 31),
+(42, 'mar-2', 32),
+(43, 'mar-2', 33),
+(44, 'mar-2', 34),
+(45, 'mar-2', 35),
+(46, 'mar-2', 36),
+(47, 'mar-2', 37),
+(48, 'mar-2', 38),
+(49, 'mar-2', 39),
+(50, 'mad-1', 2),
+(51, 'mad-1', 3),
+(52, 'mad-1', 4),
+(53, 'mad-1', 5),
+(54, 'mad-1', 6),
+(55, 'mad-1', 7),
+(56, 'mad-1', 8),
+(57, 'mar-2', 40),
+(58, 'mar-2', 41),
+(59, 'mad-1', 9),
+(60, 'mad-1', 10),
+(61, 'mar-2', 42),
+(62, 'mar-2', 43),
+(63, 'mar-2', 44),
+(64, 'mar-2', 45),
+(65, 'mar-6', 1),
+(66, 'mar-3', 1),
+(67, 'mar-4', 1),
+(68, 'mar-5', 1),
+(69, 'mar-5', 2),
+(70, 'mar-3', 2),
+(71, 'mar-2', 46),
+(72, 'mar-2', 47),
+(73, 'mar-2', 48),
+(74, 'mar-2', 49),
+(75, 'mar-2', 50),
+(76, 'mar-1', 9);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `numerorecibo`
+--
+
+CREATE TABLE `numerorecibo` (
+  `idnumero` int(11) NOT NULL auto_increment,
+  `iddetalle` varchar(20) NOT NULL,
+  `numerorecibo` int(11) default NULL,
+  `fecha` date default NULL,
+  `observacion` varchar(20) default NULL,
+  `gestion` varchar(20) default NULL,
+  `variable` int(1) NOT NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idnumero`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+--
+-- Volcar la base de datos para la tabla `numerorecibo`
+--
+
+INSERT INTO `numerorecibo` (`idnumero`, `iddetalle`, `numerorecibo`, `fecha`, `observacion`, `gestion`, `variable`, `numero`) VALUES
+(1, '', 10000, NULL, 'nuevo', '01/2011', 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `pagocredito`
+--
+
+CREATE TABLE `pagocredito` (
+  `idpagocredito` varchar(20) NOT NULL,
+  `idtienda` varchar(20) default NULL,
+  `idcredito` varchar(20) default NULL,
+  `idempresa` varchar(20) default NULL,
+  `idcliente` varchar(20) default NULL,
+  `idempleado` varchar(20) default NULL,
+  `monto` decimal(12,2) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `observacion` varchar(20) default NULL,
+  `validado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `arqueo` int(1) NOT NULL,
+  `tipopago` varchar(20) NOT NULL default 'ingreso',
+  `recibo` int(20) NOT NULL,
+  `cobroempresa` varchar(20) NOT NULL,
+  `idcobroempresa` varchar(20) NOT NULL,
+  PRIMARY KEY  (`idpagocredito`),
+  KEY `fk_relationship_42` (`idcredito`),
+  KEY `fk_relationship_43` (`idcliente`),
+  KEY `fk_relationship_44` (`idempresa`),
+  KEY `fk_relationship_45` (`idtienda`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `pagocredito`
+--
+
+INSERT INTO `pagocredito` (`idpagocredito`, `idtienda`, `idcredito`, `idempresa`, `idcliente`, `idempleado`, `monto`, `fecha`, `hora`, `observacion`, `validado`, `numero`, `arqueo`, `tipopago`, `recibo`, `cobroempresa`, `idcobroempresa`) VALUES
+('pagcred-1', 'tie-1', '03/2011', 'epr-5', '8', 'emp-1', NULL, '2011-03-18', '00:26:57', 'ven-id-1', 'NO', 1, 0, 'ingreso', 0, 'papeleta', ''),
+('pagcred-2', 'tie-1', '04/2011', 'epr-5', '7', 'emp-1', '90.00', '2011-03-21', '18:15:51', 'ndjdnj', 'NO', 2, 0, 'ingreso', 123, 'tienda', ''),
+('pagcred-3', 'tie-1', '04/2011', 'epr-5', '7', 'emp-1', '20.00', '2011-03-21', '18:27:39', '99', 'NO', 3, 0, 'ingreso', 2, 'tienda', ''),
+('pagcred-4', 'tie-1', '04/2011', 'epr-6', '9', 'emp-1', NULL, '2011-04-01', '22:53:21', 'ven-id-3', 'NO', 4, 0, 'ingreso', 0, 'papeleta', '');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `parametroplanilla`
+--
+
+CREATE TABLE `parametroplanilla` (
+  `idparametro` int(11) NOT NULL auto_increment,
+  `tiempo` varchar(50) default NULL,
+  `parametro1` decimal(7,2) default NULL,
+  `parametro2` decimal(7,2) default NULL,
+  PRIMARY KEY  (`idparametro`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+
+--
+-- Volcar la base de datos para la tabla `parametroplanilla`
+--
+
+INSERT INTO `parametroplanilla` (`idparametro`, `tiempo`, `parametro1`, `parametro2`) VALUES
+(1, '1', '1.00', '199.00'),
+(2, '2', '200.00', '299.00'),
+(3, '3', '300.00', '499.00'),
+(4, '4', '500.00', '999.00'),
+(5, '5', '1000.00', '1500.00'),
+(6, '6', '1501.00', '4000.00'),
+(7, '7', '4001.00', '10000.00');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `pedidos`
+--
+
+CREATE TABLE `pedidos` (
+  `idpedido` varchar(20) NOT NULL,
+  `idmarca` varchar(20) default NULL,
+  `fecha` date default NULL,
+  `observacion` varchar(200) default NULL,
+  `totalpares` int(11) default NULL,
+  `totalcajas` int(11) default NULL,
+  `numeropedido` varchar(20) default NULL,
+  `responsable` varchar(50) default NULL,
+  `estado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `hora` time default NULL,
+  `np` int(11) default NULL,
+  PRIMARY KEY  (`idpedido`),
+  KEY `fk_relationship_34` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `pedidos`
+--
+
+INSERT INTO `pedidos` (`idpedido`, `idmarca`, `fecha`, `observacion`, `totalpares`, `totalcajas`, `numeropedido`, `responsable`, `estado`, `numero`, `hora`, `np`) VALUES
+('ped-1', 'mar-2', '2011-03-30', NULL, 4, 1, '32/2011', 'usr-1000', 'COMPLETADO', 1, '10:23:11', NULL),
+('ped-10', 'mar-2', '2011-04-23', NULL, 12, 1, '47/2011', 'usr-1000', 'ACTIVO', 10, '10:08:37', NULL),
+('ped-2', 'mar-2', '2011-03-30', NULL, 12, 1, '35/2011', 'usr-1000', 'COMPLETADO', 2, '19:03:52', NULL),
+('ped-3', 'mar-2', '2011-03-31', NULL, 22, 2, '37/2011', 'usr-1000', 'EN PROCESO', 3, '19:06:29', NULL),
+('ped-4', 'mar-2', '2011-04-09', NULL, 12, 1, '39/2011', 'usr-1000', 'ACTIVO', 4, '18:52:40', NULL),
+('ped-5', 'mar-2', '2011-04-17', NULL, 6, 1, '40/2011', 'usr-1000', 'ACTIVO', 5, '14:47:38', NULL),
+('ped-6', 'mar-2', '2011-04-17', NULL, 6, 1, '40/2011', 'usr-1000', 'ACTIVO', 6, '16:02:36', NULL),
+('ped-7', 'mar-2', '2011-04-17', '123', 26, 1, '42/2011', 'usr-1000', 'ACTIVO', 7, '18:03:31', NULL),
+('ped-8', 'mar-2', '2011-04-22', NULL, 12, 1, '47/2011', 'usr-1000', 'ACTIVO', 8, '21:05:23', NULL),
+('ped-9', 'mar-2', '2011-04-22', NULL, 12, 1, '47/2011', 'usr-1000', 'ACTIVO', 9, '21:06:27', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `planillacredito`
+--
+
+CREATE TABLE `planillacredito` (
+  `idplanillacredito` varchar(20) NOT NULL,
+  `no_planilla` varchar(20) default NULL,
+  `codigo` varchar(20) default NULL,
+  `idventadetalle` varchar(20) default NULL,
+  `idempresa` varchar(20) default NULL,
+  `idclienteempresa` varchar(20) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `pago1` decimal(7,2) default NULL,
+  `pago2` decimal(7,2) default NULL,
+  `pago3` decimal(7,2) default NULL,
+  `pago4` decimal(7,2) default NULL,
+  `pago5` decimal(7,2) default NULL,
+  `pago6` decimal(7,2) default NULL,
+  `pago7` decimal(7,2) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idplanillacredito`),
+  KEY `fk_relationship_42` (`idclienteempresa`),
+  KEY `fk_relationship_43` (`idempresa`),
+  KEY `idventadetalle` (`idventadetalle`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `planillacredito`
+--
+
+INSERT INTO `planillacredito` (`idplanillacredito`, `no_planilla`, `codigo`, `idventadetalle`, `idempresa`, `idclienteempresa`, `fecha`, `hora`, `pago1`, `pago2`, `pago3`, `pago4`, `pago5`, `pago6`, `pago7`, `numero`) VALUES
+('plan-1', 'pla-1', 'cre-1', 'ven-id-4', 'epr-1000', '2', '2010-12-05', '23:22:50', '90.00', '0.00', '0.00', '0.00', '0.00', '0.00', '0.00', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `planillaemitida`
+--
+
+CREATE TABLE `planillaemitida` (
+  `idplanillaemitida` varchar(20) NOT NULL,
+  `no_planilla` varchar(20) default NULL,
+  `idempresa` varchar(20) default NULL,
+  `idclienteempresa` varchar(20) default NULL,
+  `fechaemitida` date default NULL,
+  `fechamodifica` date NOT NULL,
+  `fechareimpresion` date NOT NULL,
+  `hora` time default NULL,
+  `ventasmes` decimal(7,2) NOT NULL,
+  `pares` varchar(10) NOT NULL default '0',
+  `mes1` varchar(8) default NULL,
+  `pago1` int(6) default '0',
+  `cobro1` decimal(7,2) default '0.00',
+  `mes2` varchar(8) default NULL,
+  `pago2` int(6) default '0',
+  `cobro2` decimal(7,2) default '0.00',
+  `mes3` varchar(8) default NULL,
+  `pago3` int(6) default '0',
+  `cobro3` decimal(7,2) default '0.00',
+  `mes4` varchar(8) default NULL,
+  `pago4` int(6) default '0',
+  `cobro4` decimal(7,2) default '0.00',
+  `mes5` varchar(8) default NULL,
+  `pago5` int(6) default '0',
+  `cobro5` decimal(7,2) default '0.00',
+  `mes6` varchar(8) default NULL,
+  `pago6` int(6) default '0',
+  `cobro6` decimal(7,2) default '0.00',
+  `mes7` varchar(8) default NULL,
+  `pago7` int(6) default '0',
+  `cobro7` decimal(7,2) default '0.00',
+  `total` decimal(7,2) NOT NULL default '0.00',
+  `emitido` int(1) NOT NULL default '0',
+  `meses` int(2) NOT NULL default '0',
+  `tipo` varchar(10) NOT NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idplanillaemitida`),
+  KEY `fk_relationship_42` (`idclienteempresa`),
+  KEY `fk_relationship_43` (`idempresa`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `planillaemitida`
+--
+
+INSERT INTO `planillaemitida` (`idplanillaemitida`, `no_planilla`, `idempresa`, `idclienteempresa`, `fechaemitida`, `fechamodifica`, `fechareimpresion`, `hora`, `ventasmes`, `pares`, `mes1`, `pago1`, `cobro1`, `mes2`, `pago2`, `cobro2`, `mes3`, `pago3`, `cobro3`, `mes4`, `pago4`, `cobro4`, `mes5`, `pago5`, `cobro5`, `mes6`, `pago6`, `cobro6`, `mes7`, `pago7`, `cobro7`, `total`, `emitido`, `meses`, `tipo`, `numero`) VALUES
+('pe-1', '03/2011', 'epr-5', '7', '2011-03-21', '0000-00-00', '0000-00-00', '21:11:56', '90.00', '1', '03/2011', 90, '0.00', '04/2011', 0, '0.00', '05/2011', 0, '0.00', '06/2011', 0, '0.00', '07/2011', 0, '0.00', '08/2011', 0, '0.00', '09/2011', 0, '0.00', '90.00', 1, 1, 'N', 1),
+('pe-2', '04/2011', 'epr-5', '7', NULL, '0000-00-00', '0000-00-00', '17:58:55', '90.00', '1', '04/2011', 90, '0.00', '05/2011', 0, '0.00', '06/2011', 0, '0.00', '07/2011', 0, '0.00', '08/2011', 0, '0.00', '09/2011', 0, '0.00', '010/2011', 0, '0.00', '90.00', 0, 1, 'P', 2),
+('pe-3', '04/2011', 'epr-6', NULL, NULL, '0000-00-00', '0000-00-00', '19:24:27', '0.00', '0', '04/2011', 0, '0.00', '05/2011', 0, '0.00', '06/2011', 0, '0.00', '07/2011', 0, '0.00', '08/2011', 0, '0.00', '09/2011', 0, '0.00', '010/2011', 0, '0.00', '0.00', 0, 0, 'P', 3),
+('pe-4', '04/2011', 'epr-6', '9', NULL, '0000-00-00', '0000-00-00', '22:12:24', '90.00', '1', '04/2011', 90, '0.00', '05/2011', 0, '0.00', '06/2011', 0, '0.00', '07/2011', 0, '0.00', '08/2011', 0, '0.00', '09/2011', 0, '0.00', '010/2011', 0, '0.00', '90.00', 0, 1, 'N', 4);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `precio_modelo`
+--
+
+CREATE TABLE `precio_modelo` (
+  `idpreciomodelo` varchar(20) NOT NULL,
+  `idprecio` char(10) default NULL,
+  `idmodelo` varchar(20) default NULL,
+  `precio` decimal(11,2) default NULL,
+  `fecha` date default NULL,
+  `responsable` varchar(50) default NULL,
+  `diferencia` int(11) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idpreciomodelo`),
+  KEY `fk_relationship_27` (`idmodelo`),
+  KEY `fk_relationship_28` (`idprecio`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `precio_modelo`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `proveedores`
+--
+
+CREATE TABLE `proveedores` (
+  `idproveedor` varchar(20) NOT NULL,
+  `codigo` varchar(30) default NULL,
+  `nombre` varchar(50) default NULL,
+  `telefono` varchar(20) default NULL,
+  `representante` varchar(50) default NULL,
+  `fax` varchar(30) NOT NULL,
+  `ciudad` varchar(20) default NULL,
+  `pais` varchar(30) default NULL,
+  `direccion` varchar(100) default NULL,
+  `web` varchar(30) default NULL,
+  `email` varchar(30) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idproveedor`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `proveedores`
+--
+
+INSERT INTO `proveedores` (`idproveedor`, `codigo`, `nombre`, `telefono`, `representante`, `fax`, `ciudad`, `pais`, `direccion`, `web`, `email`, `numero`) VALUES
+('prv-1', 'RAMARN', 'RAMARIN', '55 51 35658100', NULL, '', NULL, 'BRASIL', NULL, NULL, 'www.ramarin.com', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `rol`
+--
+
+CREATE TABLE `rol` (
+  `idrol` varchar(20) NOT NULL,
+  `nombre` varchar(30) default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  `seguridad` varchar(20) default NULL,
+  PRIMARY KEY  (`idrol`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `rol`
+--
+
+INSERT INTO `rol` (`idrol`, `nombre`, `numero`, `estado`, `seguridad`) VALUES
+('rol-1000', 'administrador', 1000, 'Activo', NULL),
+('rol-1001', 'administrador almacen', 1001, 'Activo', NULL),
+('rol-1002', 'administrador tienda', 1002, 'Activo', NULL),
+('rol-1003', 'Prueba', 1003, 'Activo', 'admin1276088696'),
+('rol-1004', 'cajero', 1004, 'Activo', 'admin1276056238');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `rolfuncion`
+--
+
+CREATE TABLE `rolfuncion` (
+  `idrol` varchar(20) NOT NULL,
+  `idfuncion` varchar(20) NOT NULL,
+  PRIMARY KEY  (`idrol`,`idfuncion`),
+  KEY `fk_relationship_24` (`idfuncion`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `rolfuncion`
+--
+
+INSERT INTO `rolfuncion` (`idrol`, `idfuncion`) VALUES
+('rol-1000', 'fun1000'),
+('rol-1003', 'fun1000'),
+('rol-1000', 'fun1001'),
+('rol-1000', 'fun1002'),
+('rol-1000', 'fun1003'),
+('rol-1000', 'fun1004'),
+('rol-1000', 'fun1005'),
+('rol-1000', 'fun1006'),
+('rol-1000', 'fun1007'),
+('rol-1000', 'fun1008'),
+('rol-1004', 'fun1008'),
+('rol-1000', 'fun1009'),
+('rol-1003', 'fun1009'),
+('rol-1000', 'fun1010'),
+('rol-1000', 'fun1011'),
+('rol-1000', 'fun1012'),
+('rol-1000', 'fun1013'),
+('rol-1000', 'fun1014'),
+('rol-1000', 'fun1015'),
+('rol-1000', 'fun1019'),
+('rol-1000', 'fun1020'),
+('rol-1000', 'fun10201'),
+('rol-1000', 'fun10202'),
+('rol-1000', 'fun10203'),
+('rol-1000', 'fun10204'),
+('rol-1000', 'fun1030'),
+('rol-1000', 'fun1031'),
+('rol-1000', 'fun1040'),
+('rol-1000', 'fun1041'),
+('rol-1000', 'fun1042'),
+('rol-1000', 'fun1043'),
+('rol-1000', 'fun1044'),
+('rol-1000', 'fun1045'),
+('rol-1000', 'fun1046'),
+('rol-1000', 'fun1101'),
+('rol-1000', 'fun1102'),
+('rol-1000', 'fun1103'),
+('rol-1000', 'fun1104'),
+('rol-1000', 'fun1105'),
+('rol-1000', 'fun1106'),
+('rol-1000', 'fun1500'),
+('rol-1000', 'fun1501'),
+('rol-1000', 'fun1502'),
+('rol-1000', 'fun1503'),
+('rol-1000', 'fun1504'),
+('rol-1000', 'fun1505'),
+('rol-1000', 'fun1506'),
+('rol-1000', 'fun1507'),
+('rol-1000', 'fun1508'),
+('rol-1000', 'fun1509'),
+('rol-1000', 'fun1510'),
+('rol-1000', 'fun1601'),
+('rol-1000', 'fun1602'),
+('rol-1000', 'fun1603'),
+('rol-1000', 'fun1604'),
+('rol-1000', 'fun1605'),
+('rol-1000', 'fun1606'),
+('rol-1000', 'fun1607'),
+('rol-1000', 'fun1608'),
+('rol-1000', 'fun1609'),
+('rol-1000', 'fun1610'),
+('rol-1000', 'fun1611'),
+('rol-1000', 'fun1701'),
+('rol-1000', 'fun1702'),
+('rol-1000', 'fun1703'),
+('rol-1000', 'fun1704'),
+('rol-1000', 'fun1705'),
+('rol-1000', 'fun1801'),
+('rol-1000', 'fun1802'),
+('rol-1000', 'fun1803'),
+('rol-1000', 'fun1804'),
+('rol-1000', 'fun2001'),
+('rol-1000', 'fun2002'),
+('rol-1000', 'fun2003'),
+('rol-1000', 'fun2005'),
+('rol-1000', 'fun2007'),
+('rol-1000', 'fun2009'),
+('rol-1000', 'fun2101'),
+('rol-1000', 'fun2201'),
+('rol-1000', 'fun2202'),
+('rol-1000', 'fun2203'),
+('rol-1000', 'fun2204'),
+('rol-1000', 'fun3001'),
+('rol-1000', 'fun3002'),
+('rol-1000', 'fun3003'),
+('rol-1000', 'fun3004'),
+('rol-1000', 'fun3009'),
+('rol-1000', 'fun3010'),
+('rol-1000', 'fun4000'),
+('rol-1000', 'fun4001'),
+('rol-1000', 'fun5001'),
+('rol-1000', 'fun5002'),
+('rol-1000', 'fun5003'),
+('rol-1000', 'fun5004'),
+('rol-1000', 'fun5005'),
+('rol-1000', 'fun5006'),
+('rol-1000', 'fun5007'),
+('rol-1000', 'fun5009'),
+('rol-1000', 'fun5011'),
+('rol-1000', 'fun5012'),
+('rol-1000', 'fun5013'),
+('rol-1000', 'fun5017'),
+('rol-1000', 'fun5020'),
+('rol-1000', 'fun6000'),
+('rol-1000', 'fun6001'),
+('rol-1000', 'fun6002'),
+('rol-1000', 'fun6003'),
+('rol-1000', 'fun6005'),
+('rol-1000', 'fun60051'),
+('rol-1000', 'fun7000'),
+('rol-1000', 'fun7002'),
+('rol-1000', 'fun7003'),
+('rol-1000', 'fun7004'),
+('rol-1000', 'fun7005'),
+('rol-1000', 'fun7006');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `salida_muestra`
+--
+
+CREATE TABLE `salida_muestra` (
+  `idsalidamuestra` varchar(20) NOT NULL,
+  `responsable` varchar(50) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `observacion` varchar(200) default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  `numerosalida` varchar(20) default NULL,
+  `totalpares` int(11) default NULL,
+  PRIMARY KEY  (`idsalidamuestra`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `salida_muestra`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `salida_muestra_modelo`
+--
+
+CREATE TABLE `salida_muestra_modelo` (
+  `idsalidamuestramodelo` varchar(20) NOT NULL,
+  `idmodelomuestra` varchar(20) default NULL,
+  `idsalidamuestra` varchar(20) default NULL,
+  `almacen` varchar(20) default NULL,
+  `muestra` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`idsalidamuestramodelo`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `salida_muestra_modelo`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tallamarcaentrega`
+--
+
+CREATE TABLE `tallamarcaentrega` (
+  `idtallamarca` varchar(20) NOT NULL,
+  `nombre` varchar(20) NOT NULL,
+  `idmarca` varchar(20) NOT NULL,
+  `opcion` varchar(20) NOT NULL,
+  `numero` int(11) default NULL,
+  `observacion` varchar(70) default NULL,
+  `t1` varchar(10) default NULL,
+  `t2` varchar(10) default NULL,
+  `t3` varchar(10) default NULL,
+  `t4` varchar(10) default NULL,
+  `t5` varchar(10) default NULL,
+  `t6` varchar(10) default NULL,
+  `t7` varchar(10) default NULL,
+  `t8` varchar(10) default NULL,
+  `t9` varchar(10) default NULL,
+  `t10` varchar(10) default NULL,
+  `t11` varchar(10) default NULL,
+  `t12` varchar(10) default NULL,
+  `t13` varchar(10) default NULL,
+  `t14` varchar(10) default NULL,
+  `t15` varchar(10) default NULL,
+  PRIMARY KEY  (`idtallamarca`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `tallamarcaentrega`
+--
+
+INSERT INTO `tallamarcaentrega` (`idtallamarca`, `nombre`, `idmarca`, `opcion`, `numero`, `observacion`, `t1`, `t2`, `t3`, `t4`, `t5`, `t6`, `t7`, `t8`, `t9`, `t10`, `t11`, `t12`, `t13`, `t14`, `t15`) VALUES
+('id-1', 'A', 'mar-2', '1', 1, NULL, '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30'),
+('id-2', 'B', 'mar-2', '2', 2, NULL, '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45'),
+('id-3', 'W / M', 'mar-2', '3', 3, NULL, '5', '5m', '6', '6m', '7', '7m', '8', '8m', '9', '9m', '10', '10m', '11', '11m', '12'),
+('id-4', 'GS / PS', 'mar-1', '4', 4, NULL, '3m', '4', '4m', '5', '5m', '6', '6m', '11', '12', '13', '1', '1m', '2', '2m', '3'),
+('id-5', 'TD', 'mar-1', '5', 5, NULL, '4', '5', '6', '7', '8', '9', '10', '0', '0', '0', '0', '0', '0', '0', '0');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tallas`
+--
+
+CREATE TABLE `tallas` (
+  `idtalla` int(11) NOT NULL,
+  `codigo` varchar(100) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idtalla`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `tallas`
+--
+
+INSERT INTO `tallas` (`idtalla`, `codigo`, `numero`) VALUES
+(13, '13', 13),
+(14, '14', 14),
+(15, '15', 15),
+(16, '16', 16),
+(17, '17', 17),
+(18, '18', 18),
+(19, '19', 19),
+(20, '20', 20),
+(21, '21', 21),
+(22, '22', 22),
+(23, '23', 23),
+(24, '24', 24),
+(25, '25', 25),
+(26, '26', 26),
+(27, '27', 27),
+(28, '28', 28),
+(29, '29', 29),
+(30, '30', 30),
+(31, '31', 31),
+(32, '32', 32),
+(33, '33', 33),
+(34, '34', 34),
+(35, '35', 35),
+(36, '36', 36),
+(37, '37', 37),
+(38, '38', 38),
+(39, '39', 39),
+(40, '40', 40),
+(41, '41', 41),
+(42, '42', 42),
+(43, '43', 43),
+(44, '44', 44),
+(45, '45', 45),
+(46, '46', 46),
+(47, '1', 47),
+(48, '1 1/2', 48),
+(49, '2', 48),
+(50, '2 1/2', 50),
+(51, '3', 51),
+(52, '3 1/2', 52),
+(53, '4', 53),
+(54, '4 1/2', 54),
+(55, '5', 55),
+(56, '5 1/2', 56),
+(57, '6', 57),
+(58, '6 1/2', 58),
+(59, '7', 59),
+(60, '7 1/2', 60),
+(61, '8', 61),
+(62, '8 1/2', 62),
+(63, '9', 63),
+(64, '9 1/2', 64),
+(65, '10', 65),
+(66, '10 1/2', 66),
+(67, '11', 67),
+(68, '11 1/2', 68),
+(69, '12', 69),
+(70, '12 1/2', 70);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `talla_marca`
+--
+
+CREATE TABLE `talla_marca` (
+  `idtalla` int(11) NOT NULL,
+  `idmarca` varchar(20) NOT NULL,
+  `existe` varchar(20) default NULL,
+  PRIMARY KEY  (`idtalla`,`idmarca`),
+  KEY `fk_relationship_5` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `talla_marca`
+--
+
+INSERT INTO `talla_marca` (`idtalla`, `idmarca`, `existe`) VALUES
+(33, 'mar-1', 'si'),
+(34, 'mar-1', 'si'),
+(35, 'mar-1', 'si'),
+(36, 'mar-1', 'si'),
+(37, 'mar-1', 'si'),
+(38, 'mar-1', 'si'),
+(39, 'mar-1', 'si'),
+(40, 'mar-1', 'si'),
+(41, 'mar-1', 'si'),
+(42, 'mar-1', 'si'),
+(43, 'mar-1', 'si'),
+(44, 'mar-1', 'si'),
+(45, 'mar-1', 'si');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tiendas`
+--
+
+CREATE TABLE `tiendas` (
+  `idtienda` varchar(20) NOT NULL,
+  `idalmacen` varchar(20) default NULL,
+  `codigo` varchar(20) default NULL,
+  `nombre` varchar(30) default NULL,
+  `responsable` varchar(50) default NULL,
+  `direccion` varchar(100) default NULL,
+  `telefono` varchar(20) default NULL,
+  `email` varchar(30) default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  `fax` varchar(20) default NULL,
+  PRIMARY KEY  (`idtienda`),
+  KEY `fk_relationship_29` (`idalmacen`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `tiendas`
+--
+
+INSERT INTO `tiendas` (`idtienda`, `idalmacen`, `codigo`, `nombre`, `responsable`, `direccion`, `telefono`, `email`, `numero`, `estado`, `fax`) VALUES
+('tie-1', 'alm-1', '1', 'HHH', 'usr-1000', '11', '11', NULL, 1, 'Activo', '11');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipocambio`
+--
+
+CREATE TABLE `tipocambio` (
+  `idtipocambio` varchar(20) NOT NULL,
+  `idmoneda` varchar(20) default NULL,
+  `valor` decimal(5,2) default NULL,
+  `estado` char(20) default NULL,
+  `numero` int(11) default NULL,
+  `fecha` date default NULL,
+  PRIMARY KEY  (`idtipocambio`),
+  KEY `fk_relationship_25` (`idmoneda`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `tipocambio`
+--
+
+INSERT INTO `tipocambio` (`idtipocambio`, `idmoneda`, `valor`, `estado`, `numero`, `fecha`) VALUES
+('tcp-1', 'mon-1001', '7.07', 'desactivado', 1, '2010-03-15'),
+('tcp-2', 'mon-1001', '7.05', 'desactivado', 2, '2010-03-15'),
+('tcp-3', 'mon-1001', '7.07', 'desactivado', 3, '2010-07-30'),
+('tcp-4', 'mon-1001', '7.01', 'activado', 4, '2010-07-30');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipoempleado`
+--
+
+CREATE TABLE `tipoempleado` (
+  `idtipoempleado` varchar(20) NOT NULL,
+  `nombre` varchar(20) default NULL,
+  `codigo` varchar(6) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idtipoempleado`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `tipoempleado`
+--
+
+INSERT INTO `tipoempleado` (`idtipoempleado`, `nombre`, `codigo`, `numero`) VALUES
+('tip-1000', 'VENDEDOR', 'VEN', 1000),
+('tip-1001', 'COBRADOR', 'COB', 1001),
+('tip-1002', 'EN PLANTA', 'PLN', 1002),
+('tip-1003', 'PLANTA UNO', 'VEN1', 1003),
+('tip-1004', 'TARIJA', 'TRJ', 1004),
+('tip-1005', 'VENDEDOR PLANTA CON ', 'V3', 1005),
+('tip-1006', 'VENDEDOR MAYOR', 'VMY', 1006);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipogasto`
+--
+
+CREATE TABLE `tipogasto` (
+  `idtipogasto` int(11) NOT NULL auto_increment,
+  `nombre` varchar(50) default NULL,
+  `tipogasto` varchar(1) default NULL COMMENT 'E gastos mayores a 1000Bs o gastos Fuertes\r\nT gastos menores que solo se realizaran en tiendas\r\n',
+  `detalle` varchar(300) default NULL,
+  PRIMARY KEY  (`idtipogasto`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=3 ;
+
+--
+-- Volcar la base de datos para la tabla `tipogasto`
+--
+
+INSERT INTO `tipogasto` (`idtipogasto`, `nombre`, `tipogasto`, `detalle`) VALUES
+(1, 'Alimentos', 'T', 'Alimentacion vendedoras'),
+(2, 'Pasajes', 'T', 'Pasajes');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_clientes`
+--
+
+CREATE TABLE `tipo_clientes` (
+  `idtipocliente` varchar(20) NOT NULL,
+  `nombre` varchar(30) default NULL,
+  `descripcion` varchar(200) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idtipocliente`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `tipo_clientes`
+--
+
+INSERT INTO `tipo_clientes` (`idtipocliente`, `nombre`, `descripcion`, `numero`) VALUES
+('tcl-1000', 'Cliente Mayorista', 'Cliente Mayorista', 1000),
+('tcl-1001', 'Tienda', 'Tiendas que pertenecen a Balderrama', 1001);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `traspaso`
+--
+
+CREATE TABLE `traspaso` (
+  `idtraspaso` varchar(20) NOT NULL,
+  `idtienda` varchar(20) default NULL,
+  `idempleado` varchar(20) NOT NULL,
+  `codigo` char(25) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `usuario` varchar(20) default NULL,
+  `estado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `tiendadestino` varchar(20) default NULL,
+  `numerodocumento` int(11) default NULL,
+  PRIMARY KEY  (`idtraspaso`),
+  KEY `fk_relationship_17` (`idtienda`),
+  KEY `tiendadestino` (`tiendadestino`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `traspaso`
+--
+
+INSERT INTO `traspaso` (`idtraspaso`, `idtienda`, `idempleado`, `codigo`, `fecha`, `hora`, `usuario`, `estado`, `numero`, `tiendadestino`, `numerodocumento`) VALUES
+('tra-1', 'tie-1', 'emp-1', 'T-11041', '2011-04-13', '21:12:24', 'usr-1000', 'PENDIENTE', 1, 'tie-1', 0),
+('tra-2', 'tie-1', 'emp-1', 'T-11042', '2011-04-13', '21:12:38', 'usr-1000', 'PENDIENTE', 2, 'tie-1', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuario`
+--
+
+CREATE TABLE `usuario` (
+  `idusuario` varchar(20) NOT NULL,
+  `idrol` varchar(20) default NULL,
+  `idalmacen` varchar(20) default NULL,
+  `nombre` varchar(30) default NULL,
+  `apellido1` varchar(20) default NULL,
+  `apellido2` varchar(20) default NULL,
+  `ci` varchar(20) default NULL,
+  `email` varchar(30) default NULL,
+  `telefono` varchar(20) default NULL,
+  `celular` varchar(20) default NULL,
+  `login` varchar(20) default NULL,
+  `paswd` varchar(100) default NULL,
+  `fechareg` date default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`idusuario`),
+  KEY `fk_relationship_22` (`idrol`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `usuario`
+--
+
+INSERT INTO `usuario` (`idusuario`, `idrol`, `idalmacen`, `nombre`, `apellido1`, `apellido2`, `ci`, `email`, `telefono`, `celular`, `login`, `paswd`, `fechareg`, `numero`, `estado`) VALUES
+('usr-1000', 'rol-1000', 'alm-1', 'Admin', 'admin', 'admin', '121212', 'admin@admin.com', '1234567', '1234567', 'admin', '21232f297a57a5a743894a0e4a801fc3', '2010-04-10', 1000, 'Activo'),
+('usr-1001', 'rol-1000', 'alm-1', 'HAYDEE', 'PIZA', 'CONDE', '53', NULL, '123', '79788194', 'HAYDEE', '5ce6ff76a696c8c8b6d797ec2251b215', '2011-01-27', 1001, 'Activo');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `vendedores`
+--
+
+CREATE TABLE `vendedores` (
+  `idvendedor` varchar(20) NOT NULL,
+  `idtienda` varchar(20) default NULL,
+  `codigo` varchar(30) default NULL,
+  `nombre` varchar(30) default NULL,
+  `apellido1` varchar(30) default NULL,
+  `apellido2` varchar(30) default NULL,
+  `telefono` varchar(20) default NULL,
+  `direccion` varchar(100) default NULL,
+  `numero` int(11) default NULL,
+  `fecha` date default NULL,
+  `responsable` varchar(100) default NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`idvendedor`),
+  KEY `fk_relationship_26` (`idtienda`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `vendedores`
+--
+
+INSERT INTO `vendedores` (`idvendedor`, `idtienda`, `codigo`, `nombre`, `apellido1`, `apellido2`, `telefono`, `direccion`, `numero`, `fecha`, `responsable`, `estado`) VALUES
+('ven-1', 'tie-1', 'V1', 'eddy', 'tapia', NULL, NULL, NULL, 1, NULL, 'haydee', 'Activo');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ventacreditodetalle`
+--
+
+CREATE TABLE `ventacreditodetalle` (
+  `idventacreditodetalle` varchar(40) NOT NULL,
+  `boleta` int(20) default NULL,
+  `idclienteempresa` varchar(40) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `montopapeleta` decimal(22,11) default NULL,
+  `montocredito` decimal(22,11) default NULL,
+  `cantidad` int(11) default NULL,
+  `idempresa` varchar(20) default NULL,
+  `idventa` varchar(20) default NULL,
+  `idempleado` varchar(20) default NULL,
+  `estado` varchar(20) default NULL,
+  `saldo` int(11) default NULL,
+  PRIMARY KEY  (`idventacreditodetalle`),
+  KEY `idventa` (`idventa`),
+  KEY `ventacreditodetalle_fk1` (`idempresa`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `ventacreditodetalle`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ventamayor`
+--
+
+CREATE TABLE `ventamayor` (
+  `idventamayor` varchar(20) NOT NULL,
+  `idalmacen` varchar(20) default NULL,
+  `boleta` int(20) default NULL,
+  `numero` int(20) NOT NULL,
+  `idcliente` varchar(40) default NULL,
+  `nit` varchar(40) default NULL,
+  `tipocambio` double NOT NULL,
+  `fecha` date default NULL,
+  `fecharegistro` date default NULL,
+  `hora` time default NULL,
+  `numerofactura` int(20) default NULL,
+  `responsable` varchar(20) default NULL,
+  `credito` varchar(20) default NULL,
+  `totalprecio` decimal(11,2) default NULL,
+  `totalcajas` decimal(11,2) default NULL,
+  `totalpares` decimal(11,2) default NULL,
+  `descuento` decimal(11,2) default NULL,
+  `descuentop` decimal(11,2) default NULL,
+  `montocancelado` decimal(11,2) default NULL,
+  `ingresoventasus` decimal(11,2) NOT NULL,
+  `observacion` varchar(20) default NULL,
+  `variable` int(1) NOT NULL,
+  PRIMARY KEY  (`idventamayor`),
+  KEY `idtienda` (`idalmacen`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `ventamayor`
+--
+
+INSERT INTO `ventamayor` (`idventamayor`, `idalmacen`, `boleta`, `numero`, `idcliente`, `nit`, `tipocambio`, `fecha`, `fecharegistro`, `hora`, `numerofactura`, `responsable`, `credito`, `totalprecio`, `totalcajas`, `totalpares`, `descuento`, `descuentop`, `montocancelado`, `ingresoventasus`, `observacion`, `variable`) VALUES
+('ven-1', 'mar-2', 100001, 1, 'cli-1', '6', 7.01, '2011-04-22', '2011-04-23', '23:48:23', 100001, 'usr-1000', NULL, '1080.00', '1.00', '12.00', '0.00', '0.00', '1080.00', '1080.00', '123', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ventamayordetalle`
+--
+
+CREATE TABLE `ventamayordetalle` (
+  `idventamayordetalle` varchar(20) NOT NULL,
+  `idmarca` varchar(20) NOT NULL,
+  `cantidad` decimal(10,2) NOT NULL,
+  `preciototal` decimal(10,2) NOT NULL,
+  `totalcajas` decimal(10,2) NOT NULL,
+  `totalpares` decimal(10,2) NOT NULL,
+  `precioventa` decimal(10,2) NOT NULL,
+  `preciooficina` decimal(10,2) NOT NULL,
+  `numero` int(11) default NULL,
+  `idkardexalmacen` varchar(20) default NULL,
+  `idventamayor` varchar(20) default NULL,
+  `idempleado` varchar(20) default NULL,
+  `saldo` int(11) default NULL,
+  `estado` varchar(10) NOT NULL default 'vendido',
+  PRIMARY KEY  (`idventamayordetalle`),
+  KEY `idventamayor` (`idventamayor`),
+  KEY `idventamayordetalle_fk1` (`idempleado`),
+  KEY `idkardexalmacen` (`idkardexalmacen`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `ventamayordetalle`
+--
+
+INSERT INTO `ventamayordetalle` (`idventamayordetalle`, `idmarca`, `cantidad`, `preciototal`, `totalcajas`, `totalpares`, `precioventa`, `preciooficina`, `numero`, `idkardexalmacen`, `idventamayor`, `idempleado`, `saldo`, `estado`) VALUES
+('vmd-1', 'mar-2', '12.00', '2000.00', '1.00', '12.00', '1080.00', '90.00', 1, 'kara-3', 'ven-1', 'emp-1', NULL, 'ACTIVO');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ventasdetalle`
+--
+
+CREATE TABLE `ventasdetalle` (
+  `idventadetalle` varchar(20) NOT NULL,
+  `idtienda` varchar(20) default NULL,
+  `idempresa` varchar(30) NOT NULL,
+  `boleta` int(20) default NULL,
+  `numero` int(20) NOT NULL,
+  `idclienteempresa` varchar(40) default NULL,
+  `nit` varchar(40) default NULL,
+  `nombrecliente` varchar(20) default NULL,
+  `apellidocliente` varchar(30) NOT NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `tipoventa` varchar(20) default NULL COMMENT ' CON-FACTURA= CF\r\nSIN-FACTURA = SF\r\nCON-TARJETA = CT',
+  `numerofactura` int(20) default NULL,
+  `responsable` varchar(20) default NULL,
+  `credito` varchar(20) default NULL,
+  `totalbs` decimal(11,2) default NULL,
+  `cantidad` int(11) default NULL,
+  `montoapagar` decimal(11,2) default NULL,
+  `descuento` decimal(11,2) default NULL,
+  `montocancelado` decimal(11,2) default NULL,
+  `montocanceladosus` decimal(11,2) NOT NULL,
+  `ingresoventabs` decimal(11,2) NOT NULL,
+  `ingresoventasus` decimal(11,2) NOT NULL,
+  `montopapeleta` decimal(10,2) default NULL,
+  `tipocambio` decimal(11,2) NOT NULL,
+  `observacion` varchar(20) default NULL,
+  `arqueo` int(1) NOT NULL,
+  PRIMARY KEY  (`idventadetalle`),
+  KEY `idtienda` (`idtienda`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `ventasdetalle`
+--
+
+INSERT INTO `ventasdetalle` (`idventadetalle`, `idtienda`, `idempresa`, `boleta`, `numero`, `idclienteempresa`, `nit`, `nombrecliente`, `apellidocliente`, `fecha`, `hora`, `tipoventa`, `numerofactura`, `responsable`, `credito`, `totalbs`, `cantidad`, `montoapagar`, `descuento`, `montocancelado`, `montocanceladosus`, `ingresoventabs`, `ingresoventasus`, `montopapeleta`, `tipocambio`, `observacion`, `arqueo`) VALUES
+('ven-id-1', 'tie-1', 'epr-5', 1, 1, '8', NULL, NULL, '', '2011-03-18', '00:26:57', 'SF', NULL, 'usr-1000', 'SI', '90.00', 1, '90.00', '0.00', '0.00', '0.00', '0.00', '0.00', NULL, '8.00', NULL, 0),
+('ven-id-2', 'tie-1', 'epr-0', 0, 2, '0', NULL, NULL, '', '2011-03-27', '19:02:40', 'SF', NULL, 'usr-1000', 'NO', '90.00', 1, '90.00', '0.00', '0.00', '0.00', '0.00', '0.00', NULL, '8.00', NULL, 0),
+('ven-id-3', 'tie-1', 'epr-6', 3, 3, '9', NULL, NULL, '', '2011-04-01', '22:53:21', 'SF', NULL, 'usr-1000', 'SI', '90.00', 1, '90.00', '0.00', '0.00', '0.00', '0.00', '0.00', NULL, '8.00', NULL, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `vis`
+--
+CREATE TABLE `vis` (
+`iddetallepedidotalla` int(11)
+,`idmodelo` varchar(20)
+,`talla` varchar(3)
+,`cantidad` int(11)
+,`iddetallepedido` varchar(20)
+);
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `vis`
+--
+DROP TABLE IF EXISTS `vis`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `admin`.`vis` AS select `admin`.`detallepedidotalla`.`iddetallepedidotalla` AS `iddetallepedidotalla`,`admin`.`detallepedidotalla`.`idmodelo` AS `idmodelo`,`admin`.`detallepedidotalla`.`talla` AS `talla`,`admin`.`detallepedidotalla`.`cantidad` AS `cantidad`,`admin`.`detallepedidotalla`.`iddetallepedido` AS `iddetallepedido` from `admin`.`detallepedidotalla`;
+
+--
+-- Filtros para las tablas descargadas (dump)
+--
+
+--
+-- Filtros para la tabla `clientes`
+--
+ALTER TABLE `clientes`
+  ADD CONSTRAINT `clientes_fk` FOREIGN KEY (`idciudad`) REFERENCES `ciudades` (`idciudad`),
+  ADD CONSTRAINT `fk_relationship_20` FOREIGN KEY (`idtipocliente`) REFERENCES `tipo_clientes` (`idtipocliente`);
+
+--
+-- Filtros para la tabla `codigobarramodelodetalle`
+--
+ALTER TABLE `codigobarramodelodetalle`
+  ADD CONSTRAINT `codigobarramodelodetalle_fk` FOREIGN KEY (`idkardextienda`) REFERENCES `kardextienda` (`idkardextienda`);
+
+--
+-- Filtros para la tabla `coleccion`
+--
+ALTER TABLE `coleccion`
+  ADD CONSTRAINT `coleccion_fk` FOREIGN KEY (`idmarca`) REFERENCES `marcas` (`idmarca`),
+  ADD CONSTRAINT `fk_relationship_30` FOREIGN KEY (`anio`) REFERENCES `anio` (`anio`);

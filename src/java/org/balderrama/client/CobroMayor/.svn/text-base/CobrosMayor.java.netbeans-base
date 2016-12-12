@@ -1,0 +1,583 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.CobroMayor;
+
+import com.google.gwt.json.client.JSONString;
+import com.gwtext.client.data.Record;
+import com.gwtext.client.widgets.form.DateField;
+import com.gwtext.client.widgets.form.TextArea;
+import com.gwtext.client.widgets.form.event.ComboBoxListenerAdapter;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Position;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.MessageBox;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.form.Label;
+import com.gwtext.client.widgets.grid.CheckboxSelectionModel;
+import com.gwtext.client.widgets.TabPanel;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import org.balderrama.client.util.Conector;
+import org.balderrama.client.util.Utils;
+import org.balderrama.client.MainEntryPoint;
+import org.balderrama.client.util.KMenu;
+import com.gwtext.client.widgets.form.Field;
+
+import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.form.event.TextFieldListenerAdapter;
+import java.util.Date;
+import org.balderrama.client.beans.ClienteSaldoRecibo;
+import org.balderrama.client.pedido.Pedido;
+import org.balderrama.client.util.ReporteMediaCartaChorroWindow;
+
+/**
+ *
+ * @author 
+ */
+public class CobrosMayor extends Window {
+
+   // private final int ANCHO = 300;
+    //private final int ALTO = 90;
+    private final AnchorLayoutData ANCHO_LAYOUT_DATA = new AnchorLayoutData("90%");
+    private final int WINDOW_PADDING = 5;
+    private FormPanel formPanel;
+    private ComboBox com_oficina;
+  //  private ComboBox com_oficina1;
+    private ComboBox com_marca;
+ ClienteSaldoRecibo clienteSeleccionado;
+   boolean respuesta = false;
+
+    private TextField tex_tipocambio;
+ private TextField tex_recibo;
+  private TextField tex_monto;
+ private DateField dat_fecha;
+ private TextArea are_observacion;
+
+
+    private Label label = new Label("10");
+    private Panel formpanel1;
+    private Button but_aceptarP;
+    private Button but_cancelarP;
+    private String almacenC;
+    private String tipoC;
+    private Object[][] clienteM;
+    private Object[][] marcaM;
+  //  private Object[][] reciboM;
+   private String tipocambio;
+
+    CheckboxSelectionModel cbSelectionModel;
+    private boolean nuevo;
+    //para crear un nuevo tab
+    public TabPanel tap_panel;
+    public KMenu padre;
+    public MainEntryPoint panel;
+    Pedido ped;
+    private TextField tex_nit;
+ private TextField tex_nombre;
+
+
+    public CobrosMayor(Object[][] cliente,Object[][] marca,String tipocambioM, KMenu kmenu) {
+    //public IngresoAlmacenForm(KMenu kmenu,MainEntryPoint pan) {
+        //com.google.gwt.user.client.Window.alert("Cuantas veces");
+
+        // this.padre = padre
+        padre=kmenu;
+      //  panel=pan;
+
+        marcaM = marca;
+        clienteM = cliente;
+       // reciboM = recibo;
+
+        tipocambio = tipocambioM;
+
+        //kmenu = menu;
+        String tituloTabla = "Cobros Mayor";
+        this.setClosable(true);
+        this.setId("TPfun6021");
+        setIconCls("tab-icon");
+        setAutoScroll(false);
+        setTitle(tituloTabla);
+        setAutoWidth(true);
+        setAutoHeight(true);
+        setLayout(new FitLayout());
+        setPaddings(WINDOW_PADDING);
+        setButtonAlign(Position.CENTER);
+
+        setCloseAction(Window.CLOSE);
+        //setPlain(true);
+        onModuleLoad();
+
+    }
+
+    public void onModuleLoad(){
+
+        //setId("win-Clientes");
+
+        String nombreBoton1 = "Registrar";
+        String nombreBoton2 = "Cancelar";
+
+        formPanel = new FormPanel();
+        formPanel.setBaseCls("x-plain");
+        //formPanel.setLabelWidth(ANCHO - 400);
+
+        but_aceptarP = new Button(nombreBoton1, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                              GuardarNuevoCredito();
+
+            }
+        });
+        but_cancelarP = new Button(nombreBoton2, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                CobrosMayor.this.destroy();
+                CobrosMayor.this.close();
+
+              }
+        });
+//        formpanel1 = new Panel();
+//        formpanel1.setWidth(50);
+//        formpanel1.setHeight(50);
+//        label.setHeight(50);
+//        label.setWidth(50);
+        //formpanel1.add(label);
+
+        com_oficina = new ComboBox("Cliente", "cliente",200);
+        com_marca = new ComboBox("Marca", "marca",200);
+
+ //       com_oficina1 = new ComboBox("Boletas Venta", "recibos",200);
+ tex_nit = new TextField("Buscar Boleta", "factura");
+
+        tex_nombre = new TextField("Saldo Actual", "saldo");
+
+      tex_tipocambio = new TextField("TipoCambio", "tipocambio",60);
+       tex_tipocambio.setValue(tipocambio);
+      dat_fecha = new DateField("Fecha", "d-m-Y");
+        dat_fecha.setFormat("d-m-Y");
+        dat_fecha.setId("fecha");
+        dat_fecha.setValue(new Date());
+      tex_recibo = new TextField("Num Recibo", "recibo",60);
+
+        tex_monto = new TextField("Monto pago SUS", "monto",60);
+        are_observacion = new TextArea("Observacion", "observacion");
+        //com_tipoC.setPosition(50, 50);
+
+        // formPanel.setLabelWidth(ANCHO - 400 - 5);
+     formPanel.add(tex_tipocambio);
+     formPanel.add(com_oficina);
+       formPanel.add(com_marca);
+    //  formPanel.add(com_oficina1);
+      formPanel.add(tex_nit);
+      formPanel.add(tex_nombre);
+
+      formPanel.add(dat_fecha);
+      formPanel.add(tex_recibo);
+      formPanel.add(tex_monto);
+      formPanel.add(are_observacion);
+
+
+        addButton(but_aceptarP);
+        addButton(but_cancelarP);
+        add(formPanel);
+        initCombos();
+  //   initValues();
+        addListenerskey();
+        addListeners();
+
+    }
+
+    private void addListeners() {
+            tex_nit.addListener(new TextFieldListenerAdapter() {
+
+            private FormularioSeleccionarSaldo for_cliente;
+
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.HOME) {
+                    String codigoCliente = field.getValueAsString().trim();
+                    if (codigoCliente.isEmpty() || findByCodigoCliente(codigoCliente)) {
+                        if (for_cliente == null || for_cliente.isHidden()) {
+                            showListCliente();
+                        } else {
+                            for_cliente.onFocus();
+                        }
+
+                    }
+                }
+            }
+
+            private void addListenerFormularioSeleccionarCliente() {
+                for_cliente.getLayout().getBut_aceptar().addListener(new ButtonListenerAdapter() {
+
+                    @Override
+                    public void onClick(Button button, EventObject e) {
+                        openFormularioCliente(for_cliente);
+                    //  openFormularioCliente(for_cliente);
+
+                    }
+                });
+            }
+//ojo
+
+            private boolean findByCodigoCliente(final String codigoBuscado) {
+                respuesta = false;
+                // dataProxy= new ScriptTagProxy("./php/Empresa.php?funcion=buscarclientesempresaplanilla&idempresa="+idempresa+"&planilla="+planilla);
+   String enlace = "php/CobroMayor.php?funcion=BuscarSaldoClienteporRecibo&recibo=" + codigoBuscado+"&idcliente="+ com_oficina.getValue();
+
+             //   String enlace = "php/CobroMayor.php?funcion=Bbuscarclienteporid&idcliente=" + codigoBuscado;
+                Utils.setErrorPrincipal("Cargando parametros ", "cargar");
+                final Conector conec = new Conector(enlace, false);
+
+                try {
+                    conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        private String codigoCliente;
+                        private String recibo;
+                        private String saldo;
+                        private String nombre;
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    Utils.setErrorPrincipal(mensajeR, "mensaje");
+                                    JSONValue clienteValue = jsonObject.get("resultado");
+                                    JSONObject clienteObject;
+                                    if ((clienteObject = clienteValue.isObject()) != null) {
+
+                                        codigoCliente = Utils.getStringOfJSONObject(clienteObject, "codigo");
+                                        recibo = Utils.getStringOfJSONObject(clienteObject, "factura");
+                                        saldo = Utils.getStringOfJSONObject(clienteObject, "saldo");
+
+                                        nombre = Utils.getStringOfJSONObject(clienteObject, "idcredito");
+
+
+                                        clienteSeleccionado = new ClienteSaldoRecibo(codigoBuscado, codigoCliente, nombre, saldo, recibo);
+                                        tex_nit.setValue(clienteSeleccionado.getRecibo());
+                                        tex_nombre.setValue(clienteSeleccionado.getSaldo());
+
+                                        //  tex_saldo.setValue(clienteSeleccionado.getSaldo());
+                                        //  tex_producto.focus();
+                                        respuesta = true;
+                                    } else {
+                                        //resetCamposCliente();
+
+                                        Utils.setErrorPrincipal("No se recuperaron correctamente lo valores de cliente", "error");
+                                    }
+
+                                } else {
+                                   // resetCamposCliente();
+
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                           // resetCamposCliente();
+
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+
+                        }
+                    });
+
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    //resetCamposCliente();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+
+                return respuesta;
+            }
+
+            private void showListCliente() {
+                for_cliente = new FormularioSeleccionarSaldo(com_oficina.getValue(),com_marca.getValue());
+                for_cliente.showFormulario();
+                addListenerFormularioSeleccionarCliente();
+            }
+        });
+
+    }
+
+    private void initCombos() {
+
+      com_oficina.setValueField("idcliente");
+        com_oficina.setDisplayField("nombre");
+        com_oficina.setMinChars(1);
+        com_oficina.setForceSelection(true);
+        com_oficina.setMode(ComboBox.LOCAL);
+        com_oficina.setEmptyText("Seleccione un cliente");
+        com_oficina.setLoadingText("Buscando");
+        com_oficina.setTypeAhead(true);
+        com_oficina.setSelectOnFocus(true);
+        com_oficina.setHideTrigger(true);
+        SimpleStore cotegoriaStore1 = new SimpleStore(new String[]{"idcliente", "nombre"}, clienteM);
+        cotegoriaStore1.load();
+        com_oficina.setStore(cotegoriaStore1);
+
+
+        com_marca.setValueField("idmarca");
+        com_marca.setDisplayField("nombre");
+        com_marca.setMinChars(1);
+        com_marca.setForceSelection(true);
+        com_marca.setMode(ComboBox.LOCAL);
+        com_marca.setEmptyText("Seleccione una marca");
+        com_marca.setLoadingText("Buscando");
+        com_marca.setTypeAhead(true);
+        com_marca.setSelectOnFocus(true);
+        com_marca.setHideTrigger(true);
+        final SimpleStore cotegoriaStore = new SimpleStore(new String[]{"idmarca","idcliente", "nombre"}, marcaM);
+        cotegoriaStore.load();
+        com_marca.setStore(cotegoriaStore);
+
+ com_oficina.addListener(new ComboBoxListenerAdapter() {
+
+            @Override
+            public void onSelect(ComboBox comboBox, Record record, int index) {
+                com_marca.setValue("");
+                cotegoriaStore.filter("idcliente", comboBox.getValue());
+            }
+        });
+
+
+
+    }
+
+    private void addListenerskey() {
+
+
+
+           com_oficina.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                  com_marca.focus();
+
+                }
+            }
+
+        });
+
+  com_marca.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                    dat_fecha.focus();
+                //  GuardarEditarCliente(e);
+                }
+            }
+        });
+    
+        dat_fecha.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                     tex_recibo.focus();
+                //  GuardarEditarCliente(e);
+                }
+            }
+        });
+          tex_recibo.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                     tex_monto.focus();
+                //  GuardarEditarCliente(e);
+                }
+            }
+        });
+          tex_monto.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                    are_observacion.focus();
+                //  GuardarEditarCliente(e);
+                }
+            }
+        });
+           are_observacion.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                       GuardarNuevoCredito();
+                }
+            }
+        });
+
+
+ formPanel.add(tex_tipocambio);
+     formPanel.add(com_oficina);
+       formPanel.add(com_marca);
+     // formPanel.add(com_oficina1);
+      formPanel.add(tex_nit);
+      formPanel.add(tex_nombre);
+
+      formPanel.add(dat_fecha);
+      formPanel.add(tex_recibo);
+      formPanel.add(tex_monto);
+      formPanel.add(are_observacion);
+
+
+
+    }
+    public Button getBut_aceptar() {
+        return but_aceptarP;
+    }
+    public Button getBut_cancelar() {
+        return but_cancelarP;
+    }
+   public void GuardarNuevoCredito() {
+      if (com_oficina != null){
+                    JSONObject usuarioSoU = new JSONObject();
+         //           String idcliente = bp.com_ciudad.getValue();
+        //String totalpares = tex_totalpares.getValueAsString();
+                    usuarioSoU.put("tipocambio", new JSONString(tex_tipocambio.getText()));
+                    usuarioSoU.put("marca", new JSONString(com_marca.getValue()));
+                    usuarioSoU.put("idcliente", new JSONString(com_oficina.getValue()));
+                  //  usuarioSoU.put("factura", new JSONString(com_oficina1.getValue()));
+                    usuarioSoU.put("fecha", new JSONString(dat_fecha.getText()));
+                    usuarioSoU.put("recibo", new JSONString(tex_recibo.getText()));
+                    usuarioSoU.put("monto", new JSONString(tex_monto.getText()));
+                    usuarioSoU.put("observacion", new JSONString(are_observacion.getText()));
+
+                    String datos = "resultado=" + usuarioSoU.toString();
+                    String enlace = "php/CobroMayor.php?funcion=RegistrarCobroMayor&" + datos;
+               //     String enlace = "php/Arqueo.php?funcion=registrararqueo&" + datos;
+
+                    Utils.setErrorPrincipal("Registrando el cobro", "cargar");
+                    final Conector conec = new Conector(enlace, false, "GET");
+                    try {
+                        conec.getRequestBuilder().sendRequest(datos, new RequestCallback() {
+
+                            public void onResponseReceived(Request request, Response response) {
+
+                                String data = response.getText();
+                                JSONValue jsonValue = JSONParser.parse(data);
+                                JSONObject jsonObject;
+                                if ((jsonObject = jsonValue.isObject()) != null) {
+                                    String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                    String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                    if (errorR.equalsIgnoreCase("true")) {
+                                       // padre.buscarSegunParametros();
+                                        Utils.setErrorPrincipal(mensajeR, "mensaje");
+//  String idventaG = Utils.getStringOfJSONObject(jsonObject, "resultado");
+//                            String enlTemp = "funcion=ArqueoDiarioHTML2&idcaja=" + idventaG;
+//
+//                                        verReporte(enlTemp);
+
+
+                                        CobrosMayor.this.destroy();
+                                        CobrosMayor.this.close();
+
+                                    } else {
+                                        Utils.setErrorPrincipal(mensajeR, "error");
+                                    }
+                                }
+                            }
+
+                            public void onError(Request request, Throwable exception) {
+                                Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                            }
+                        });
+                    } catch (RequestException ex) {
+                        Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                    }
+                } else {
+                    JSONObject usuarioSoU = new JSONObject();
+
+                    final String datos = "resultado=" + usuarioSoU.toString();
+                    String enlace = "php/ClienteDetalle.php?funcion=insertnuevocliente&" + datos;
+                    Utils.setErrorPrincipal("Guardando los cambios para el nuevo cliente", "cargar");
+
+
+                   final Conector conec = new Conector(enlace, false, "GET");
+                    try {
+                        conec.getRequestBuilder().sendRequest(datos, new RequestCallback() {
+
+                            public void onResponseReceived(Request request, Response response) {
+                                String data = response.getText();
+                                JSONValue jsonValue = JSONParser.parse(data);
+                                JSONObject jsonObject;
+                                if ((jsonObject = jsonValue.isObject()) != null) {
+                                    String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                    String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                    if (errorR.equalsIgnoreCase("true")) {
+                                   //     padre.buscarSegunParametros();
+                                        Utils.setErrorPrincipal(mensajeR, "mensaje");
+                        //                String fecha1 = DateUtil.format(dat_fechafin1109.getValue(), "d-m-Y");
+//                 String fecha2 = DateUtil.format(dat_fechaini1109.getValue(),"d-m-Y");
+                //proveedorJsonObject.put("fecha", new JSONString(fecha1));
+                                        String idventaG = Utils.getStringOfJSONObject(jsonObject, "resultado");
+                            String enlTemp = "funcion=ArqueoDiarioHTML&idcaja=" + idventaG;
+
+                                        verReporte(enlTemp);
+                                        CobrosMayor.this.destroy();
+                                        CobrosMayor.this.close();
+
+
+
+                                       // String enlace = "funcion=ArqueoDiarioHTML&" + datos;
+
+//String enlace = "funcion=ArqueoDiarioHTML&idalmacen=" + com_almacen.getText() + "&fecha="+fecha1+"&efec_bs="+tex_efectivo_bs.getText()+"&efec_sus="+tex_efectivo_sus.getText();
+                   // verReporte(enlace);
+
+                                    } else {
+//                                        Window.alert(mensajeR);
+                                        Utils.setErrorPrincipal(mensajeR, "error");
+                                    }
+                                }
+                            }
+
+                            public void onError(Request request, Throwable exception) {
+                                Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                            //Window.alert("Ocurrio un error al conectar con el servidor ");
+                            }
+                        });
+                    } catch (RequestException ex) {
+                        Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                    }
+                }
+
+    }
+     private void verReporte(String enlace) {
+        ReporteMediaCartaChorroWindow print = new ReporteMediaCartaChorroWindow(enlace);
+        print.show();
+    }
+
+
+    public void openFormularioCliente(FormularioSeleccionarSaldo for_cliente) {
+
+        clienteSeleccionado = for_cliente.getClienteSeleccionado();
+        if (clienteSeleccionado == null) {
+            MessageBox.alert("Por favor solo seleccione un recibo.");
+        } else {
+            for_cliente.closeFormulario();
+            tex_nit.setValue(clienteSeleccionado.getRecibo());
+            tex_nombre.setValue(clienteSeleccionado.getSaldo());
+         //   tex_apellido.setValue(clienteSeleccionado.getApellido());
+
+        //tex_producto.focus();
+        }
+    }
+
+}

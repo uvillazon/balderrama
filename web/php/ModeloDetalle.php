@@ -1,0 +1,86 @@
+<?php 
+session_name("balderrama");
+session_start();
+include("impl/ModeloDetalle.php");
+include("impl/Utils.php");
+include("bd/bd.php");
+require_once("impl/JSON.php");
+
+//if(permitido("fun1001", $_SESSION['codigo'])==true)
+//{
+    $funcion = $_GET['funcion'];
+    if($funcion == "ListarModeloDetalle"){
+        $band = false;
+        if($_GET['buscarcodigo'] != null)
+        {
+            if($band == false) {
+                $extras .= " mdt.codigo LIKE '%".$_GET['buscarcodigo']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND mdt.codigo LIKE '%".$_GET['buscarcodigo']."%'";
+            }
+        }
+        if($_GET['buscarmarca'] != null)
+        {
+            if($band == false) {
+                $extras .= " mad.nombre LIKE '%".$_GET['buscarmarca']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND mad.nombre LIKE '%".$_GET['buscarmarca']."%'";
+            }
+        }
+        if($_GET['buscarstylename'] != null)
+        {
+            if($band == false) {
+                $extras .= " mdt.stylename LIKE '%".$_GET['buscarstylename']."%' ";
+                $band = true;
+            }
+            else {
+                $extras .= " AND mdt.stylename LIKE '%".$_GET['buscarstylename']."%'";
+            }
+        }
+        if($_GET['idmarca'] != null){
+            $extras =$_GET['idmarca'];
+        }
+       
+
+
+        ListarModeloDetalle($_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], $extras, false);
+    }
+    else if($funcion == "GuardarNuevaMarca"){
+
+        InsertarNuevaMarca();
+    }
+    else if($funcion =="BuscarCiudad"){
+
+        BuscarCiudad($_GET['callback'], $_GET['_dc'],false);
+    }
+    else if($funcion =="BuscarModeloPorId"){
+        $idmodelo = $_GET['idmodelo'];
+         BuscarModeloPorId($idmodelo,$_GET['callback'], $_GET['_dc'],false);
+    }
+    else if($funcion =="GuardarEditarMarca"){
+        $idmarca=$_GET['idmarca'];
+        GuardarEditarMarca($idmarca);
+    }
+    else if($funcion =="BuscarCiudadPorMarca"){
+        $idmarca= $_GET['idmarca'];
+        BuscarCiudadPorMarca($idmarca,$_GET['callback'], $_GET['_dc'],false);
+    }
+    else{
+        echo "else";
+    }
+
+
+//}
+//else
+//{
+//    $dev['mensaje'] = "Ud no tiene privilegios para esta funcion";
+//    $dev['error'] = "false";
+//    $json = new Services_JSON();
+//    $output = $json->encode($dev);
+//    print($output);
+//}
+?>

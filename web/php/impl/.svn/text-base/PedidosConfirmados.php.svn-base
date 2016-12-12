@@ -1,0 +1,421 @@
+<?php
+
+function ListarIngresosAlmacen($start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    else{
+        $sort = "fecha";
+        $dir = "DESC";
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+    if($where == null || $where == "")
+    {
+
+ 
+
+        $sql = "
+      SELECT pe.idconfirmarpedido, pe.numerofactura, ma.nombre AS marca, p.numeropedido, pe.totalpares, pe.totalcajas, pe.responsable, pe.fecha, pe.observacion, pe.estado
+FROM `confirmarpedidos` pe, `marcas` ma, `pedidos` p
+WHERE pe.idpedido = p.idpedido
+AND p.idmarca = ma.idmarca
+AND pe.estado='almacen'$order LIMIT $start,$limit ";
+    }
+    else
+    {
+        $sql = "
+SELECT pe.idconfirmarpedido, pe.numerofactura, ma.nombre AS marca, p.numeropedido, pe.totalpares, pe.totalcajas, pe.responsable, pe.fecha, pe.observacion, pe.estado
+FROM `confirmarpedidos` pe, `marcas` ma, `pedidos` p
+WHERE pe.idpedido = p.idpedido
+AND p.idmarca = ma.idmarca
+AND pe.estado='almacen'AND $where
+        $order LIMIT $start,$limit";
+
+    }
+    //        echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    $dev1 = NumeroTuplas($sql);
+    $dev['totalCount'] = $dev1['resultado'];
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+    }
+}
+function RegistrarIngresoAlmacen($resultado,$return)
+{
+
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+    $hora = date("H:i:s");
+    $fecha = date("Y-m-d");
+    $idempleado = $_SESSION['idusuario'];
+    $idtienda = $_SESSION['idtienda'];
+
+ $idconfirmarpedido = $resultado->idconfirmarpedido;
+
+
+
+$sql1= "SELECT c.idconfirmarpedido,c.numerofactura,c.responsable,c.estado,c.idpedido,c.observacion,c.totalcajas,c.totalpares,p.idmarca
+             FROM
+              confirmarpedidos c,pedidos p
+            WHERE
+              c.idpedido=p.idpedido AND c.idconfirmarpedido = '$idconfirmarpedido'";
+$result1 = findBySqlReturnCampoUnique($sql1, true, true, "idconfirmarpedido");
+  $idconfirmarpedido = $result1['resultado'];
+$result10 = findBySqlReturnCampoUnique($sql1, true, true, "numerofactura");
+  $numerofactura = $result10['resultado'];
+
+$result2 = findBySqlReturnCampoUnique($sql1, true, true, "idpedido");
+  $idpedido = $result2['resultado'];
+  $result222 = findBySqlReturnCampoUnique($sql1, true, true, "estado");
+  $estado = $result222['resultado'];
+  $result2222 = findBySqlReturnCampoUnique($sql1, true, true, "totalcajas");
+  $totalcajas= $result2222['resultado'];
+$result3 = findBySqlReturnCampoUnique($sql1, true, true, "totalpares");
+  $totalpares = $result3['resultado'];
+$result33 = findBySqlReturnCampoUnique($sql1, true, true, "responsable");
+  $responsable = $result33['resultado'];
+$result333 = findBySqlReturnCampoUnique($sql1, true, true, "idmarca");
+  $idmarca = $result333['resultado'];
+$numeroA = findUltimoID("ingresoalmacen", "numero", true);
+    $numero = $numeroA['resultado'] +1;
+    $idingreso="ing-".$numero;
+    $estado = "Activo";
+ //   $sql[]=getSqlNewIngresotienda($idingreso, $codigo, $numero, $estado, $fecha, $hora, $totalpares, $totalbs, $responsable, $observacion, $idmarca, $idtienda, false);
+    $sql[]=getSqlNewIngresoalmacen($idingreso, $numerofactura, $numero, $idpedido, $idconfirmarpedido, $estado, $fecha, $hora, $totalcajas, $totalpares, $totalbs, $totalsus, $montototal, $responsable, $observacion, $idmarca, $idempleado, $idtienda, false);
+
+
+
+
+    //    echo $idventa;
+
+    $numeropedidoA = findUltimoNumeroPedidoMarca($idmarca, true);
+    $numero1 = $numeropedidoA['resultado']+1;
+    $sql[] =getSqlNewNumeropedido($idnumero, $idmarca, $numero1, $return);
+
+    
+    $numeroD = findUltimoID("detalleingresoalmacen", "numero", true);
+    $numerodetalle = $numeroD['resultado'] +1;
+    $numerokardexA = findUltimoID("kardexalmacen", "numero", true);
+    $numerokardex = $numerokardexA['resultado']+1;
+    $numeromovimientokardexA = findUltimoID("movimientokardexalmacen", "numero", true);
+    $numeromovimientokardex = $numeromovimientokardexA['resultado']+1;
+ 
+ $calzados = $resultado->calzados;
+       for($j=0;$j<count($cajas);$j++){
+        $calzado = $cajas[$j];
+        $codigocalzado = $calzado->codigo;
+        $idmodelo = $calzado->idmodelo;
+        $totalpar = $calzado->totalpares;
+        $totalbs1 = $calzado->totalbs;
+        $precio = $calzado->precio;
+
+        $iddetalleingresoalmacen = "din-".$numerodetalle;
+        $sql[] =getSqlNewDetalleingresoalmacen($iddetalleingresoalmacen, $idmodelo, $totalpares, $totalcajas, $totalbs, $precio1sus, $precio2sus, $idcliente, $idvendedor, $idingreso, $numero, false);
+        $numerodetalle++;
+
+        $codigobarraA = ObtenerCodigoBarraMarcaDetalle($idmarca , true);
+        $codigobarramcn = $codigobarraA['resultado'];
+        //        echo $codigobarramcn;
+
+        for($i=14;$i<=45;$i++){
+            $cantidad1 = $calzado->$i;
+          
+
+             //   $talla = $i;
+
+                $sql[]= getSqlNewDetalleingresocaja($iddetalleingresocaja, $pares, $idmodelo, $iddetalleingresoalmacen, $cantidad1,$codbarra, false);
+              
+                $idkardextienda = "kar-".$numerokardex;
+                $codigobarraean13 = $codigobarramcn.$pares;
+                $codigobarra1 = ean($codigobarraean13);
+                $codigobarra = $codigobarraean13.$codigobarra1;
+                //                $codigobarra = $codigobarra1['restulado'];
+                $sql[] = getSqlNewKardexalmacen($idkardexalmacen, $idmodelo, $idmarca, $codigobarra, $saldocantidadcaja, $cantidadcaja, $pares, $numerokardex, $precio1bs, $precio2bs, $precio3bs, $precio1sus, $precio2sus, $precio3sus, $idingreso, $codigobarraean13, false);
+
+          //     $sql[] = getSqlNewKardextienda($idkardextienda, $idmodelo, $idtienda, $codigobarra, $cantidad1, $cantidad1, $numerokardex, $talla, $precio1bs, $precio2bs, $precio3bs, $precio1sus, $precio2sus, $precio3sus, $idcalzado, $idingreso, $codigobarraean13,false);
+
+           $numerokardex++;
+                $idmovimientokardexalmacen = "mkt-".$numeromovimientokardex;
+                //                $sql[] = getSqlNewMovimientokardextienda($idmovimientokardextienda, $idkardextienda, $idtienda, $entrada, $salida, $saldo, $costounitario, $ingreso, $egreso, $saldobs, $fecha, $hora, $descripcion, $numero, $saldocantidad, false);
+          //      $sql[] = getSqlNewMovimientokardextienda($idmovimientokardextienda, $idkardextienda, $idtienda, $cantidad1, 0, $cantidad1, $precio, $precio*$cantidad1, 0, $precio*$cantidad1, $fecha, $hora, $idingreso, $numeromovimientokardex, $cantidad1, false);
+                $sql[] = getSqlNewMovimientokardexalmacen($idmovimientokardexalmacen, $idkardexalmacen, $idtienda, $entrada, 0, $saldo, $costounitario, $costounitario*$saldo , 0, $costounitario*$saldo, $fecha, $hora, $descripcion, $idingreso, $numeromovimientokardex, $saldocantidad,false);
+
+           $numeromovimientokardex++;
+
+
+            
+        }
+
+    }
+
+    //    MostrarConsulta($sql);
+
+    if(ejecutarConsultaSQLBeginCommit($sql)){
+
+        $dev['mensaje'] = "Se guardaron y actualizaron correctamente los datos";
+        $dev['error'] = "true";
+        $dev['resultado'] = $idingreso;
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al actualizar o guardar datos";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+
+
+}
+function getSqlNewDetalleingresocaja($iddetalleingresocaja, $cantidadpares, $idmodelo, $iddetalleingresoalmacen, $cantidad, $codbarra, $return){
+$setC[0]['campo'] = 'iddetalleingresocaja';
+$setC[0]['dato'] = $iddetalleingresocaja;
+$setC[1]['campo'] = 'cantidadpares';
+$setC[1]['dato'] = $cantidadpares;
+$setC[2]['campo'] = 'idmodelo';
+$setC[2]['dato'] = $idmodelo;
+$setC[3]['campo'] = 'iddetalleingresoalmacen';
+$setC[3]['dato'] = $iddetalleingresoalmacen;
+$setC[4]['campo'] = 'cantidad';
+$setC[4]['dato'] = $cantidad;
+$setC[5]['campo'] = 'codbarra';
+$setC[5]['dato'] = $codbarra;
+$sql2 = generarInsertValues($setC);
+return "INSERT INTO detalleingresocaja ".$sql2;
+}
+
+function GuardarNuevoPedido($resultado,$return)
+{
+
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+
+
+    $numeroA = findUltimoID("pedidos", "numero", true);
+    $numero = $numeroA['resultado'] +1;
+    $idpedido="ped-".$numero;
+    $ingreso = $resultado->ingreso;
+    $numeropedido = $ingreso->numeropedido;
+    $estado = "Activo";
+    $hora = date("H:i:s");
+    $fecha = date("Y-m-d");
+    $totalpares = $ingreso->totalpares;
+    $totalcajas = $ingreso->totalcaja;
+    $responsable = $_SESSION['idusuario'];
+    $idmarca = $ingreso->idmarca;
+    $observacion = $ingreso->descripcion;
+
+    $sql[]=getSqlNewPedidos($idpedido, $idmarca, $fecha, $observacion, $totalpares, $totalcajas, $numeropedido, $responsable, $estado, $numero, $hora, $np, $return);
+    //    $sql[]=getSqlNewIngresotienda($idingreso, $codigo, $numero, $estado, $fecha, $hora, $totalpares, $totalbs, $responsable, $observacion, $idmarca, $idtienda, false);
+    //    echo $idventa;
+
+    $sqlmarca = "
+SELECT
+  mar.opcion
+FROM
+  marcas mar
+WHERE
+  mar.idmarca = '$idmarca'
+";
+    $calzados = $resultado->calzados;
+    $numeropedidoA = findUltimoNumeroPedidoMarca($idmarca, true);
+    $numero1 = $numeropedidoA['resultado']+1;
+    $sql[] =getSqlNewNumeropedido($idnumero, $idmarca, $numero1, $return);
+    $opcionA = findBySqlReturnCampoUnique($sqlmarca, true, true, "opcion");
+    $opcion = $opcionA['resultado'];
+    $numeroD = findUltimoID("detallepedido", "numero", true);
+    $numerodetalle = $numeroD['resultado'] +1;
+
+
+    for($j=0;$j<count($calzados);$j++){
+        $calzado = $calzados[$j];
+        $codigocalzado = $calzado->codigo;
+        $idmodelo = $calzado->idmodelo;
+        $color = $calzado->color;
+        $material = $calzado->material;
+        $cliente = $calzado->cliente;
+        $vendedor = $calzado->vendedor;
+        $linea = $calzado->linea;
+        $numeropares = $calzado->totalpares;
+        $numerocajas = $calzado->totalcajas;
+        $stylename = $calzado->stylename;
+        //        $precio = $calzado->precio;
+        $iddetallepedido = "dpe-".$numerodetalle;
+        $sql[] = getSqlNewDetallepedido($iddetallepedido, $numerocajas, $numeropares, $cliente, $vendedor, $idmodelo, $numerodetalle, $color, $material, $totalSus, $costounitario, $stylename, $linea,$idpedido,$codigocalzado, $return);
+        //        $sql[] =getSqlNewDetalleingreso($idmodelo, $numeropares, $numerocajas, $idingreso, $iddetalleingreso, $numerodetalle, false);
+        $numerodetalle++;
+        //        $codigobarraA = ObtenerCodigoBarraMarcaDetalle($idmarca , true);
+        //        $codigobarramcn = $codigobarraA['resultado'];
+        //        echo $codigobarramcn;
+        $americano = $calzado->opcion;
+        if($americano == 'americano'){
+            for($i=1;$i<=12;$i++){
+                $cantidad1 = $calzado->$i;
+                $im = $i."m";
+                $cantidadm = $calzado->$im;
+
+                if($cantidad1 !=0){
+
+                    $talla = $i;
+                    $sql[]= getSqlNewDetallepedidotalla($iddetallepedidotalla, $idmodelo, $talla, $cantidad1, $iddetallepedido, $return);
+                    //
+                    //               $sql[]= getSqlNewDetalleingresotalla($iddetalleingresotalla, $talla, $idmodelo, $iddetalleingreso, $cantidad1, false);
+
+                }
+                if($cantidadm !=0){
+
+                    $talla = $i."m";
+                    $sql[]= getSqlNewDetallepedidotalla($iddetallepedidotalla, $idmodelo, $talla, $cantidadm, $iddetallepedido, $return);
+                    //
+                    //               $sql[]= getSqlNewDetalleingresotalla($iddetalleingresotalla, $talla, $idmodelo, $iddetalleingreso, $cantidad1, false);
+
+                }
+            }
+
+        }
+        else{
+
+
+            for($i=14;$i<=45;$i++){
+                $cantidad1 = $calzado->$i;
+                if($cantidad1 !=0){
+
+                    $talla = $i;
+                    $sql[]= getSqlNewDetallepedidotalla($iddetallepedidotalla, $idmodelo, $talla, $cantidad1, $iddetallepedido, $return);
+                    //                $sql[]= getSqlNewDetalleingresotalla($iddetalleingresotalla, $talla, $idmodelo, $iddetalleingreso, $cantidad1, false);
+
+                }
+            }
+        }
+
+    }
+
+    //        MostrarConsulta($sql);
+
+    if(ejecutarConsultaSQLBeginCommit($sql)){
+
+        $dev['mensaje'] = "Se guardaron y actualizaron correctamente los datos";
+        $dev['error'] = "true";
+        $dev['resultado'] = $idingreso;
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al actualizar o guardar datos";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+
+
+}
+
+?>

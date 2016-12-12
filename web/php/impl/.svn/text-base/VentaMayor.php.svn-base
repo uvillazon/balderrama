@@ -1,0 +1,2234 @@
+<?php
+function RegistrarConfirmarEntrega($resultado,$return)
+{
+
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+    $numeroA = findUltimoID("ventamayor", "numero", true);
+    $numero = $numeroA['resultado'] +1;
+    $idventamayor="ven-".$numero;
+    $ingreso = $resultado->ingreso;
+    $idventamayor = $ingreso->idventamayor;
+
+   $opcion = $ingreso->opcion;
+    $idcliente = $ingreso->idcliente;
+    $idmarca = $ingreso->idmarca;
+    $saldoa = $ingreso->saldoa;
+     $recibo = $ingreso->recibo;
+    $tipocambio = $ingreso->tipocambio;
+ $fecha = $ingreso->fecha;
+    $totalpares = $ingreso->totalpares;
+ $totalcaja = $ingreso->totalcaja;
+    $totalbs = $ingreso->totalbs;
+ $totalpagar = $ingreso->totalpagar;
+    $totalsaldoactual = $ingreso->totalsaldoactual;
+ $descuento = $ingreso->descuento;
+    $descuentoporcentaje = $ingreso->descuentoporcentaje;
+ $observacion = $ingreso->observacion;
+   $estado = "ACTIVO";
+    $hora = date("H:i:s");
+    $fecharegistro = date("Y-m-d");
+    $responsable = $_SESSION['idusuario'];
+    $idalmacen = $_SESSION['idalmacen'];
+     $fechareg= split("-",$fecharegistro);
+ //$idsCAr = split("/", $mesplanilla);
+$anio=$fechareg[0];
+$mes=$fechareg[1];
+$dia=$fechareg[2];
+
+$anio = date("Y");
+    $mes = date("m");
+    //$mes_actual = $mes."/".$anio;
+$month ="0".$mes+3;
+
+$mes3="0".$month;
+    $fechamoroso = $anio."-".$mes3."-".$dia;
+
+$sql1= "SELECT
+              cli.idcliente,cli.idmarca,cli.mesemitido,cli.emitido,cli.ventas,cli.cobros,cli.devoluciones,cli.saldoafavor,cli.saldooanterior
+            FROM
+              clientemarca cli
+            WHERE
+              cli.idcliente = '$idcliente'AND cli.idmarca='$idmarca' AND cli.mesemitido='$mes_planilla'";
+
+    $result = findBySqlReturnCampoUnique($sql1, true, true, "idcliente");
+    $idclientemarca = $result['resultado'];
+    $result2 = findBySqlReturnCampoUnique($sql1, true, true, "mesemitido");
+    $mesemitido = $result2['resultado'];
+    $result3 = findBySqlReturnCampoUnique($sql1, true, true, "emitido");
+    $emitido = $result3['resultado'];
+    $result4 = findBySqlReturnCampoUnique($sql1, true, true, "ventas");
+    $ventas = $result4['resultado'];
+     $result5 = findBySqlReturnCampoUnique($sql1, true, true, "cobros");
+    $cobros = $result5['resultado'];
+     $result6 = findBySqlReturnCampoUnique($sql1, true, true, "devoluciones");
+    $devoluciones = $result6['resultado'];
+     $result7 = findBySqlReturnCampoUnique($sql1, true, true, "saldoafavor");
+    $saldoafavor = $result7['resultado'];
+     $result8 = findBySqlReturnCampoUnique($sql1, true, true, "saldooanterior");
+    $saldoanterior = $result8['resultado'];
+
+    //echo $idclientemarca;
+	//$nit = $ventas->nit;
+    
+
+
+  
+
+$sql[] = "UPDATE ventamayor SET  variable= '1'WHERE idventamayor='$idventamayor' AND variable='0'";
+
+    $saldonuevo = $saldototal + $totalpagar;
+$sql[] = "UPDATE clientes SET saldototal='$saldonuevo' WHERE idcliente='$idcliente' AND mes_planilla = '$mes_planilla' ";
+
+
+$numeroD = findUltimoID("ventamayordetalle", "numero", true);
+    $numerodetalle = $numeroD['resultado'] +1;
+     $calzados = $resultado->calzados;
+
+    for($j=0;$j<count($calzados);$j++){
+        $calzado = $calzados[$j];
+        $idkardexalmacen = $calzado->idkardexalmacen;
+        $idtallamarca = $calzado->idtallamarca;
+
+       $cajas = $calzado->caja;
+        $susdoc = $calzado->susdoc;
+        $unitario = $calzado->unitario;
+        $pares = $calzado->pares;
+        $totalprecio = $calzado->totalprecio;
+        $vendedor = $calzado->vendedor;
+         $vendedori= split("/",$vendedor);
+ //$idsCAr = split("/", $mesplanilla);
+ //echo $idkardexalmacen;
+//$codigoven=$vendedori[0];
+//$ciudadven1=$vendedori[1];
+//
+//$sql2= "SELECT
+//              cli.idempleado
+//            FROM
+//              empleados cli
+//            WHERE
+//              cli.codigo = '$codigoven'";
+//
+//        $result = findBySqlReturnCampoUnique($sql2, true, true, "idempleado");
+//        $idempleado = $result['resultado'];
+//       $idventamayordetalle = "vmd-".$numerodetalle;
+//        //$sql[] = getSqlNewDetallepedido($iddetallepedido, $numerocajas, $numeropares, $cliente, $vendedor, $idmodelo, $numerodetalle, $color, $material, 0, 0, $stylename, $linea,$idpedido,$codigocalzado,"","", $return);
+//
+//        $sql[] = getSqlNewVentamayordetalle($idventamayordetalle, $idmarca, $pares, $totalprecio, $cajas, $pares, $susdoc, $unitario, $numerodetalle, $idkardexalmacen, $idventamayor, $idempleado, $saldo, $estado, $return);
+//
+//$sql2= "SELECT
+//             saldocantidadcaja,cantidadcaja,cantidadpares
+//            FROM
+//              kardexalmacen
+//            WHERE
+//              idkardexalmacen = '$idkardexalmacen'";
+//
+//        $result = findBySqlReturnCampoUnique($sql2, true, true, "saldocantidadcaja");
+//        $saldocantidad = $result['resultado'];
+//        $saldonuevocaja= $saldocantidad - $cajas;
+//$sql[] = "UPDATE kardexalmacen SET saldocantidadcaja='$saldonuevocaja',cantidadcaja='$cajas',cantidadpares='$pares' WHERE idkardexalmacen='$idkardexalmacen' AND idmarca = '$idmarca' ";
+//
+//        //        $sql[] =getSqlNewDetalleingreso($idmodelo, $numeropares, $numerocajas, $idingreso, $iddetalleingreso, $numerodetalle, false);
+//        $numerodetalle++;
+//        $americano = $calzado->opcion;
+//        if($americano == 'americano'){
+//            for($i=1;$i<=12;$i++){
+//                $cantidad1 = $calzado->$i;
+//                $im = $i."m";
+//                $cantidadm = $calzado->$im;
+//
+//                if($cantidad1 !=0){
+//
+//                    $talla = $i;
+//                     $sql[]= getSqlNewDetalleventamayortalla($iddetalleventamayortalla, $idmarca, $talla, $cantidad1, $variable, $idventamayordetalle, $return);
+//                }
+//                if($cantidadm !=0){
+//
+//                    $talla = $i."m";
+////                    $sql[]= getSqlNewDetallepedidotalla($iddetallepedidotalla, $idmodelo, $talla, $cantidadm, $iddetallepedido, $return);
+//                      $sql[]= getSqlNewDetalleventamayortalla($iddetalleventamayortalla, $idmarca, $talla, $cantidad1, $variable, $idventamayordetalle, $return);
+//                }
+//            }
+//
+//        }
+//        else{
+//
+//
+//            for($i=14;$i<=45;$i++){
+//                $cantidad1 = $calzado->$i;
+//                if($cantidad1 !=0){
+//
+//                    $talla = $i;
+////                    $sql[]= getSqlNewDetallepedidotalla($iddetallepedidotalla, $idmodelo, $talla, $cantidad1, $iddetallepedido, $return);
+//                      $sql[]= getSqlNewDetalleventamayortalla($iddetalleventamayortalla, $idmarca, $talla, $cantidad1, $variable, $idventamayordetalle, $return);
+//
+//                   //                $sql[]= getSqlNewDetalleingresotalla($iddetalleingresotalla, $talla, $idmodelo, $iddetalleingreso, $cantidad1, false);
+//
+//                }
+//            }
+//        }
+
+    }
+
+       //    MostrarConsulta($sql);
+
+   if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+
+
+        $dev['mensaje'] = "Se guardo correctamente la entrega";
+        $dev['error'] = "true";
+        $dev['resultado'] = $recibo;
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al registrar la entrega";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+function BuscarDatosEntrega($numerofactura, $return=false){
+
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+//    $numeropa= findUltimoNumeroPedidoMarca($idmarca, true);
+//    $numero = $numeropa['resultado']+1;
+//    $anio = date("Y");
+//    $value['numeropedido'] = $numero."/".$anio;
+//
+
+    $sql ="
+SELECT cp.idventamayor,cp.boleta AS recibo,m.nombre AS marca,cp.fecha AS fechaentrega,cp.tipocambio,cp.idalmacen AS idmarca,
+cp.totalprecio AS totalsus,cp.totalcajas,cp.totalpares,cp.descuento AS rebajapor,cp.descuentop AS rebajasus,cp.nit AS opcion,cl.nombre AS cliente,
+cl.saldototal AS saldoactual,cp.montocancelado AS totalpagar,cp.observacion,cp.variable AS dato
+FROM ventamayor cp ,marcas m,clientes cl
+WHERE cp.idalmacen=m.idmarca AND cp.idcliente=cl.idcliente AND cp.boleta = '$numerofactura'
+";
+//     $detalleA = findBySqlReturnCampoUnique($sql, true, true, "idventamayor");
+//        $value['idventamayor'] =  $detalleA['resultado'];
+//     $detalleA1 = findBySqlReturnCampoUnique($sql, true, true, "recibo");
+//        $value['recibo'] =  $detalleA1['resultado'];
+//         $detalleA2 = findBySqlReturnCampoUnique($sql, true, true, "marca");
+//        $value['marca'] =  $detalleA2['resultado'];
+//         $detalleA5 = findBySqlReturnCampoUnique($sql, true, true, "fechaentrega");
+//        $value['fechaentrega'] =  $detalleA5['resultado'];
+//         $detalleA7 = findBySqlReturnCampoUnique($sql, true, true, "tipocambio");
+//        $value['tipocambio'] =  $detalleA7['resultado'];
+//  $detalleA71 = findBySqlReturnCampoUnique($sql, true, true, "totalsus");
+//        $value['totalsus'] =  $detalleA71['resultado'];
+//  $detalleA72 = findBySqlReturnCampoUnique($sql, true, true, "totalcajas");
+//        $value['totalcajas'] =  $detalleA72['resultado'];
+//  $detalleA73 = findBySqlReturnCampoUnique($sql, true, true, "totalpares");
+//        $value['totalpares'] =  $detalleA73['resultado'];
+//  $detalleA74 = findBySqlReturnCampoUnique($sql, true, true, "rebajapor");
+//        $value['rebajapor'] =  $detalleA74['resultado'];
+//  $detalleA75 = findBySqlReturnCampoUnique($sql, true, true, "rebajasus");
+//        $value['rebajasus'] =  $detalleA75['resultado'];
+//  $detalleA76 = findBySqlReturnCampoUnique($sql, true, true, "opcion");
+//        $value['opcion'] =  $detalleA76['resultado'];
+//  $detalleA77 = findBySqlReturnCampoUnique($sql, true, true, "cliente");
+//        $value['cliente'] =  $detalleA77['resultado'];
+//  $detalleA78 = findBySqlReturnCampoUnique($sql, true, true, "saldoactual");
+//        $value['saldoactual'] =  $detalleA78['resultado'];
+//  $detalleA79 = findBySqlReturnCampoUnique($sql, true, true, "totalpagar");
+//        $value['totalpagar'] =  $detalleA79['resultado'];
+//  $detalleA8 = findBySqlReturnCampoUnique($sql, true, true, "observacion");
+//        $value['observacion'] =  $detalleA8['resultado'];
+//  $detalleA81 = findBySqlReturnCampoUnique($sql, true, true, "dato");
+//        $value['dato'] =  $detalleA81['resultado'];
+
+     if($numerofactura != null)
+    {
+        if($link=new BD)
+        {
+            if($link->conectar())
+            {
+                if($re = $link->consulta($sql))
+                {
+                    if($fi = mysql_fetch_array($re))
+                    {
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            if(mysql_field_type($re, $i) == "real")
+                            {
+                                $value{mysql_field_name($re, $i)}= redondear($fi[$i]);
+                            }
+                            else
+                            {
+                                $value{mysql_field_name($re, $i)}= $fi[$i];
+                            }
+                        }
+                        $dev['mensaje'] = "Existen resultados";
+                        $dev['error']   = "true";
+                        $dev['resultado'] = $value;
+                    }
+                    else
+                    {
+                        $dev['mensaje'] = "No se encontro datos en la consulta";
+                        $dev['error']   = "false";
+                        $dev['resultado'] = "";
+                    }
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No se pudo conectar a la BD";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "El codigo de producto es nulo";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+
+    $dev['mensaje'] = "Se cargo el formulario de Marca";
+    $dev['error']   = "true";
+    $dev['resultado'] = $value;
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function ListarDetalleEntrega($start, $limit, $sort, $dir, $callback, $_dc, $idventamayor, $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    //    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+//String[] nombreCaso5Columns = {"idventamayordetalle", "codigo", "detalle", "totalcajas", "precioventa", "unitario", "totalpares", "preciototal",  "vendedor", "31","32","33","34","35","36","37", "38", "39", "40", "41", "42", "43", "44", "45"};
+
+    $sql ="
+SELECT
+CONCAT(COALESCE(det.color,'C'), ' ', COALESCE(det.material,'M'),' ', COALESCE(det.stylename,'S'),' ',COALESCE(det.linea,'L')) AS detalle,
+dtp.idventamayordetalle,mo.codigo, dtp.preciooficina AS unitario,emp.codigo AS vendedor,
+  dtp.idmarca,
+  dtp.cantidad,
+  dtp.preciototal,
+  dtp.totalcajas,
+  dtp.totalpares,
+  dtp.precioventa,
+  dtp.idkardexalmacen,
+  dtp.idventamayor,
+  dtp.estado,dtp.idempleado,emp.codigo AS vendedor
+
+FROM
+  `ventamayordetalle` dtp,`empleados` emp,`modelos` mo,kardexalmacen kar,detallepedido det
+WHERE
+  det.idkardexalmacen = dtp.idkardexalmacen AND dtp.idempleado= emp.idempleado AND dtp.idkardexalmacen=kar.idkardexalmacen AND
+kar.idmodelo=mo.idmodelo AND dtp.idempleado=emp.idempleado AND dtp.idventamayor = '$idventamayor'
+    $order
+";
+//$idkardexA = findBySqlReturnCampoUnique($sql, true, true, "idkardexalmacen");
+//        $idkardexalmacen = $idkardexA['resultado'];
+//        $tallaA = findBySqlReturnCampoUnique($sql, true, true, "idventamayordetalle");
+//        $value['idventamayordetalle'] =  $tallaA['resultado'];
+//$sql1 = "
+//SELECT
+//  kar.idkardexalmacen,
+//  kar.idmodelo,
+//mo.codigo
+//  FROM
+//  kardexalmacen kar,modelos mo
+//WHERE
+//  kar.idmodelo=mo.idmodelo AND kar.idkardexalmacen = '$idkardexalmacen'
+//";
+//       $tallaA = findBySqlReturnCampoUnique($sql1, true, true, "codigo");
+//        $value['codigo'] =  $tallaA['resultado'];
+//        $sql = "
+//            SELECT
+//  CONCAT(COALESCE(det.color,'C'), ' ', COALESCE(det.material,'M'),' ', COALESCE(det.stylename,'S'),' ',COALESCE(det.linea,'L')) AS detalle
+//FROM
+//   detallepedido det
+//WHERE det.idkardexalmacen = '$idkardexalmacen'
+//";
+//        $detalleA = findBySqlReturnCampoUnique($sql, true, true, "detalle");
+//        $value['detalle'] =  $detalleA['resultado'];
+        //       echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $dev['totalCount'] = mysql_num_rows($re);
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                            if(mysql_field_name($re, $i) == "idventamayordetalle"){
+                                $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                                $idventamayordetalle = $fi[$i];
+                                $sqld = "SELECT
+                                dtpt.talla,
+                                dtpt.cantidad
+                                FROM
+                               `detalleventamayortalla` dtpt
+                                WHERE
+                                dtpt.idventamayordetalle = '$idventamayordetalle'
+                                ";
+
+                                //                                 $value{$ii}{mysql_field_name($re, $i)}= '222';
+
+                                //                              echo   $sqld;
+                                if($re1 = $link->consulta($sqld))
+                                {
+
+                                    if($fi1 = mysql_fetch_array($re1))
+                                    {
+                                        //                                         echo "jla";
+                                        //                                        $tallas = mysql_num_rows($re1)."ll";
+                                        //                                        echo $tallas;
+                                        do{
+
+                                            for($j = 0; $j< mysql_num_fields($re1); $j++)
+                                            {
+                                                //                                                echo ".".$j;
+                                                $value{$ii}{$fi1[0]}= $fi1[1];
+                                                //                                               $value{$ii}{mysql_field_name($re1, $j)}= '222';
+                                            }
+                                        }while($fi1 = mysql_fetch_array($re1));
+
+
+
+                                    }
+                                    //                            $id
+                                    //                            $value{$ii}{mysql_field_name($re, $i)}= '222';
+
+                                }
+                            }
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function BuscarCodigoBarra($codigo,$idmarca,$idtalla,$callback, $_dc, $return= 'true'){
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $idtienda = $_SESSION['idtienda'];
+    if($idtalla== null || $idtalla == "null"){
+        $dev['error'] = "false";
+            $dev['mensaje'] = "Por favor seleccione una opcion de talla/Solo una ";
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+            exit;
+        }
+        else{
+
+
+    $sql11 = "
+SELECT
+  kar.idmarca,
+  kar.codigobarra
+  FROM
+  kardexalmacen kar
+WHERE
+  kar.codigobarra = '$codigo'
+";
+
+$idkardexA = findBySqlReturnCampoUnique($sql11, true, true, "idmarca");
+         $idmarcaprod=  $idkardexA['resultado'];
+if($idmarca != $idmarcaprod){
+     $dev['error'] = "false";
+            $dev['mensaje'] = "El producto no corresponde a la marca seleccionada";
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+            exit;
+        }
+        else{
+
+
+
+
+$sql3 = "
+SELECT
+ idtallamarca,opcion,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14,t15
+  FROM
+  tallamarcaentrega
+WHERE
+  idtallamarca = '$idtalla'
+";
+$idopcion = findBySqlReturnCampoUnique($sql3, true, true, "opcion");
+        $value['opcion'] =  $idopcion['resultado'];
+$opcion = findBySqlReturnCampoUnique($sql3, true, true, "opcion");
+$idtalla = findBySqlReturnCampoUnique($sql3, true, true, "idtallamarca");
+        $value['idtallamarca'] =  $idtalla['resultado'];
+$idtallamarca = findBySqlReturnCampoUnique($sql3, true, true, "idtallamarca");
+
+$idkardexA= findBySqlReturnCampoUnique($sql3, true, true, "t1");
+        $t1 =  $idkardexA['resultado'];
+
+        $idkardexA2 = findBySqlReturnCampoUnique($sql3, true, true, "t2");
+        $t2 =  $idkardexA2['resultado'];
+        $idkardexA3 = findBySqlReturnCampoUnique($sql3, true, true, "t3");
+        $t3 =  $idkardexA3['resultado'];
+        $idkardexA4 = findBySqlReturnCampoUnique($sql3, true, true, "t4");
+        $t4 =  $idkardexA4['resultado'];
+        $idkardexA5 = findBySqlReturnCampoUnique($sql3, true, true, "t5");
+        $t5 =  $idkardexA5['resultado'];
+        $idkardexA6 = findBySqlReturnCampoUnique($sql3, true, true, "t6");
+        $t6 =  $idkardexA6['resultado'];
+        $idkardexA7 = findBySqlReturnCampoUnique($sql3, true, true, "t7");
+        $t7 =  $idkardexA7['resultado'];
+        $idkardexA8 = findBySqlReturnCampoUnique($sql3, true, true, "t8");
+        $t8 =  $idkardexA8['resultado'];
+        $idkardexA9 = findBySqlReturnCampoUnique($sql3, true, true, "t9");
+        $t9 =  $idkardexA9['resultado'];
+        $idkardexA10 = findBySqlReturnCampoUnique($sql3, true, true, "t10");
+        $t10 =  $idkardexA10['resultado'];
+        $idkardexA11 = findBySqlReturnCampoUnique($sql3, true, true, "t11");
+        $t11 =  $idkardexA11['resultado'];
+        $idkardexA12 = findBySqlReturnCampoUnique($sql3, true, true, "t12");
+        $t12 =  $idkardexA12['resultado'];
+        $idkardexA13 = findBySqlReturnCampoUnique($sql3, true, true, "t13");
+        $t13 =  $idkardexA13['resultado'];
+        $idkardexA14 = findBySqlReturnCampoUnique($sql3, true, true, "t14");
+        $t14 =  $idkardexA14['resultado'];
+        $idkardexA15 = findBySqlReturnCampoUnique($sql3, true, true, "t15");
+        $t15 =  $idkardexA15['resultado'];
+      //  $t1 = $value['t1'] ;
+
+
+	$sql1 = "
+SELECT
+  kar.idkardexalmacen,
+  kar.idmodelo,
+  kar.idmarca,
+  kar.codigobarra,
+  kar.saldocantidadcaja,
+  kar.cantidadcaja,
+  kar.cantidadpares,
+kar.precio1sus,
+kar.precio2sus, (kar.precio1sus * kar.cantidadpares) AS precio3sus,
+mo.codigo
+  FROM
+  kardexalmacen kar,modelos mo
+WHERE
+  kar.idmodelo=mo.idmodelo AND kar.codigobarra = '$codigo'
+";
+
+$idkardexA = findBySqlReturnCampoUnique($sql1, true, true, "idkardexalmacen");
+        $value['idkardexalmacen'] =  $idkardexA['resultado'];
+        $idkardexalmacen = $value['idkardexalmacen'] ;
+       $tallaA = findBySqlReturnCampoUnique($sql1, true, true, "codigo");
+        $value['codigo'] =  $tallaA['resultado'];
+       $talla1A = findBySqlReturnCampoUnique($sql1, true, true, "cantidadcaja");
+        $value['caja'] =  $talla1A['resultado'];
+       $talla2A = findBySqlReturnCampoUnique($sql1, true, true, "precio2sus");
+        $value['susdoc'] =  $talla2A['resultado'];
+       $talla3A = findBySqlReturnCampoUnique($sql1, true, true, "precio1sus");
+        $value['unitario'] =  $talla3A['resultado'];
+       $talla4A = findBySqlReturnCampoUnique($sql1, true, true, "cantidadpares");
+        $value['pares'] =  $talla4A['resultado'];
+       $talla5A = findBySqlReturnCampoUnique($sql1, true, true, "precio3sus");
+        $value['totalprecio'] =  $talla5A['resultado'];
+
+
+      // $codigoA = findBySqlReturnCampoUnique($sql, true, true, "codigo");
+        //$value['codigo'] =  $codigoA['resultado'];
+
+
+    //    $idmod = $idmodelo[0]['idmodelodetalle'];
+        $sql = "
+            SELECT
+  CONCAT(COALESCE(det.color,'C'), ' ', COALESCE(det.material,'M'),' ', COALESCE(det.stylename,'S'),' ',COALESCE(det.linea,'L')) AS detalle,
+  det.cliente,det.vendedor,det.iddetallepedido
+FROM
+   detallepedido det
+WHERE det.idkardexalmacen = '$idkardexalmacen'
+";
+        $detalleA = findBySqlReturnCampoUnique($sql, true, true, "detalle");
+        $value['detalle'] =  $detalleA['resultado'];
+        $codigoA = findBySqlReturnCampoUnique($sql, true, true, "cliente");
+        $value['cliente'] = $codigoA['resultado'];
+        $precio2A = findBySqlReturnCampoUnique($sql, true, true, "vendedor");
+        $value['vendedor'] = $precio2A['resultado'];
+          $result = findBySqlReturnCampoUnique($sql, true, true, "iddetallepedido");
+    $iddetallepedido = $result['resultado'];
+    // $value['idetallepedido'] = $result['resultado'];
+    $sqld7 = "SELECT dtpt.talla,dtpt.cantidad FROM `detallepedidotalla` dtpt WHERE dtpt.talla='$t1'AND dtpt.iddetallepedido = '$iddetallepedido'";
+    $precio2A = findBySqlReturnCampoUnique($sqld7, true, true, "cantidad");
+        $value[$t1] = $precio2A['resultado'];
+        if($value[$t1]==""){ $value[$t1]= "0";}
+        $sqld8 = "SELECT dtpt.talla,dtpt.cantidad FROM `detallepedidotalla` dtpt WHERE dtpt.talla='$t2'AND dtpt.iddetallepedido = '$iddetallepedido'";
+    $precio2A = findBySqlReturnCampoUnique($sqld8, true, true, "cantidad");
+        $value[$t2] = $precio2A['resultado'];
+        if($value[$t2]==""){ $value[$t2]= "0";}
+    $sqld = "SELECT dtpt.talla,dtpt.cantidad FROM `detallepedidotalla` dtpt WHERE dtpt.talla='$t3'AND dtpt.iddetallepedido = '$iddetallepedido'";
+    $precio2A = findBySqlReturnCampoUnique($sqld, true, true, "cantidad");
+        $value[$t3] = $precio2A['resultado'];
+        if($value[$t3]==""){ $value[$t3]= "0";}
+        $sqld1 = "SELECT dtpt.talla,dtpt.cantidad FROM `detallepedidotalla` dtpt WHERE dtpt.talla='$t4'AND dtpt.iddetallepedido = '$iddetallepedido'";
+    $precio2A = findBySqlReturnCampoUnique($sqld1, true, true, "cantidad");
+        $value[$t4] = $precio2A['resultado'];
+        if($value[$t4]==""){ $value[$t4]= "0";}
+         $sqld2 = "SELECT dtpt.talla,dtpt.cantidad FROM `detallepedidotalla` dtpt WHERE dtpt.talla='$t5'AND dtpt.iddetallepedido = '$iddetallepedido'";
+    $precio2A = findBySqlReturnCampoUnique($sqld2, true, true, "cantidad");
+        $value[$t5] = $precio2A['resultado'];
+        if($value[$t5]==""){ $value[$t5]= "0";}
+         $sqld3 = "SELECT dtpt.talla,dtpt.cantidad FROM `detallepedidotalla` dtpt WHERE dtpt.talla='$t6'AND dtpt.iddetallepedido = '$iddetallepedido'";
+    $precio2A = findBySqlReturnCampoUnique($sqld3, true, true, "cantidad");
+        $value[$t6] = $precio2A['resultado'];
+        if($value[$t6]==""){ $value[$t6]= "0";}
+         $sqld4 = "SELECT dtpt.talla,dtpt.cantidad FROM `detallepedidotalla` dtpt WHERE dtpt.talla='$t7'AND dtpt.iddetallepedido = '$iddetallepedido'";
+    $precio2A = findBySqlReturnCampoUnique($sqld4, true, true, "cantidad");
+        $value[$t7] = $precio2A['resultado'];
+        if($value[$t7]==""){ $value[$t7]= "0";}
+         $sqld5 = "SELECT dtpt.talla,dtpt.cantidad FROM `detallepedidotalla` dtpt WHERE dtpt.talla='$t8'AND dtpt.iddetallepedido = '$iddetallepedido'";
+    $precio2A = findBySqlReturnCampoUnique($sqld5, true, true, "cantidad");
+        $value[$t8] = $precio2A['resultado'];
+        if($value[$t8]==""){ $value[$t8]= "0";}
+        $sqld51 = "SELECT dtpt.talla,dtpt.cantidad FROM `detallepedidotalla` dtpt WHERE dtpt.talla='$t9'AND dtpt.iddetallepedido = '$iddetallepedido'";
+    $precio2A = findBySqlReturnCampoUnique($sqld51, true, true, "cantidad");
+        $value[$t9] = $precio2A['resultado'];
+        if($value[$t9]==""){ $value[$t9]= "0";}
+        $sqld52 = "SELECT dtpt.talla,dtpt.cantidad FROM `detallepedidotalla` dtpt WHERE dtpt.talla='$t10'AND dtpt.iddetallepedido = '$iddetallepedido'";
+    $precio2A = findBySqlReturnCampoUnique($sqld52, true, true, "cantidad");
+        $value[$t10] = $precio2A['resultado'];
+        if($value[$t10]==""){ $value[$t10]= "0";}
+        $sqld53 = "SELECT dtpt.talla,dtpt.cantidad FROM `detallepedidotalla` dtpt WHERE dtpt.talla='$t11'AND dtpt.iddetallepedido = '$iddetallepedido'";
+    $precio2A = findBySqlReturnCampoUnique($sqld53, true, true, "cantidad");
+        $value[$t11] = $precio2A['resultado'];
+        if($value[$t11]==""){ $value[$t11]= "0";}
+        $sqld54 = "SELECT dtpt.talla,dtpt.cantidad FROM `detallepedidotalla` dtpt WHERE dtpt.talla='$t12'AND dtpt.iddetallepedido = '$iddetallepedido'";
+    $precio2A = findBySqlReturnCampoUnique($sqld54, true, true, "cantidad");
+        $value[$t12] = $precio2A['resultado'];
+        if($value[$t12]==""){ $value[$t12]= "0";}
+        $sqld55 = "SELECT dtpt.talla,dtpt.cantidad FROM `detallepedidotalla` dtpt WHERE dtpt.talla='$t13'AND dtpt.iddetallepedido = '$iddetallepedido'";
+    $precio2A = findBySqlReturnCampoUnique($sqld55, true, true, "cantidad");
+        $value[$t13] = $precio2A['resultado'];
+        if($value[$t13]==""){ $value[$t13]= "0";}
+        $sqld56 = "SELECT dtpt.talla,dtpt.cantidad FROM `detallepedidotalla` dtpt WHERE dtpt.talla='$t14'AND dtpt.iddetallepedido = '$iddetallepedido'";
+    $precio2A = findBySqlReturnCampoUnique($sqld56, true, true, "cantidad");
+        $value[$t14] = $precio2A['resultado'];
+        if($value[$t14]==""){ $value[$t14]= "0";}
+        $sqld57 = "SELECT dtpt.talla,dtpt.cantidad FROM `detallepedidotalla` dtpt WHERE dtpt.talla='$t15'AND dtpt.iddetallepedido = '$iddetallepedido'";
+    $precio2A = findBySqlReturnCampoUnique($sqld57, true, true, "cantidad");
+        $value[$t15] = $precio2A['resultado'];
+        if($value[$t15]==""){ $value[$t15]= "0";}
+        }
+        }
+     if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $dev['totalCount'] = mysql_num_rows($re);
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                            if(mysql_field_name($re, $i) == "iddetallepedido"){
+                                $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                                $iddetallepedido = $fi[$i];
+                                $sqld = "SELECT
+                                dtpt.talla,
+                                dtpt.cantidad
+                                FROM
+                               `detallepedidotalla` dtpt
+                                WHERE
+                                dtpt.iddetallepedido = '$iddetallepedido'
+                                ";
+   //$result = findBySqlReturnCampoUnique($sqld, true, true, "cantidad");
+     //$value['cantidad'] = $result['resultado'];
+                                //                                 $value{$ii}{mysql_field_name($re, $i)}= '222';
+
+                                //                              echo   $sqld;
+                                if($re1 = $link->consulta($sqld))
+                                {
+
+                                    if($fi1 = mysql_fetch_array($re1))
+                                    {
+                                        //                                         echo "jla";
+                                        //                                        $tallas = mysql_num_rows($re1)."ll";
+                                        //                                        echo $tallas;
+                                        do{
+
+                                            for($j = 0; $j< mysql_num_fields($re1); $j++)
+                                            {
+                                                //$value[$ii]
+                                                //
+                                                //                                               echo ".".$j;
+                                              //  $value{$ii}{$fi1[0]}= $fi1[1];
+                                               $value[$ii][$fi1[0]]= $fi1[1];
+                                         //      echo $value[$ii][$fi1[0]];
+                                               //                                               $value{$ii}{mysql_field_name($re1, $j)}= '222';
+                                            }
+                                        }while($fi1 = mysql_fetch_array($re1));
+
+
+
+                                    }
+                                    //                            $id
+                                    //                            $value{$ii}{mysql_field_name($re, $i)}= '222';
+
+                                }
+                            }
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function ListarVentaMayor($start, $limit, $sort, $dir, $callback, $_dc,$where = '', $return = "true")
+{
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+    //,    (k.saldocantidad + SUM(ka.saldocantidad)) AS cantidad
+
+
+
+    if($where == null || $where == "")
+    {
+
+
+$sql = "
+      SELECT
+ved.idventamayor,ved.boleta,mar.nombre AS marca,cli.nombre AS cliente,cre.fecha AS fechaventa,cre.fechamoroso,
+ ved.totalprecio,ved.totalcajas,ved.totalpares,ved.observacion
+FROM
+   `ventamayor` ved,`marcas` mar, clientes cli,creditomayor cre
+
+WHERE
+   ved.idalmacen=mar.idmarca AND ved.idcliente=cli.idcliente AND ved.idventamayor=cre.idventamayor AND ved.variable='1' LIMIT $start,$limit ";
+    }
+    else
+    {
+        $sql = "
+SELECT
+ved.idventamayor,ved.boleta,mar.nombre AS marca,cli.nombre AS cliente,cre.fecha AS fechaventa,cre.fechacredito AS fechamoroso,
+ ved.totalprecio,ved.totalcajas,ved.totalpares,ved.observacion
+FROM
+   `ventamayor` ved,`marcas` mar, clientes cli,creditomayor cre
+
+WHERE
+   ved.idalmacen=mar.idmarca AND ved.idcliente=cli.idcliente AND ved.idventamayor=cre.idventamayor AND ved.variable='1'AND $where
+ LIMIT $start,$limit ";
+
+    }
+    //                echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    $dev1 = NumeroTuplas($sql);
+    $dev['totalCount'] = $dev1['resultado'];
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+    }
+}
+
+function ObtenerNumeroRecibo(){
+  //  $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+
+    $sql = "
+SELECT
+  MAX(con.numerorecibo) AS numerorecibo
+FROM
+  numerorecibo con
+WHERE
+  con.variable= '1'";
+    $codigonumeracionA = findBySqlReturnCampoUnique($sql, true, true, "numerorecibo");
+  //  echo $codigonumeracionA['resultado'];
+    if($codigonumeracionA['resultado'] == null || $codigonumeracionA['resultado'] == 'null' || $codigonumeracionA['resultado'] == '') {
+            $valor1 = "10000";
+        //    echo $valor;
+        }
+        else
+        {
+            //$num_hoja = $mayor['mayor']+1;
+    $valor1 = $codigonumeracionA['resultado']+1;
+  //   echo $valor1;
+        }
+    $valor = "$valor1";
+   // $valor = $result['resultado'];
+   return $valor;
+}
+function ObtenerTipocambio(){
+    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+    $sql="
+SELECT
+  t.valor
+FROM
+  tipocambio t
+WHERE
+  t.estado = 'activado'
+";
+    $result = findBySqlReturnCampoUnique($sql, true, true, "valor");
+    $valor = $result['resultado'];
+    return $valor;
+}
+function finddatosentrega()
+{
+    $ciudad = ListarClientePedido('', '', '', '', '', '','',true);
+   // $sucursal = findAllSucursal(0, 0, "nombre", "ASC", "", "", true, true);
+    $almacen =  ListarMarcas('', '', '', '', '', '',"",true);
+    $categoria = ListarTallasMarca('', '', '', '', '', '','',true);
+//$empleado = ListarEmpleados('', '', '', '', '', '','',true);
+ $empleado = ListarEmpleadosPedido('', '', '', '', '', '','',true);
+    $dev['error'] = "true";
+    $dev['mensaje'] = "Se recuperaron correctamente los objetos";
+    $dev['clienteM'] = $ciudad['resultado'];
+    $dev['marcaM'] = $almacen['resultado'];
+    $dev['tallaM'] = $categoria['resultado'];
+    $dev['empleadoM'] = $empleado['resultado'];
+
+$dev['recibo'] = ObtenerNumeroRecibo();
+$dev['tipocambio'] = ObtenerTipocambio();
+    
+    //$dev['caracteristicaM'] = $carac['resultado'];
+    $json = new Services_JSON();
+    $output = $json->encode($dev);
+    print($output);
+}
+function ClienteVendedorMarcaRecibo($return = false){
+
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+
+    $proveedores =  ListarMarcas('', '', '', '', '', '',"",true);
+    if($proveedores['error'] == true)
+    {
+        $value['Marcas'] = "true";
+        $value['MarcaM'] = $proveedores['resultado'];
+    }
+      $cliente = ListarClientePedido('', '', '', '', '', '','',true);
+    if($cliente['error'] == true)
+    {
+        $value['clientes'] = "true";
+        $value['clienteM'] = $cliente['resultado'];
+
+    }
+    $empleado = ListarEmpleadosPedido('', '', '', '', '', '','',true);
+    if($empleado['error'] == true)
+    {
+        $value['vendedores'] = "true";
+        $value['vendedorM'] = $empleado['resultado'];
+
+
+    }
+    $cambios="recibo";
+ $value['cambio'] =  $cambios;
+    $dev['mensaje'] = "Se cargo el formulario";
+    $dev['error']   = "true";
+    $dev['resultado'] = $value;
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function  BuscarDatosClienteSaldo($idcliente,$idmarca,$return=false){
+
+    //    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "false";
+    $dev['resultado'] = "";
+   // echo $idmarca;
+if($idmarca == null || $idmarca == "" ||$idmarca == 'null')
+    {
+       $sql ="
+
+SELECT cl.idcliente,cl.nombre,cl.saldototal AS saldo,cl.codigo FROM clientes cl
+WHERE cl.idcliente = '$idcliente'";
+
+    }else
+    
+    {
+       $sql ="
+SELECT cl.idcliente,cl.nombre,cm.saldoactual AS saldo,cl.codigo FROM clientes cl,clientemarca cm
+WHERE cl.idcliente=cm.idcliente AND cm.estado='ACTIVO' AND cl.idcliente = '$idcliente'AND cm.idmarca='$idmarca'";
+
+    
+    }
+   
+    //echo $sql;
+    if($idcliente != null)
+    {
+        if($link=new BD)
+        {
+            if($link->conectar())
+            {
+                if($re = $link->consulta($sql))
+                {
+                    if($fi = mysql_fetch_array($re))
+                    {
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            if(mysql_field_type($re, $i) == "real")
+                            {
+                                $value{mysql_field_name($re, $i)}= redondear($fi[$i]);
+                            }
+                            else
+                            {
+                                $value{mysql_field_name($re, $i)}= $fi[$i];
+                            }
+                        }
+                        $dev['mensaje'] = "Existen resultados";
+                        $dev['error']   = "true";
+                        $dev['resultado'] = $value;
+                    }
+                    else
+                    {
+                        $dev['mensaje'] = "El cliente no tiene cuentas pendientes";
+                        $dev['error']   = "false";
+                        $dev['resultado'] = "";
+                    }
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No se pudo conectar a la BD";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "El codigo de producto es nulo";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+
+    $dev['mensaje'] = "Se cargo el formulario ";
+    $dev['error']   = "true";
+    $dev['resultado'] = $value;
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function BuscarMarcaColeccion($return = false){
+
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+
+    $proveedores =  ListarMarcaEmergente('', '', '', '', '', '',"",true);
+    if($proveedores['error'] == true)
+    {
+        $value['marcas'] = "true";
+        $value['marcaM'] = $proveedores['resultado'];
+    }
+    $categorias = ListarColeccionesEmergente('', '', '', '', '', '',"",true);
+    if($categorias['error'] == true)
+    {
+        $value['colecciones'] = "true";
+        $value['coleccionM'] = $categorias['resultado'];
+    }
+
+
+
+    $dev['mensaje'] = "Se cargo el formulario";
+    $dev['error']   = "true";
+    $dev['resultado'] = $value;
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+
+function ListarProductosKardexAlmacen($idmarca,$start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    //    $dev['totalCount'] = 0;
+
+
+
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+    if(($where == null)||($where =="")){
+        $sql = "
+        SELECT
+  kar.idkardexalmacen,
+  det.codigo,
+  CONCAT(COALESCE(det.color,'C'), ' ', COALESCE(det.material,'M'),' ', COALESCE(det.stylename,'S'),' ',COALESCE(det.linea,'L')) AS detalle,
+  kar.precio1sus,
+  kar.saldocantidadcaja,kar.cantidadpares,mar.nombre AS marca
+FROM
+  kardexalmacen kar,
+  detallepedido det,
+  marcas mar
+WHERE
+  kar.idkardexalmacen= det.idkardexalmacen  AND
+  kar.idmarca = mar.idmarca AND kar.idmarca = '$idmarca'
+        $order
+";
+    }
+    else{
+        $sql ="
+SELECT
+  det.iddetallepedido,
+  det.codigo,
+
+  CONCAT(COALESCE(det.color,'C'), ' ', COALESCE(det.material,'M'),' ', COALESCE(det.stylename,'S'),' ',COALESCE(det.linea,'L')) AS detalle,
+  det.costounitario AS precio
+FROM
+  detallepedido det,
+  pedidos ped,
+  marcas mar
+WHERE
+  det.idpedido = ped.idpedido AND
+  ped.idmarca = mar.idmarca AND det.idpedido = '$idpedido' AND $where $order
+";
+    }
+
+         //          echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $dev['totalCount'] = mysql_num_rows($re);
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function ListarTallasMarca($start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    //    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+    $sql ="
+SELECT
+  mar.idtallamarca, mar.opcion,
+  mar.nombre,
+mar.t1,mar.t2,mar.t3,mar.t4,mar.t5,mar.t6,mar.t7,mar.t8,mar.t9,mar.t10,mar.t11,mar.t12,mar.t13,mar.t14,mar.t15
+FROM
+  tallamarcaentrega mar
+";
+    //    echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $dev['totalCount'] = mysql_num_rows($re);
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function RegistrarEntrega($resultado,$return)
+{
+
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+    $numeroA = findUltimoID("ventamayor", "numero", true);
+    $numero = $numeroA['resultado'] +1;
+    $idventamayor="ven-".$numero;
+    $ingreso = $resultado->ingreso;
+    $opcion = $ingreso->opcion;
+    $idcliente = $ingreso->idcliente;
+    $idmarca = $ingreso->idmarca;
+    $saldoa = $ingreso->saldoa;
+     $recibo = $ingreso->recibo;
+    $tipocambio = $ingreso->tipocambio;
+ $fecha = $ingreso->fecha;
+    $totalpares = $ingreso->totalpares;
+ $totalcaja = $ingreso->totalcaja;
+    $totalbs = $ingreso->totalbs;
+ $totalpagar = $ingreso->totalpagar;
+    $totalsaldoactual = $ingreso->totalsaldoactual;
+ $descuento = $ingreso->descuento;
+    $descuentoporcentaje = $ingreso->descuentoporcentaje;
+ $observacion = $ingreso->observacion;
+   $estado = "ACTIVO";
+    $hora = date("H:i:s");
+    $fecharegistro = date("Y-m-d");
+    $responsable = $_SESSION['idusuario'];
+    $idalmacen = $_SESSION['idalmacen'];
+     $fechareg= split("-",$fecharegistro);
+ //$idsCAr = split("/", $mesplanilla);
+$anio=$fechareg[0];
+$mes=$fechareg[1];
+$dia=$fechareg[2];
+
+$anio = date("Y");
+    $mes = date("m");
+    $gestion = $mes."/".$anio;
+$month ="0".$mes+3;
+
+$mes3="0".$month;
+    $fechamoroso = $anio."-".$mes3."-".$dia;
+$sql[]=getSqlNewVentamayor($idventamayor, $idmarca, $recibo, $numero, $idcliente, $nit, $tipocambio,
+    $fecha, $fecharegistro, $hora, $recibo, $responsable, $credito, $totalbs,
+    $totalcaja, $totalpares, $descuento, $descuentoporcentaje, $totalpagar, $totalpagar, $observacion, $variable,  $return);
+
+$sql[]=getSqlNewNumerorecibo($idnumero, $idventamayor, $recibo, $fecharegistro, $observacion, $gestion, '1', $numero, $return);
+
+    $sqlmarca = "
+SELECT
+  mar.opcion
+FROM
+  marcas mar
+WHERE
+  mar.idmarca = '$idmarca'
+";
+    $numeropedidoA = findUltimoNumeroPedidoMarca($idmarca, true);
+    $numero1 = $numeropedidoA['resultado']+1;
+   // $sql[] =getSqlNewNumeropedido($idnumero, $idmarca, $numero1, $return);
+    $opcionA = findBySqlReturnCampoUnique($sqlmarca, true, true, "opcion");
+    $opcion = $opcionA['resultado'];
+    //para credito
+    $sql1 = "
+SELECT
+  mes_planilla,saldototal
+FROM
+  clientes
+WHERE
+  idcliente = '$idcliente'
+
+";
+         $empleadoA4 = findBySqlReturnCampoUnique($sql1, true, true, "mes_planilla");
+        $mes_planilla = $empleadoA4['resultado'];
+        $empleadoA4 = findBySqlReturnCampoUnique($sql1, true, true, "saldototal");
+        $saldototal = $empleadoA4['resultado'];
+
+        $numeroA = findUltimoID("creditomayor", "numero", true);
+        $numerocre = $numeroA['resultado'] +1;
+        $idcredito="cre-".$numerocre;
+        $sql[] = getSqlNewCreditomayor($idcredito, $idventamayordetalle, $idventamayor, $idmarca, $idcliente, $totalpagar, $totalcaja,
+            $totalpares, $totalbs, $preciooficina, $fecha, $hora, $recibo, "0.00", $observacion, $numerocre, "ACTIVO", $saldo, $papeleta,
+            $fecharegistro, $fechamoroso, $return);
+
+
+        $numeroA = findUltimoID("movimientocreditocliente", "numero", true);
+        $numerocrecli = $numeroA['resultado'] +1;
+        $idmovimiento="mov-".$numerocrecli;
+
+$sql[] =getSqlNewMovimientocreditocliente($idmovimiento, $idcliente, $recibo, $boleta, $idcredito, $totalpagar, "0.00", $totalpares,
+    "CREDITO", $saldosus, $saldobs, $tipocambio, $fecha, $hora, $idventamayor, $numerocrecli, "NO", "VIGENTE", $return);
+
+$sql1= "SELECT
+              cli.idcliente,cli.idmarca,cli.mesemitido,cli.emitido,cli.ventas,cli.cobros,cli.devoluciones,cli.saldoafavor,cli.saldooanterior
+            FROM
+              clientemarca cli
+            WHERE
+              cli.idcliente = '$idcliente'AND cli.idmarca='$idmarca' AND cli.mesemitido='$mes_planilla'";
+    
+    $result = findBySqlReturnCampoUnique($sql1, true, true, "idcliente");
+    $idclientemarca = $result['resultado'];
+    $result2 = findBySqlReturnCampoUnique($sql1, true, true, "mesemitido");
+    $mesemitido = $result2['resultado'];
+    $result3 = findBySqlReturnCampoUnique($sql1, true, true, "emitido");
+    $emitido = $result3['resultado'];
+    $result4 = findBySqlReturnCampoUnique($sql1, true, true, "ventas");
+    $ventas = $result4['resultado'];
+     $result5 = findBySqlReturnCampoUnique($sql1, true, true, "cobros");
+    $cobros = $result5['resultado'];
+     $result6 = findBySqlReturnCampoUnique($sql1, true, true, "devoluciones");
+    $devoluciones = $result6['resultado'];
+     $result7 = findBySqlReturnCampoUnique($sql1, true, true, "saldoafavor");
+    $saldoafavor = $result7['resultado'];
+     $result8 = findBySqlReturnCampoUnique($sql1, true, true, "saldooanterior");
+    $saldoanterior = $result8['resultado'];
+
+    //echo $idclientemarca;
+	//$nit = $ventas->nit;
+    if($idclientemarca == "" || $idclientemarca == "NULL"  || $idclientemarca == null)
+    {
+           $numeroA = findUltimoID("clientemarca", "numero", true);
+        $numeroclimar = $numeroA['resultado'] +1;
+        $idclientemarc="climar-".$numeroclimar;
+     $sql[] = getSqlNewClientemarca($idclientemarc, $idcliente, $idmarca, $saldoafavor, "0.00", $fecha, $hora, $totalpagar, "0.00",
+         "0.00", $totalpagar, $numeroclimar, "VIGENTE", $mes_planilla, "0", $return);
+    }
+	else {
+       // echo "ya tiene una cuenta";
+       if(($mesemitido == $mes_planilla) && ($emitido== '0')){
+$saldonuevo= $saldoafavor + $saldoanterior + $totalpagar - $cobros - $devoluciones;
+$ventas=$ventas + $totalpagar;
+$sql[] = "UPDATE clientemarca SET saldoactual='$saldonuevo', ventas='$ventas' WHERE idcliente='$idcliente' AND idmarca='$idmarca' AND mesemitido = '$mes_planilla' ";
+
+        }else
+        {
+ echo "probando";
+        }
+
+
+
+  }
+	
+    $saldonuevo = $saldototal + $totalpagar;
+$sql[] = "UPDATE clientes SET saldototal='$saldonuevo' WHERE idcliente='$idcliente' AND mes_planilla = '$mes_planilla' ";
+
+
+$numeroD = findUltimoID("ventamayordetalle", "numero", true);
+    $numerodetalle = $numeroD['resultado'] +1;
+     $calzados = $resultado->calzados;
+   
+    for($j=0;$j<count($calzados);$j++){
+        $calzado = $calzados[$j];
+        $idkardexalmacen = $calzado->idkardexalmacen;
+        $idtallamarca = $calzado->idtallamarca;
+
+       $cajas = $calzado->caja;
+        $susdoc = $calzado->susdoc;
+        $unitario = $calzado->unitario;
+        $pares = $calzado->pares;
+        $totalprecio = $calzado->totalprecio;
+        $vendedor = $calzado->vendedor;
+         $vendedori= split("/",$vendedor);
+ //$idsCAr = split("/", $mesplanilla);
+ //echo $idkardexalmacen;
+$codigoven=$vendedori[0];
+$ciudadven1=$vendedori[1];
+
+$sql2= "SELECT
+              cli.idempleado
+            FROM
+              empleados cli
+            WHERE
+              cli.codigo = '$codigoven'";
+
+        $result = findBySqlReturnCampoUnique($sql2, true, true, "idempleado");
+        $idempleado = $result['resultado'];
+       $idventamayordetalle = "vmd-".$numerodetalle;
+        //$sql[] = getSqlNewDetallepedido($iddetallepedido, $numerocajas, $numeropares, $cliente, $vendedor, $idmodelo, $numerodetalle, $color, $material, 0, 0, $stylename, $linea,$idpedido,$codigocalzado,"","", $return);
+
+        $sql[] = getSqlNewVentamayordetalle($idventamayordetalle, $idmarca, $pares, $totalprecio, $cajas, $pares, $susdoc, $unitario, $numerodetalle, $idkardexalmacen, $idventamayor, $idempleado, $saldo, $estado, $return);
+
+$sql2= "SELECT
+             saldocantidadcaja,cantidadcaja,cantidadpares
+            FROM
+              kardexalmacen
+            WHERE
+              idkardexalmacen = '$idkardexalmacen'";
+
+        $result = findBySqlReturnCampoUnique($sql2, true, true, "saldocantidadcaja");
+        $saldocantidad = $result['resultado'];
+        $saldonuevocaja= $saldocantidad - $cajas;
+$sql[] = "UPDATE kardexalmacen SET saldocantidadcaja='$saldonuevocaja',cantidadcaja='$cajas',cantidadpares='$pares' WHERE idkardexalmacen='$idkardexalmacen' AND idmarca = '$idmarca' ";
+
+        //        $sql[] =getSqlNewDetalleingreso($idmodelo, $numeropares, $numerocajas, $idingreso, $iddetalleingreso, $numerodetalle, false);
+        $numerodetalle++;
+        $americano = $calzado->opcion;
+        if($americano == 'americano'){
+            for($i=1;$i<=12;$i++){
+                $cantidad1 = $calzado->$i;
+                $im = $i."m";
+                $cantidadm = $calzado->$im;
+
+                if($cantidad1 !=0){
+
+                    $talla = $i;
+                     $sql[]= getSqlNewDetalleventamayortalla($iddetalleventamayortalla, $idmarca, $talla, $cantidad1, $variable, $idventamayordetalle, $return);
+                }
+                if($cantidadm !=0){
+
+                    $talla = $i."m";
+//                    $sql[]= getSqlNewDetallepedidotalla($iddetallepedidotalla, $idmodelo, $talla, $cantidadm, $iddetallepedido, $return);
+                      $sql[]= getSqlNewDetalleventamayortalla($iddetalleventamayortalla, $idmarca, $talla, $cantidad1, $variable, $idventamayordetalle, $return);
+                }
+            }
+
+        }
+        else{
+
+
+            for($i=14;$i<=45;$i++){
+                $cantidad1 = $calzado->$i;
+                if($cantidad1 !=0){
+
+                    $talla = $i;
+//                    $sql[]= getSqlNewDetallepedidotalla($iddetallepedidotalla, $idmodelo, $talla, $cantidad1, $iddetallepedido, $return);
+                      $sql[]= getSqlNewDetalleventamayortalla($iddetalleventamayortalla, $idmarca, $talla, $cantidad1, $variable, $idventamayordetalle, $return);
+
+                   //                $sql[]= getSqlNewDetalleingresotalla($iddetalleingresotalla, $talla, $idmodelo, $iddetalleingreso, $cantidad1, false);
+
+                }
+            }
+        }
+//$numeroKardexA = findUltimoIDforanyway("movimientokardexalmacen", "numero", "idkardexalmacen", $idkardexalmacen, true);
+//        $numerokardex = $numeroKardexA['resultado'] +1;
+//        $idmovimientokardex = "mok-".$numerokardex;
+//        $hora = date("H:i:s");
+//		$descripcion = $producto->detalle;
+//	 // $sql[] = getSqlNewMovimientokardex($idmovimientokardex, $idproducto, 0, $cantidad, 0, $total, 0, 0, $idventa, $fecha, $hora , $numerokardex, $total/$cantidad, $descripcion,$saldocantidad, false);
+//    	$movimiento[$i]["idkardexalmacen"]=$idkardexalmacen;
+//        $movimiento[$i]["pares"]=$pares;
+//        $movimiento[$i]["cajas"]=$cajas;
+//        $movimiento[$i]["unitario"]=$unitario;
+//        $movimiento[$i]["totalprecio"]=$totalprecio;
+//
+//        $movimiento[$i]["fecha"]=$fecha;
+//        $movimiento[$i]["hora"]=$hora;
+//
+
+
+    }
+
+       //   MostrarConsulta($sql);
+
+   if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        if($saldoActual != 0) {
+            actualizarSaldoCredito($idcliente,$saldoActual,$idventa,false);
+        }
+            for ($j = 0 ; $j < count($movimiento) ; $j++) {
+
+                    $movimiento[$j]["idkardexalmacen"];
+                    $movimiento[$j]["pares"];
+                    $movimiento[$j]["cajas"];
+                    $movimiento[$j]["unitario"];
+                    $movimiento[$j]["totalprecio"];
+                    $movimiento[$j]["fecha"];
+                    $movimiento[$j]["hora"];
+
+//salidamovientomoventa($movimiento[$j]['idkardexalmacen'],$movimiento[$j]['cajas'],$movimiento[$j]['pares'],$movimiento[$j]['unitario'],$movimiento[$j]['fecha'],$movimiento[$j]['hora'],$idventamayor,false);
+  //                  actualizarSaldoMovimiento($movimiento[$j]['idproducto'],$movimiento[$j]['fecha'],$movimiento[$j]['hora'], false);
+                }
+
+          
+
+            
+        $dev['mensaje'] = "Se guardo correctamente la entrega";
+        $dev['error'] = "true";
+        $dev['resultado'] = $idventamayor;
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al registrar la entrega";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+function actualizarSaldoCredito($idcliente,$saldo,$idventa,$return = false ){
+
+    $sqlA[]="UPDATE credito SET saldo = '$saldo' WHERE idcliente = '$idcliente' and idventa = '$idventa'";
+
+    if($return == true)
+    {
+        return $sqlA;
+    }
+    else
+
+    {
+        //                MostrarConsulta($sqlA);
+        if(ejecutarConsultaSQLBeginCommit($sqlA))
+        {
+            $dev['mensaje'] = "Se guardo una transaccion correctamente";
+            $dev['error'] = "true";
+            $dev['resultado'] = "";
+        }
+        else
+        {
+            $dev['mensaje'] = "Ocurrio un error al guardar una transaccion";
+            $dev['error'] = "false";
+            $dev['resultado'] = "";
+        }
+
+    }
+}
+
+function salidamovientomoventa($idkardexalmacen,$salidacajas,$salidapares,$preciounitario ,$fecha,$hora = '00:00:01' ,$idventamayor ,$return = false ){
+
+    $sql="
+SELECT mk.saldo , mk.costounitario , mk.idmovimientokardex
+FROM movimientokardexalmacen mk
+WHERE mk.idproducto = '$idkardexalmacen' AND mk.saldo > 0
+ORDER BY mk.fecha DESC, mk.hora DESC LIMIT 1
+";
+
+    $saldocantidadA = findBySqlReturnCampoUnique($sql, true, true, "saldocantidad");
+    $saldocantidad = $saldocantidadA['resultado'];
+    //    echo $saldocantidad."saldo";
+
+    $preciounitarioA = findBySqlReturnCampoUnique($sql, true, true, "preciounitario");
+
+    $preciounitario = $preciounitarioA['resultado'];
+    //    echo $preciounitario."p/u";;
+    $idmovimientoA  = findBySqlReturnCampoUnique($sql, true, true, 'idmovimientokardex');
+
+    $idmovimiento = $idmovimientoA['resultado'];
+    //    echo $idmovimiento;
+    //    echo $salida."salida";;
+    if($salida <= $saldocantidad){
+        //        echo $salida;
+        //        echo $saldocantidad;
+        $idmovimientokardexA =findUltimoID('movimientokardex', 'numero', true);
+        $numeromk = $idmovimientokardexA['resultado']+1;
+        $idmovimientokardex = "mok-".$numeromk;
+        //        echo $preciounitario;
+        $egreso = $preciounitario * $salida;
+        $sqlA[]=getSqlNewMovimientokardex($idmovimientokardex, $idproducto, 0, $salida, 0, 0, $egreso, 0, $compra, $fecha, $hora, $numeromk, $preciounitario, "venta por mayor", 0, false);
+        $saldocantidad = $saldocantidad - $salida;
+        $sqlA[] = "UPDATE movimientokardex SET saldocantidad = '$saldocantidad' WHERE idmovimientokardex = '$idmovimiento' AND idproducto = '$idproducto'";
+
+
+        //        $idmovimientokardexalmacen = "mka-".$numeromka;
+        //
+        //        $sqlA[] = getSqlNewMovimientokardexalmacen($idmovimientokardexalmacen, $idproducto, $destino, $salida, 0, 0, $preciounitario, $egreso, 0, 0, $fecha, $hora, $compra, $numeromka, $salida,false);
+
+
+        //        MostrarConsulta($sqlA);
+        ejecutarConsultaSQLBeginCommit($sqlA);
+
+
+    }
+    else{
+        $idmovimientokardexA =findUltimoID('movimientokardex', 'numero', true);
+        $numeromk = $idmovimientokardexA['resultado']+1;
+        $idmovimientokardex = "mok-".$numeromk;
+        //        echo $preciounitario;
+        $egreso = $preciounitario * $saldocantidad;
+        $sqlA1[]=getSqlNewMovimientokardex($idmovimientokardex, $idproducto, 0, $saldocantidad, 0, 0, $egreso, 0, $compra, $fecha, $hora, $numeromk, $preciounitario, "traspaso", 0, false);
+
+
+
+
+        $numeromkaA = findUltimoID2condiciones("movimientokardekalmacen", "numero", "idalmacen", $destino, "idproducto", $idproducto, true);
+        $numeromka = $numeromkaA['resultado']+1;
+
+        //        $idmovimientokardexalmacen = "mka-".$numeromka;
+        //
+        //        $sqlA1[] = getSqlNewMovimientokardexalmacen($idmovimientokardexalmacen, $idproducto, $destino, $saldocantidad, 0, 0, $preciounitario, $egreso, 0, 0, $fecha, $hora, $compra, $numeromka, $saldocantidad,false);
+        $salida = $salida - $saldocantidad;
+        $saldocantidad = 0;
+        $sqlA1[] = "UPDATE movimientokardex SET saldocantidad = '$saldocantidad' WHERE idmovimientokardex = '$idmovimiento' AND idproducto = '$idproducto'";
+
+
+        //        MostrarConsulta($sqlA1);
+        ejecutarConsultaSQLBeginCommit($sqlA1);
+
+        salidamovientomoventa($idproducto,$salida ,$fecha,$hora ,$compra ,false );
+
+
+    }
+
+}
+function actualizarSaldoMovimiento($idproducto, $fecha,$hora = '00:00:01' ,$return = false ){
+    $sql="
+SELECT COALESCE(mk.saldo, 0) AS saldo,COALESCE(mk.saldobs, 0) AS saldobs
+FROM movimientokardex mk
+WHERE mk.idproducto = '$idproducto' AND
+TIMESTAMP(mk.fecha , mk.hora) < TIMESTAMP ('$fecha','$hora')
+ORDER BY mk.fecha DESC, mk.hora DESC LIMIT 1
+";
+    $saldo = findBySqlReturnCampoUnique($sql, true, true, "saldo");
+    $saldobs = findBySqlReturnCampoUnique($sql, true, true, "saldobs");
+    $sql1 = "
+SELECT * FROM  movimientokardex mk
+ WHERE mk.idproducto = '$idproducto' AND
+TIMESTAMP(mk.fecha,mk.hora) >= TIMESTAMP ('$fecha','$hora')
+order by mk.fecha asc , mk.hora asc ;
+";
+    //            echo $sql1;
+    //            echo $sql;
+    $link=new BD;
+    $link->conectar();
+    $res=$link->consulta($sql1);
+    $saldoActual = $saldo['resultado'];
+    $saldoActualBs = $saldobs['resultado'];
+    while ($res1=mysql_fetch_array($res)){
+        $saldoActual = $saldoActual + $res1['entrada'] - $res1['salida'];
+        $saldoActualBs = $saldoActualBs  + $res1['ingreso'] - $res1['egreso'];
+        $idmovimientokardex = $res1['idmovimientokardex'];
+        $sqlA[]="UPDATE movimientokardex SET saldo = '$saldoActual' , saldobs = '$saldoActualBs' WHERE idmovimientokardex = '$idmovimientokardex' AND idproducto = '$idproducto'";
+    }
+    $sqlA[]="UPDATE kardex SET cantidadsaldo = '$saldoActual' WHERE idproducto = '$idproducto'";
+
+    if($return == true)
+    {
+        return $sqlA;
+    }
+    else
+
+    {
+        //                MostrarConsulta($sqlA);
+        if(ejecutarConsultaSQLBeginCommit($sqlA))
+        {
+            $dev['mensaje'] = "Se guardo una transaccion correctamente";
+            $dev['error'] = "true";
+            $dev['resultado'] = "";
+        }
+        else
+        {
+            $dev['mensaje'] = "Ocurrio un error al guardar una transaccion";
+            $dev['error'] = "false";
+            $dev['resultado'] = "";
+        }
+
+    }
+}
+function getSqlNewVentamayor($idventamayor, $idalmacen, $boleta, $numero, $idcliente, $nit, $tipocambio, $fecha, $fecharegistro, $hora, $numerofactura, $responsable, $credito, $totalprecio, $totalcajas, $totalpares, $descuento, $descuentop, $montocancelado, $ingresoventasus, $observacion, $variable, $return){
+$setC[0]['campo'] = 'idventamayor';
+$setC[0]['dato'] = $idventamayor;
+$setC[1]['campo'] = 'idalmacen';
+$setC[1]['dato'] = $idalmacen;
+$setC[2]['campo'] = 'boleta';
+$setC[2]['dato'] = $boleta;
+$setC[3]['campo'] = 'numero';
+$setC[3]['dato'] = $numero;
+$setC[4]['campo'] = 'idcliente';
+$setC[4]['dato'] = $idcliente;
+$setC[5]['campo'] = 'nit';
+$setC[5]['dato'] = $nit;
+$setC[6]['campo'] = 'tipocambio';
+$setC[6]['dato'] = $tipocambio;
+$setC[7]['campo'] = 'fecha';
+$setC[7]['dato'] = $fecha;
+$setC[8]['campo'] = 'fecharegistro';
+$setC[8]['dato'] = $fecharegistro;
+$setC[9]['campo'] = 'hora';
+$setC[9]['dato'] = $hora;
+$setC[10]['campo'] = 'numerofactura';
+$setC[10]['dato'] = $numerofactura;
+$setC[11]['campo'] = 'responsable';
+$setC[11]['dato'] = $responsable;
+$setC[12]['campo'] = 'credito';
+$setC[12]['dato'] = $credito;
+$setC[13]['campo'] = 'totalprecio';
+$setC[13]['dato'] = $totalprecio;
+$setC[14]['campo'] = 'totalcajas';
+$setC[14]['dato'] = $totalcajas;
+$setC[15]['campo'] = 'totalpares';
+$setC[15]['dato'] = $totalpares;
+$setC[16]['campo'] = 'descuento';
+$setC[16]['dato'] = $descuento;
+$setC[17]['campo'] = 'descuentop';
+$setC[17]['dato'] = $descuentop;
+$setC[18]['campo'] = 'montocancelado';
+$setC[18]['dato'] = $montocancelado;
+$setC[19]['campo'] = 'ingresoventasus';
+$setC[19]['dato'] = $ingresoventasus;
+$setC[20]['campo'] = 'observacion';
+$setC[20]['dato'] = $observacion;
+$setC[21]['campo'] = 'variable';
+$setC[21]['dato'] = $variable;
+$sql2 = generarInsertValues($setC);
+return "INSERT INTO ventamayor ".$sql2;
+}
+
+function getSqlNewVentamayordetalle($idventamayordetalle, $idmarca, $cantidad, $preciototal, $totalcajas, $totalpares, $precioventa, $preciooficina, $numero, $idkardexalmacen, $idventamayor, $idempleado, $saldo, $estado, $return){
+$setC[0]['campo'] = 'idventamayordetalle';
+$setC[0]['dato'] = $idventamayordetalle;
+$setC[1]['campo'] = 'idmarca';
+$setC[1]['dato'] = $idmarca;
+$setC[2]['campo'] = 'cantidad';
+$setC[2]['dato'] = $cantidad;
+$setC[3]['campo'] = 'preciototal';
+$setC[3]['dato'] = $preciototal;
+$setC[4]['campo'] = 'totalcajas';
+$setC[4]['dato'] = $totalcajas;
+$setC[5]['campo'] = 'totalpares';
+$setC[5]['dato'] = $totalpares;
+$setC[6]['campo'] = 'precioventa';
+$setC[6]['dato'] = $precioventa;
+$setC[7]['campo'] = 'preciooficina';
+$setC[7]['dato'] = $preciooficina;
+$setC[8]['campo'] = 'numero';
+$setC[8]['dato'] = $numero;
+$setC[9]['campo'] = 'idkardexalmacen';
+$setC[9]['dato'] = $idkardexalmacen;
+$setC[10]['campo'] = 'idventamayor';
+$setC[10]['dato'] = $idventamayor;
+$setC[11]['campo'] = 'idempleado';
+$setC[11]['dato'] = $idempleado;
+$setC[12]['campo'] = 'saldo';
+$setC[12]['dato'] = $saldo;
+$setC[13]['campo'] = 'estado';
+$setC[13]['dato'] = $estado;
+$sql2 = generarInsertValues($setC);
+return "INSERT INTO ventamayordetalle ".$sql2;
+}
+function getSqlNewDetalleventamayortalla($iddetalleventamayortalla, $idmarca, $talla, $cantidad, $variable, $idventamayordetalle, $return){
+$setC[0]['campo'] = 'iddetalleventamayortalla';
+$setC[0]['dato'] = $iddetalleventamayortalla;
+$setC[1]['campo'] = 'idmarca';
+$setC[1]['dato'] = $idmarca;
+$setC[2]['campo'] = 'talla';
+$setC[2]['dato'] = $talla;
+$setC[3]['campo'] = 'cantidad';
+$setC[3]['dato'] = $cantidad;
+$setC[4]['campo'] = 'variable';
+$setC[4]['dato'] = $variable;
+$setC[5]['campo'] = 'idventamayordetalle';
+$setC[5]['dato'] = $idventamayordetalle;
+$sql2 = generarInsertValues($setC);
+return "INSERT INTO detalleventamayortalla ".$sql2;
+}
+
+function getSqlNewCreditomayor($idcredito, $idventamayordetalle, $idventamayor, $idmarca, $idcliente, $preciototal, $totalcajas, $totalpares, $precioventa, $preciooficina, $fecha, $hora, $factura, $devolucion, $observacion, $numero, $estado, $saldo, $papeleta, $fechacredito, $fechamoroso, $return){
+$setC[0]['campo'] = 'idcredito';
+$setC[0]['dato'] = $idcredito;
+$setC[1]['campo'] = 'idventamayordetalle';
+$setC[1]['dato'] = $idventamayordetalle;
+$setC[2]['campo'] = 'idventamayor';
+$setC[2]['dato'] = $idventamayor;
+$setC[3]['campo'] = 'idmarca';
+$setC[3]['dato'] = $idmarca;
+$setC[4]['campo'] = 'idcliente';
+$setC[4]['dato'] = $idcliente;
+$setC[5]['campo'] = 'preciototal';
+$setC[5]['dato'] = $preciototal;
+$setC[6]['campo'] = 'totalcajas';
+$setC[6]['dato'] = $totalcajas;
+$setC[7]['campo'] = 'totalpares';
+$setC[7]['dato'] = $totalpares;
+$setC[8]['campo'] = 'precioventa';
+$setC[8]['dato'] = $precioventa;
+$setC[9]['campo'] = 'preciooficina';
+$setC[9]['dato'] = $preciooficina;
+$setC[10]['campo'] = 'fecha';
+$setC[10]['dato'] = $fecha;
+$setC[11]['campo'] = 'hora';
+$setC[11]['dato'] = $hora;
+$setC[12]['campo'] = 'factura';
+$setC[12]['dato'] = $factura;
+$setC[13]['campo'] = 'devolucion';
+$setC[13]['dato'] = $devolucion;
+$setC[14]['campo'] = 'observacion';
+$setC[14]['dato'] = $observacion;
+$setC[15]['campo'] = 'numero';
+$setC[15]['dato'] = $numero;
+$setC[16]['campo'] = 'estado';
+$setC[16]['dato'] = $estado;
+$setC[17]['campo'] = 'saldo';
+$setC[17]['dato'] = $saldo;
+$setC[18]['campo'] = 'papeleta';
+$setC[18]['dato'] = $papeleta;
+$setC[19]['campo'] = 'fechacredito';
+$setC[19]['dato'] = $fechacredito;
+$setC[20]['campo'] = 'fechamoroso';
+$setC[20]['dato'] = $fechamoroso;
+$sql2 = generarInsertValues($setC);
+return "INSERT INTO creditomayor ".$sql2;
+}
+function getSqlNewClientemarca($idclientemarca, $idcliente, $idmarca, $saldoafavor, $saldooanterior, $fecha, $hora, $ventas, $cobros, $devoluciones, $saldoactual, $numero, $estado, $mesemitido, $emitido, $return){
+$setC[0]['campo'] = 'idclientemarca';
+$setC[0]['dato'] = $idclientemarca;
+$setC[1]['campo'] = 'idcliente';
+$setC[1]['dato'] = $idcliente;
+$setC[2]['campo'] = 'idmarca';
+$setC[2]['dato'] = $idmarca;
+$setC[3]['campo'] = 'saldoafavor';
+$setC[3]['dato'] = $saldoafavor;
+$setC[4]['campo'] = 'saldooanterior';
+$setC[4]['dato'] = $saldooanterior;
+$setC[5]['campo'] = 'fecha';
+$setC[5]['dato'] = $fecha;
+$setC[6]['campo'] = 'hora';
+$setC[6]['dato'] = $hora;
+$setC[7]['campo'] = 'ventas';
+$setC[7]['dato'] = $ventas;
+$setC[8]['campo'] = 'cobros';
+$setC[8]['dato'] = $cobros;
+$setC[9]['campo'] = 'devoluciones';
+$setC[9]['dato'] = $devoluciones;
+$setC[10]['campo'] = 'saldoactual';
+$setC[10]['dato'] = $saldoactual;
+$setC[11]['campo'] = 'numero';
+$setC[11]['dato'] = $numero;
+$setC[12]['campo'] = 'estado';
+$setC[12]['dato'] = $estado;
+$setC[13]['campo'] = 'mesemitido';
+$setC[13]['dato'] = $mesemitido;
+$setC[14]['campo'] = 'emitido';
+$setC[14]['dato'] = $emitido;
+$sql2 = generarInsertValues($setC);
+return "INSERT INTO clientemarca ".$sql2;
+}
+
+function getSqlNewMovimientocreditocliente($idmovimiento, $idcliente, $numerocuenta, $boleta, $idoperacion, $montoentrada, $montosalida, $cantidad, $descripcion, $saldosus, $saldobs, $tipocambio, $fecha, $hora, $operacion, $numero, $validado, $estado, $return){
+$setC[0]['campo'] = 'idmovimiento';
+$setC[0]['dato'] = $idmovimiento;
+$setC[1]['campo'] = 'idcliente';
+$setC[1]['dato'] = $idcliente;
+$setC[2]['campo'] = 'numerocuenta';
+$setC[2]['dato'] = $numerocuenta;
+$setC[3]['campo'] = 'boleta';
+$setC[3]['dato'] = $boleta;
+$setC[4]['campo'] = 'idoperacion';
+$setC[4]['dato'] = $idoperacion;
+$setC[5]['campo'] = 'montoentrada';
+$setC[5]['dato'] = $montoentrada;
+$setC[6]['campo'] = 'montosalida';
+$setC[6]['dato'] = $montosalida;
+$setC[7]['campo'] = 'cantidad';
+$setC[7]['dato'] = $cantidad;
+$setC[8]['campo'] = 'descripcion';
+$setC[8]['dato'] = $descripcion;
+$setC[9]['campo'] = 'saldosus';
+$setC[9]['dato'] = $saldosus;
+$setC[10]['campo'] = 'saldobs';
+$setC[10]['dato'] = $saldobs;
+$setC[11]['campo'] = 'tipocambio';
+$setC[11]['dato'] = $tipocambio;
+$setC[12]['campo'] = 'fecha';
+$setC[12]['dato'] = $fecha;
+$setC[13]['campo'] = 'hora';
+$setC[13]['dato'] = $hora;
+$setC[14]['campo'] = 'operacion';
+$setC[14]['dato'] = $operacion;
+$setC[15]['campo'] = 'numero';
+$setC[15]['dato'] = $numero;
+$setC[16]['campo'] = 'validado';
+$setC[16]['dato'] = $validado;
+$setC[17]['campo'] = 'estado';
+$setC[17]['dato'] = $estado;
+$sql2 = generarInsertValues($setC);
+return "INSERT INTO movimientocreditocliente ".$sql2;
+}
+function getSqlNewNumerorecibo($idnumero, $iddetalle, $numerorecibo, $fecha, $observacion, $gestion, $variable, $numero, $return){
+$setC[0]['campo'] = 'idnumero';
+$setC[0]['dato'] = $idnumero;
+$setC[1]['campo'] = 'iddetalle';
+$setC[1]['dato'] = $iddetalle;
+$setC[2]['campo'] = 'numerorecibo';
+$setC[2]['dato'] = $numerorecibo;
+$setC[3]['campo'] = 'fecha';
+$setC[3]['dato'] = $fecha;
+$setC[4]['campo'] = 'observacion';
+$setC[4]['dato'] = $observacion;
+$setC[5]['campo'] = 'gestion';
+$setC[5]['dato'] = $gestion;
+$setC[6]['campo'] = 'variable';
+$setC[6]['dato'] = $variable;
+$setC[7]['campo'] = 'numero';
+$setC[7]['dato'] = $numero;
+$sql2 = generarInsertValues($setC);
+return "INSERT INTO numerorecibo ".$sql2;
+}
+
+?>

@@ -1,0 +1,880 @@
+-- phpMyAdmin SQL Dump
+-- version 2.11.5
+-- http://www.phpmyadmin.net
+--
+-- Servidor: localhost
+-- Tiempo de generación: 16-04-2010 a las 00:52:06
+-- Versión del servidor: 5.0.51
+-- Versión de PHP: 5.2.5
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- Base de datos: `admin`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `almacenes`
+--
+
+CREATE TABLE `almacenes` (
+  `idalmacen` varchar(20) NOT NULL,
+  `idciudad` varchar(20) default NULL,
+  `nombre` varchar(500) default NULL,
+  `codigo` varchar(100) default NULL,
+  `direccion` varchar(1000) default NULL,
+  `responsable` varchar(200) default NULL,
+  `numero` int(11) default NULL,
+  `telefono` varchar(100) default NULL,
+  `fax` varchar(200) default NULL,
+  PRIMARY KEY  (`idalmacen`),
+  KEY `fk_relationship_20` (`idciudad`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `almacenes`
+--
+
+INSERT INTO `almacenes` (`idalmacen`, `idciudad`, `nombre`, `codigo`, `direccion`, `responsable`, `numero`, `telefono`, `fax`) VALUES
+('alm-1000', 'ciu-1000', 'Almacen Cochabamba', '01', 'c/moxos#2006', 'Ubaldo Villazon', 1000, '254234', '254234'),
+('alm-1001', 'ciu-1000', 'Cochabamab', '02', 'otro', 'Erio', 1001, '90909', '909090');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `categoriafuncion`
+--
+
+CREATE TABLE `categoriafuncion` (
+  `idcategoriafuncion` char(10) NOT NULL,
+  `nombre` varchar(500) default NULL,
+  `estado` varchar(20) default NULL,
+  `codigo` varchar(100) default NULL,
+  `seguridad` varchar(200) default NULL,
+  PRIMARY KEY  (`idcategoriafuncion`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `categoriafuncion`
+--
+
+INSERT INTO `categoriafuncion` (`idcategoriafuncion`, `nombre`, `estado`, `codigo`, `seguridad`) VALUES
+('caf1000', 'Pedido', 'Activo', NULL, NULL),
+('caf1001', 'Configuracion', 'Activo', NULL, NULL),
+('caf1005', 'Tienda', 'Activo', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `categorias`
+--
+
+CREATE TABLE `categorias` (
+  `idcategoria` varchar(20) NOT NULL,
+  `nombre` varchar(500) default NULL,
+  `codigo` varchar(100) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idcategoria`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `categorias`
+--
+
+INSERT INTO `categorias` (`idcategoria`, `nombre`, `codigo`, `numero`) VALUES
+('caf1001', 'Configuracion', NULL, NULL),
+('cat-1000', 'zapato de vestir', 'zpt1', 1000);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ciudades`
+--
+
+CREATE TABLE `ciudades` (
+  `idciudad` varchar(20) NOT NULL,
+  `nombre` varchar(500) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idciudad`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `ciudades`
+--
+
+INSERT INTO `ciudades` (`idciudad`, `nombre`, `numero`) VALUES
+('ciu-1000', 'Cochabamba', 1000),
+('ciu-1001', 'Santa Cruz', 1001),
+('ciu-1002', 'Lapaz', 1002),
+('ciu-1003', 'Sucre', 1003),
+('ciu-1004', 'Oruro', 1004);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `clientes`
+--
+
+CREATE TABLE `clientes` (
+  `idcliente` varchar(20) NOT NULL,
+  `idtipocliente` varchar(20) default NULL,
+  `idalmacen` varchar(20) default NULL,
+  `nombre` varchar(500) default NULL,
+  `telefono` varchar(100) default NULL,
+  `direccion` varchar(1000) default NULL,
+  `estado` varchar(20) default NULL,
+  `email` varchar(1000) default NULL,
+  `fax` varchar(200) default NULL,
+  `numero` int(11) default NULL,
+  `codigo` varchar(20) default NULL,
+  PRIMARY KEY  (`idcliente`),
+  KEY `fk_relationship_19` (`idalmacen`),
+  KEY `fk_relationship_21` (`idtipocliente`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `clientes`
+--
+
+INSERT INTO `clientes` (`idcliente`, `idtipocliente`, `idalmacen`, `nombre`, `telefono`, `direccion`, `estado`, `email`, `fax`, `numero`, `codigo`) VALUES
+('cli-1', 'tcl-1000', 'alm-1001', 'yvalkdo', 'kjhkdah', 'kj', 'Activo', NULL, 'hh', 1, 'buggy1');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `coleccion`
+--
+
+CREATE TABLE `coleccion` (
+  `idcoleccion` varchar(20) NOT NULL,
+  `idlistaprecio` varchar(20) default NULL,
+  `colecion` varchar(20) default NULL,
+  `ano` int(11) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idcoleccion`),
+  KEY `fk_relationship_15` (`idlistaprecio`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `coleccion`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `colores`
+--
+
+CREATE TABLE `colores` (
+  `idcolor` varchar(20) NOT NULL,
+  `nombre` varchar(500) default NULL,
+  `descripcion` varchar(1000) default NULL,
+  `codigo` varchar(100) default NULL,
+  `codigobarra` varchar(1000) NOT NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idcolor`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `colores`
+--
+
+INSERT INTO `colores` (`idcolor`, `nombre`, `descripcion`, `codigo`, `codigobarra`, `numero`) VALUES
+('col-1', 'NEGREO', 'negro /negro /negro', 'col-1', '1', 1),
+('col-2', 'NEGREO', 'negro /negro /negro', 'col-1', '1', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `color_marca`
+--
+
+CREATE TABLE `color_marca` (
+  `idcolor` varchar(20) NOT NULL,
+  `idmarca` varchar(20) NOT NULL,
+  `codigo` varchar(100) default NULL,
+  `existe` varchar(20) default NULL,
+  PRIMARY KEY  (`idcolor`,`idmarca`),
+  KEY `fk_relationship_7` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `color_marca`
+--
+
+INSERT INTO `color_marca` (`idcolor`, `idmarca`, `codigo`, `existe`) VALUES
+('col-1', 'mar-2', '0', 'no'),
+('col-2', 'mar-2', '0', 'si');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `funcion`
+--
+
+CREATE TABLE `funcion` (
+  `idfuncion` varchar(20) NOT NULL,
+  `idcategoriafuncion` char(10) default NULL,
+  `descripcion` varchar(1000) default NULL,
+  `mostrar` varchar(20) default NULL,
+  PRIMARY KEY  (`idfuncion`),
+  KEY `fk_relationship_26` (`idcategoriafuncion`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `funcion`
+--
+
+INSERT INTO `funcion` (`idfuncion`, `idcategoriafuncion`, `descripcion`, `mostrar`) VALUES
+('fun1000', 'caf1000', 'Proveedores', 'si'),
+('fun1001', 'caf1000', 'Marcas', 'si'),
+('fun1002', 'caf1000', 'Clientes', 'si'),
+('fun2001', 'caf1001', 'Colores', 'si'),
+('fun2002', 'caf1001', 'Lineas', 'si'),
+('fun2003', 'caf1001', 'Materiales', 'si'),
+('fun2004', 'caf1001', 'Almacenes', 'si'),
+('fun2005', 'caf1001', 'Colecciones', 'si'),
+('fun5001', 'caf1005', 'Vendedores', 'si');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `lineas`
+--
+
+CREATE TABLE `lineas` (
+  `idlinea` varchar(20) NOT NULL,
+  `nombre` varchar(1000) default NULL,
+  `codigo` varchar(100) default NULL,
+  `descripcion` varchar(1000) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idlinea`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `lineas`
+--
+
+INSERT INTO `lineas` (`idlinea`, `nombre`, `codigo`, `descripcion`, `numero`) VALUES
+('lin-1', 'Sandalia de Vestir Noche', '2011', 'Solo se usa de noche jejej', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `linea_marca`
+--
+
+CREATE TABLE `linea_marca` (
+  `idlinea` varchar(20) NOT NULL,
+  `idmarca` varchar(20) NOT NULL,
+  `codigo` varchar(100) default NULL,
+  PRIMARY KEY  (`idlinea`,`idmarca`),
+  KEY `fk_relationship_13` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `linea_marca`
+--
+
+INSERT INTO `linea_marca` (`idlinea`, `idmarca`, `codigo`) VALUES
+('lin-1', 'mar-1', '21313');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `lista_precios`
+--
+
+CREATE TABLE `lista_precios` (
+  `idlistaprecio` varchar(20) NOT NULL,
+  `idcoleccion` varchar(20) default NULL,
+  `fecha` date default NULL,
+  `codigo` varchar(100) default NULL,
+  `responsable` varchar(200) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idlistaprecio`),
+  KEY `fk_relationship_16` (`idcoleccion`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `lista_precios`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `marcas`
+--
+
+CREATE TABLE `marcas` (
+  `idmarca` varchar(20) NOT NULL,
+  `idproveedor` varchar(20) default NULL,
+  `idcategoria` varchar(20) default NULL,
+  `codigo` varchar(100) default NULL,
+  `codigobarra` varchar(200) default NULL,
+  `nombre` varchar(500) default NULL,
+  `imagen` varchar(2000) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idmarca`),
+  KEY `fk_2` (`idproveedor`),
+  KEY `fk_relationship_1` (`idcategoria`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `marcas`
+--
+
+INSERT INTO `marcas` (`idmarca`, `idproveedor`, `idcategoria`, `codigo`, `codigobarra`, `nombre`, `imagen`, `numero`) VALUES
+('mar-1', 'prv-1005', 'cat-1000', 'NIKE01', '1', 'NIKE', 'upload/imagen.jpg', 1),
+('mar-2', 'prv-1', 'caf1001', 'NIKEEEE', '1', 'NIKEE', NULL, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `materiales`
+--
+
+CREATE TABLE `materiales` (
+  `idmateria` varchar(20) NOT NULL,
+  `codigo` varchar(100) default NULL,
+  `nombre` varchar(500) default NULL,
+  `descripcion` varchar(3000) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idmateria`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `materiales`
+--
+
+INSERT INTO `materiales` (`idmateria`, `codigo`, `nombre`, `descripcion`, `numero`) VALUES
+('ma-1009', '9001', 'Metal Soft', 'Metal Soft', 1009),
+('mat-1000', '10001', 'CONFORT SOFT', 'CONFORTSOFT/ NAPA SOFT / VEMIZ PLUS', 1000),
+('mat-1001', '2001', 'Napa Soft', 'napa soft usado en ramadim', 1001),
+('mat-1002', '3001', 'VERNIZ SOFT', 'VERNIS SOFT', 1002),
+('mat-1003', '4001', 'nobuksahne', 'nobukoshane', 1003),
+('mat-1004', '5001', 'Napa Vestuario Plus', 'vestuario pluss', 1004),
+('mat-1005', '6001', 'Relax Soft', 'Relax Soft Relax Soft', 1005),
+('mat-1006', '6002', 'Napa Vestuario', 'Napa Vestuario / Ramadis', 1006),
+('mat-1007', '7001', 'Camurga Pluss', 'Camurga Plus', 1007),
+('mat-1008', '8001', 'Tejos Soft', 'Tejos  Soft', 1008),
+('mat-1010', '1010', 'Toronto Plus', 'Toronto Plus', 1010),
+('mat-1011', '987', 'PRETO', 'PRETO PRETO /PRETO', 1011),
+('mat-1012', 'sadsa', 'sadsad', 'dsa', 1012),
+('mat-1013', 'sada', 'dasdas', 'dsad', 1013);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `materia_marca`
+--
+
+CREATE TABLE `materia_marca` (
+  `idmarca` varchar(20) NOT NULL,
+  `idmateria` varchar(20) NOT NULL,
+  `codigo` varchar(100) default NULL,
+  `existe` varchar(20) default NULL,
+  PRIMARY KEY  (`idmarca`,`idmateria`),
+  KEY `fk_relationship_12` (`idmateria`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `materia_marca`
+--
+
+INSERT INTO `materia_marca` (`idmarca`, `idmateria`, `codigo`, `existe`) VALUES
+('mar-2', 'ma-1009', '0', 'no'),
+('mar-2', 'mat-1000', '0', 'no'),
+('mar-2', 'mat-1001', '0', 'no'),
+('mar-2', 'mat-1002', '0', 'no'),
+('mar-2', 'mat-1003', '0', 'no'),
+('mar-2', 'mat-1004', '0', 'si'),
+('mar-2', 'mat-1005', '0', 'no'),
+('mar-2', 'mat-1006', '0', 'no'),
+('mar-2', 'mat-1007', '0', 'no'),
+('mar-2', 'mat-1008', '0', 'si'),
+('mar-2', 'mat-1010', '0', 'no'),
+('mar-2', 'mat-1011', '0', 'no'),
+('mar-2', 'mat-1012', '0', 'si'),
+('mar-2', 'mat-1013', '0', 'no');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `modelos`
+--
+
+CREATE TABLE `modelos` (
+  `idmodelo` varchar(20) NOT NULL,
+  `idcoleccion` varchar(20) default NULL,
+  `idmarca` varchar(20) default NULL,
+  `codigo` varchar(100) default NULL,
+  `linea` varchar(1000) default NULL,
+  `color` varchar(100) default NULL,
+  `material` varchar(100) default NULL,
+  `imagen` varchar(2000) default NULL,
+  `publicar` int(11) default NULL,
+  `fecha` date default NULL,
+  `cantidad` int(11) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idmodelo`),
+  KEY `fk_relationship_3` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `modelos`
+--
+
+INSERT INTO `modelos` (`idmodelo`, `idcoleccion`, `idmarca`, `codigo`, `linea`, `color`, `material`, `imagen`, `publicar`, `fecha`, `cantidad`, `numero`) VALUES
+('mod-1', 'col-1', 'mar-2', '909090', '210', '786', '987', NULL, 1, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `precios`
+--
+
+CREATE TABLE `precios` (
+  `idprecio` char(10) NOT NULL,
+  `idmodelo` varchar(20) default NULL,
+  `idlistaprecio` varchar(20) default NULL,
+  `precio` decimal(11,3) default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`idprecio`),
+  KEY `fk_relationship_17` (`idmodelo`),
+  KEY `fk_relationship_18` (`idlistaprecio`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `precios`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `proveedores`
+--
+
+CREATE TABLE `proveedores` (
+  `idproveedor` varchar(20) NOT NULL,
+  `codigo` varchar(100) default NULL,
+  `nombre` varchar(500) default NULL,
+  `telefono` varchar(100) default NULL,
+  `representante` varchar(1000) default NULL,
+  `ciudad` varchar(2000) default NULL,
+  `pais` varchar(100) default NULL,
+  `direccion` varchar(1000) default NULL,
+  `web` varchar(1000) default NULL,
+  `email` varchar(1000) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idproveedor`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `proveedores`
+--
+
+INSERT INTO `proveedores` (`idproveedor`, `codigo`, `nombre`, `telefono`, `representante`, `ciudad`, `pais`, `direccion`, `web`, `email`, `numero`) VALUES
+('prv-1', 'pro-10', 'Las chicas manareas', '2132323', 'uvillazon', 'puerto', 'Boliia', NULL, 'kjhakdajs', 'ujjkashd', 1),
+('prv-1000', 'NIKE', 'NIKE', '909090', 'UBALDO', 'BUENOS AIRES', 'ARGENTINA', 'sadsdada', 'kjjhkhkljlhkjjhkj', 'jkhhkjjshjhksajhkd', 1000),
+('prv-1001', 'prov10213', 'iouihkd', '121312312', 'jhksadsa', 'jhkskdas', 'kjsadk', NULL, 'jkhjkasd', 'kjhashjdsa', 1001),
+('prv-1002', 'prov10213', 'iouihkd', '121312312', 'jhksadsa', 'jhkskdas', 'kjsadk', NULL, 'jkhjkasd', 'kjhashjdsa', 1002),
+('prv-1003', 'buggy', 'buggy', '21321', 'YY', 'BUGGY', 'BUGGY', NULL, 'HUU', 'JKHJ', 1003),
+('prv-1004', 'buggy', 'buggy', '21321', 'YY', 'BUGGY', 'BUGGY', NULL, 'HUU', 'JKHJ', 1004),
+('prv-1005', 'MIKI', 'MIKI', '990890', 'MKI', 'SDASHKJD', '90809', NULL, 'MIKI', 'KJHKJHASDA', 1005),
+('prv-1006', 'buggy', 'buggy', 'buggy', 'bugyg', 'buggy', 'buggy', NULL, 'buggy', 'buggy', 1006);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `rol`
+--
+
+CREATE TABLE `rol` (
+  `idrol` varchar(20) NOT NULL,
+  `nombre` varchar(500) default NULL,
+  `estado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idrol`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `rol`
+--
+
+INSERT INTO `rol` (`idrol`, `nombre`, `estado`, `numero`) VALUES
+('rol-1000', 'administrador', 'Activo', 1000);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `rolfuncion`
+--
+
+CREATE TABLE `rolfuncion` (
+  `idrol` varchar(20) NOT NULL,
+  `idfuncion` varchar(20) NOT NULL,
+  PRIMARY KEY  (`idrol`,`idfuncion`),
+  KEY `fk_relationship_25` (`idfuncion`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `rolfuncion`
+--
+
+INSERT INTO `rolfuncion` (`idrol`, `idfuncion`) VALUES
+('rol-1000', 'fun1000'),
+('rol-1000', 'fun1001'),
+('rol-1000', 'fun1002'),
+('rol-1000', 'fun2001'),
+('rol-1000', 'fun2002'),
+('rol-1000', 'fun2003'),
+('rol-1000', 'fun2004'),
+('rol-1000', 'fun2005'),
+('rol-1000', 'fun5001');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tallas`
+--
+
+CREATE TABLE `tallas` (
+  `idtalla` int(11) NOT NULL,
+  `codigo` varchar(100) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idtalla`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `tallas`
+--
+
+INSERT INTO `tallas` (`idtalla`, `codigo`, `numero`) VALUES
+(8, '8', 8),
+(9, '9', 9),
+(10, '10', 10),
+(11, '11', 11),
+(12, '12', 12),
+(13, '13', 13),
+(14, '14', 14),
+(15, '15', 15),
+(16, '16', 16),
+(17, '17', 17),
+(18, '18', 18),
+(19, '19', 19),
+(20, '20', 20),
+(21, '21', 21),
+(22, '22', 22),
+(23, '23', 23),
+(24, '24', 24),
+(25, '25', 25),
+(26, '26', 26),
+(27, '27', 27),
+(28, '28', 28),
+(29, '29', 29),
+(30, '30', 30),
+(31, '31', 31),
+(32, '32', 32),
+(33, '33', 33),
+(34, '34', 34),
+(35, '35', 35),
+(36, '36', 36),
+(37, '37', 37),
+(38, '38', 38),
+(39, '39', 39),
+(40, '40', 40),
+(41, '41', 41),
+(42, '42', 42),
+(43, '43', 43),
+(44, '44', 44),
+(45, '45', 45),
+(46, '46', 46);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `talla_marca`
+--
+
+CREATE TABLE `talla_marca` (
+  `idtalla` int(11) NOT NULL,
+  `idmarca` varchar(20) NOT NULL,
+  `existe` varchar(20) NOT NULL,
+  PRIMARY KEY  (`idtalla`,`idmarca`),
+  KEY `fk_relationship_5` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `talla_marca`
+--
+
+INSERT INTO `talla_marca` (`idtalla`, `idmarca`, `existe`) VALUES
+(8, 'mar-1', 'si'),
+(8, 'mar-2', 'no'),
+(9, 'mar-1', 'si'),
+(9, 'mar-2', 'no'),
+(10, 'mar-1', 'si'),
+(10, 'mar-2', 'si'),
+(11, 'mar-1', 'no'),
+(11, 'mar-2', 'si'),
+(12, 'mar-1', 'no'),
+(12, 'mar-2', 'si'),
+(13, 'mar-1', 'si'),
+(13, 'mar-2', 'si'),
+(14, 'mar-1', 'no'),
+(14, 'mar-2', 'si'),
+(15, 'mar-1', 'no'),
+(15, 'mar-2', 'si'),
+(16, 'mar-1', 'no'),
+(16, 'mar-2', 'si'),
+(17, 'mar-1', 'si'),
+(17, 'mar-2', 'no'),
+(18, 'mar-1', 'si'),
+(18, 'mar-2', 'si'),
+(19, 'mar-1', 'si'),
+(19, 'mar-2', 'si'),
+(20, 'mar-1', 'si'),
+(20, 'mar-2', 'si'),
+(21, 'mar-1', 'si'),
+(21, 'mar-2', 'si'),
+(22, 'mar-1', 'si'),
+(22, 'mar-2', 'si'),
+(23, 'mar-1', 'si'),
+(23, 'mar-2', 'si'),
+(24, 'mar-1', 'si'),
+(24, 'mar-2', 'si'),
+(25, 'mar-1', 'si'),
+(25, 'mar-2', 'si'),
+(26, 'mar-1', 'si'),
+(26, 'mar-2', 'si'),
+(27, 'mar-1', 'si'),
+(27, 'mar-2', 'si'),
+(28, 'mar-1', 'si'),
+(28, 'mar-2', 'si'),
+(29, 'mar-1', 'si'),
+(29, 'mar-2', 'si'),
+(30, 'mar-1', 'si'),
+(30, 'mar-2', 'no'),
+(31, 'mar-1', 'si'),
+(31, 'mar-2', 'no'),
+(32, 'mar-1', 'no'),
+(32, 'mar-2', 'no'),
+(33, 'mar-1', 'no'),
+(33, 'mar-2', 'no'),
+(34, 'mar-1', 'no'),
+(34, 'mar-2', 'no'),
+(35, 'mar-1', 'no'),
+(35, 'mar-2', 'no'),
+(36, 'mar-1', 'no'),
+(36, 'mar-2', 'no'),
+(37, 'mar-1', 'no'),
+(37, 'mar-2', 'no'),
+(38, 'mar-1', 'no'),
+(38, 'mar-2', 'no'),
+(39, 'mar-1', 'no'),
+(39, 'mar-2', 'no'),
+(40, 'mar-1', 'no'),
+(40, 'mar-2', 'no'),
+(41, 'mar-1', 'no'),
+(41, 'mar-2', 'no'),
+(42, 'mar-1', 'no'),
+(42, 'mar-2', 'no'),
+(43, 'mar-1', 'no'),
+(43, 'mar-2', 'no'),
+(44, 'mar-1', 'no'),
+(44, 'mar-2', 'no'),
+(45, 'mar-1', 'no'),
+(45, 'mar-2', 'no'),
+(46, 'mar-1', 'no'),
+(46, 'mar-2', 'no');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipo_clientes`
+--
+
+CREATE TABLE `tipo_clientes` (
+  `idtipocliente` varchar(20) NOT NULL,
+  `nombre` varchar(500) default NULL,
+  `descripcion` varchar(1000) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idtipocliente`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `tipo_clientes`
+--
+
+INSERT INTO `tipo_clientes` (`idtipocliente`, `nombre`, `descripcion`, `numero`) VALUES
+('tcl-1000', 'Cliente Mayorista', 'Cliente Mayorista', 1000),
+('tcl-1001', 'Tienda', 'Tiendas que pertenecen a Balderrama', 1001);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuario`
+--
+
+CREATE TABLE `usuario` (
+  `idusuario` varchar(20) NOT NULL,
+  `idrol` varchar(20) default NULL,
+  `idalmacen` varchar(20) default NULL,
+  `nombre` varchar(500) default NULL,
+  `apellido1` varchar(2000) default NULL,
+  `apellido2` varchar(2000) default NULL,
+  `ci` varchar(20) default NULL,
+  `email` varchar(1000) default NULL,
+  `telefono` varchar(100) default NULL,
+  `celular` varchar(100) default NULL,
+  `login` varchar(20) default NULL,
+  `paswd` varchar(2000) default NULL,
+  `fechareg` date default NULL,
+  `estado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idusuario`),
+  KEY `fk_relationship_22` (`idalmacen`),
+  KEY `fk_relationship_23` (`idrol`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `usuario`
+--
+
+INSERT INTO `usuario` (`idusuario`, `idrol`, `idalmacen`, `nombre`, `apellido1`, `apellido2`, `ci`, `email`, `telefono`, `celular`, `login`, `paswd`, `fechareg`, `estado`, `numero`) VALUES
+('usr-1000', 'rol-1000', 'alm-1000', 'Admin', 'admin', 'admin', '121212', 'admin@admin.com', '1234567', '1234567', 'admin', '21232f297a57a5a743894a0e4a801fc3', '2010-04-10', 'Activo', 1000);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `vendedores`
+--
+
+CREATE TABLE `vendedores` (
+  `idvendedor` varchar(20) NOT NULL,
+  `idalmacen` varchar(20) default NULL,
+  `nombre` varchar(500) default NULL,
+  `apellido1` varchar(2000) default NULL,
+  `apellido2` varchar(2000) default NULL,
+  `telefono` varchar(100) default NULL,
+  `direccion` varchar(1000) default NULL,
+  `estado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idvendedor`),
+  KEY `fk_relationship_27` (`idalmacen`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `vendedores`
+--
+
+
+--
+-- Filtros para las tablas descargadas (dump)
+--
+
+--
+-- Filtros para la tabla `almacenes`
+--
+ALTER TABLE `almacenes`
+  ADD CONSTRAINT `fk_relationship_20` FOREIGN KEY (`idciudad`) REFERENCES `ciudades` (`idciudad`);
+
+--
+-- Filtros para la tabla `clientes`
+--
+ALTER TABLE `clientes`
+  ADD CONSTRAINT `fk_relationship_19` FOREIGN KEY (`idalmacen`) REFERENCES `almacenes` (`idalmacen`),
+  ADD CONSTRAINT `fk_relationship_21` FOREIGN KEY (`idtipocliente`) REFERENCES `tipo_clientes` (`idtipocliente`);
+
+--
+-- Filtros para la tabla `coleccion`
+--
+ALTER TABLE `coleccion`
+  ADD CONSTRAINT `fk_relationship_15` FOREIGN KEY (`idlistaprecio`) REFERENCES `lista_precios` (`idlistaprecio`);
+
+--
+-- Filtros para la tabla `color_marca`
+--
+ALTER TABLE `color_marca`
+  ADD CONSTRAINT `fk_relationship_6` FOREIGN KEY (`idcolor`) REFERENCES `colores` (`idcolor`),
+  ADD CONSTRAINT `fk_relationship_7` FOREIGN KEY (`idmarca`) REFERENCES `marcas` (`idmarca`);
+
+--
+-- Filtros para la tabla `funcion`
+--
+ALTER TABLE `funcion`
+  ADD CONSTRAINT `fk_relationship_26` FOREIGN KEY (`idcategoriafuncion`) REFERENCES `categoriafuncion` (`idcategoriafuncion`);
+
+--
+-- Filtros para la tabla `linea_marca`
+--
+ALTER TABLE `linea_marca`
+  ADD CONSTRAINT `fk_relationship_13` FOREIGN KEY (`idmarca`) REFERENCES `marcas` (`idmarca`),
+  ADD CONSTRAINT `fk_relationship_8` FOREIGN KEY (`idlinea`) REFERENCES `lineas` (`idlinea`);
+
+--
+-- Filtros para la tabla `lista_precios`
+--
+ALTER TABLE `lista_precios`
+  ADD CONSTRAINT `fk_relationship_16` FOREIGN KEY (`idcoleccion`) REFERENCES `coleccion` (`idcoleccion`);
+
+--
+-- Filtros para la tabla `marcas`
+--
+ALTER TABLE `marcas`
+  ADD CONSTRAINT `fk_2` FOREIGN KEY (`idproveedor`) REFERENCES `proveedores` (`idproveedor`),
+  ADD CONSTRAINT `fk_relationship_1` FOREIGN KEY (`idcategoria`) REFERENCES `categorias` (`idcategoria`);
+
+--
+-- Filtros para la tabla `materia_marca`
+--
+ALTER TABLE `materia_marca`
+  ADD CONSTRAINT `fk_relationship_11` FOREIGN KEY (`idmarca`) REFERENCES `marcas` (`idmarca`),
+  ADD CONSTRAINT `fk_relationship_12` FOREIGN KEY (`idmateria`) REFERENCES `materiales` (`idmateria`);
+
+--
+-- Filtros para la tabla `modelos`
+--
+ALTER TABLE `modelos`
+  ADD CONSTRAINT `fk_relationship_3` FOREIGN KEY (`idmarca`) REFERENCES `marcas` (`idmarca`);
+
+--
+-- Filtros para la tabla `precios`
+--
+ALTER TABLE `precios`
+  ADD CONSTRAINT `fk_relationship_17` FOREIGN KEY (`idmodelo`) REFERENCES `modelos` (`idmodelo`),
+  ADD CONSTRAINT `fk_relationship_18` FOREIGN KEY (`idlistaprecio`) REFERENCES `lista_precios` (`idlistaprecio`);
+
+--
+-- Filtros para la tabla `rolfuncion`
+--
+ALTER TABLE `rolfuncion`
+  ADD CONSTRAINT `fk_relationship_24` FOREIGN KEY (`idrol`) REFERENCES `rol` (`idrol`),
+  ADD CONSTRAINT `fk_relationship_25` FOREIGN KEY (`idfuncion`) REFERENCES `funcion` (`idfuncion`);
+
+--
+-- Filtros para la tabla `talla_marca`
+--
+ALTER TABLE `talla_marca`
+  ADD CONSTRAINT `fk_relationship_4` FOREIGN KEY (`idtalla`) REFERENCES `tallas` (`idtalla`),
+  ADD CONSTRAINT `fk_relationship_5` FOREIGN KEY (`idmarca`) REFERENCES `marcas` (`idmarca`);
+
+--
+-- Filtros para la tabla `usuario`
+--
+ALTER TABLE `usuario`
+  ADD CONSTRAINT `fk_relationship_22` FOREIGN KEY (`idalmacen`) REFERENCES `almacenes` (`idalmacen`),
+  ADD CONSTRAINT `fk_relationship_23` FOREIGN KEY (`idrol`) REFERENCES `rol` (`idrol`);
+
+--
+-- Filtros para la tabla `vendedores`
+--
+ALTER TABLE `vendedores`
+  ADD CONSTRAINT `fk_relationship_27` FOREIGN KEY (`idalmacen`) REFERENCES `almacenes` (`idalmacen`);

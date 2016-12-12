@@ -1,0 +1,1114 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.muestra;
+
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Component;
+import com.gwtext.client.widgets.MessageBox;
+import com.gwtext.client.widgets.PagingToolbar;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.QuickTipsConfig;
+import com.gwtext.client.widgets.ToolbarButton;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.event.PanelListenerAdapter;
+import com.gwtext.client.widgets.grid.ColumnConfig;
+import com.gwtext.client.widgets.grid.ColumnModel;
+import com.gwtext.client.widgets.grid.EditorGridPanel;
+import com.gwtext.client.widgets.grid.GridPanel;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.ExtElement;
+import com.gwtext.client.widgets.grid.BaseColumnConfig;
+import com.gwtext.client.widgets.grid.CheckboxColumnConfig;
+import com.gwtext.client.widgets.grid.CheckboxSelectionModel;
+import com.gwtext.client.widgets.grid.RowNumberingColumnConfig;
+import com.gwtext.client.data.*;
+import com.gwtext.client.data.DataProxy;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.NumberField;
+import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.grid.GridEditor;
+import com.gwtext.client.widgets.grid.RowSelectionModel;
+import com.gwtext.client.widgets.grid.event.*;
+
+/**
+ *
+ * @author example
+ */
+public class ListaCalzadoPedido {
+
+    private EditorGridPanel grid;
+    private final int ALTO = 285;
+    private ToolbarButton eliminarProducto;
+    protected ExtElement ext_element;
+    private CheckboxSelectionModel cbSelectionModel;
+    private Store store;
+    private ColumnConfig idColumn;
+    private BaseColumnConfig[] columns;
+    private ColumnModel columnModel;
+    protected String buscaCodigo;
+    protected String buscarNombre;
+    private DataProxy dataProxy;
+    private JsonReader reader;
+    PagingToolbar pagingToolbar;
+    String selecionado = "";
+    private Panel panel;
+    private ColumnConfig codigoColumn;
+  
+    private ColumnConfig stylenameColumn;
+    private ColumnConfig clienteColumn;
+    private ColumnConfig vendedorColumn;
+    private ColumnConfig totalparesColumn;
+    private ColumnConfig totalcajasColumn;
+  
+    private ColumnConfig talla34Column;
+    private ColumnConfig talla35Column;
+    private ColumnConfig talla36Column;
+    private ColumnConfig talla37Column;
+    private ColumnConfig talla38Column;
+    private ColumnConfig talla39Column;
+    private ColumnConfig talla40Column;
+    private ColumnConfig talla41Column;
+ 
+   // private ColorPedido colorpedido;
+    //private MaterialPedido materialpedido;
+    private Object[][] clienteM;
+    private Object[][] vendedorM;
+    private Object[][] colorM;
+    private Object[][] materialM;
+    private String oficinaM;
+    private String oficinaM1;
+    private String oficinaM2;
+    private String oficinaM3;
+    private String oficinaM4;
+    private String oficinaM5;
+    private String oficinaM6;
+    private String oficinaM7;
+
+    String[] nombreCaso1Columns = {"idmodelo", "codigo", "detalle", "pares", "unidades", "oficina"};
+    String[] nombreCaso2Columns = {"idmodelo", "codigo", "detalle", "pares", "unidades", "oficina","oficina1"};
+    String[] nombreCaso3Columns = {"idmodelo", "codigo", "detalle", "pares", "unidades", "oficina","oficina1","oficina2"};
+    String[] nombreCaso4Columns = {"idmodelo", "codigo", "detalle", "pares", "unidades", "oficina","oficina1","oficina2","oficina3"};
+    String[] nombreCaso5Columns = {"idmodelo", "codigo", "detalle", "pares", "unidades", "oficina","oficina1","oficina2","oficina3","oficina4"};
+    String[] nombreCaso6Columns = {"idmodelo", "codigo", "detalle", "pares", "unidades", "oficina","oficina1","oficina2","oficina3","oficina4","oficina5"};
+    String[] nombreCaso7Columns = {"idmodelo", "codigo", "detalle", "pares", "unidades", "oficina","oficina1","oficina2","oficina3","oficina4","oficina5","oficina6"};
+    String[] nombreCaso8Columns = {"idmodelo", "codigo", "detalle", "pares", "unidades", "oficina","oficina1","oficina2","oficina3","oficina4","oficina5","oficina6","oficina7"};
+
+    private RecordDef recordDef;
+
+    public void onModuleLoad1(String oficina) {
+        panel = new Panel();
+        this.oficinaM= oficina;
+        //panel.setId("panel-lista-productosproveedor");
+//        grid.setAutoScroll(true);
+        dataProxy = new ScriptTagProxy("");
+        recordDef = new RecordDef(new FieldDef[]{
+                    new StringFieldDef(nombreCaso1Columns[0]),
+                    new StringFieldDef(nombreCaso1Columns[1]),
+                    new StringFieldDef(nombreCaso1Columns[2]),
+                    new StringFieldDef(nombreCaso1Columns[3]),
+                    new FloatFieldDef(nombreCaso1Columns[4]),
+                    new FloatFieldDef(nombreCaso1Columns[5])
+                });
+        reader = new JsonReader(recordDef);
+        reader.setRoot("resultado");
+        reader.setTotalProperty("totalCount");
+        store = new Store(dataProxy, reader, true);
+        idColumn = new ColumnConfig("Id muestra", nombreCaso1Columns[0], 100, true);
+        codigoColumn = new ColumnConfig("Codigo", nombreCaso1Columns[1], 100, true);
+        clienteColumn = new ColumnConfig("Detalle", nombreCaso1Columns[2], 100, true);
+        totalparesColumn = new ColumnConfig("# Pares", nombreCaso1Columns[3], 80, true, null);
+        totalcajasColumn = new ColumnConfig("# Calzados", nombreCaso1Columns[4], 90, true, null);
+        vendedorColumn = new ColumnConfig(oficinaM.concat("/izq"), nombreCaso1Columns[5], 100, true);
+TextField tex_detalle = new TextField();
+        clienteColumn.setEditor(new GridEditor(tex_detalle));
+        codigoColumn.setEditor(new GridEditor(metodoFeli()));
+        vendedorColumn.setEditor(new GridEditor(metodoFeli()));
+       totalcajasColumn.setEditor(new GridEditor(metodoFeli()));
+        totalparesColumn.setEditor(new GridEditor(metodoFeli()));
+        
+
+        cbSelectionModel = new CheckboxSelectionModel();
+        columns = new BaseColumnConfig[]{new RowNumberingColumnConfig(),
+                    new CheckboxColumnConfig(cbSelectionModel),
+                    codigoColumn,
+                    clienteColumn,
+                    totalparesColumn,
+                    totalcajasColumn,
+                    vendedorColumn
+                   };
+
+        columnModel = new ColumnModel(columns);
+
+        grid = new EditorGridPanel();
+        //grid.setId("grid-lista-productosproveedor");
+        grid.setWidth("100%");
+        grid.setHeight(ALTO);
+        grid.setTitle("Lista de Articulos");
+        grid.setStore(store);
+        grid.setColumnModel(columnModel);
+        grid.setTrackMouseOver(true);
+        grid.setLoadMask(true);
+        grid.setSelectionModel(new RowSelectionModel());
+        grid.setSelectionModel(cbSelectionModel);
+        grid.setFrame(true);
+        grid.setStripeRows(true);
+        grid.setIconCls("grid-icon");
+        grid.setAutoScroll(true);
+        grid.setClicksToEdit(1);
+
+        eliminarProducto = new ToolbarButton("Quitar");
+        eliminarProducto.setEnableToggle(true);
+        QuickTipsConfig tipsConfig2 = new QuickTipsConfig();
+        tipsConfig2.setText("Quitar producto(s)");
+        //tipsConfig.setTitle("Tip Title");
+        eliminarProducto.setTooltip(tipsConfig2);
+
+        pagingToolbar = new PagingToolbar(store);
+        pagingToolbar.setPageSize(100);
+        pagingToolbar.setDisplayInfo(false);
+        pagingToolbar.setDisplayMsg("Mostrando {0} - {1} de {2}");
+        pagingToolbar.setEmptyMsg("No topics to display");
+        pagingToolbar.addSeparator();
+        pagingToolbar.addButton(eliminarProducto);
+
+        grid.setBottomToolbar(pagingToolbar);
+
+//        aniadirListenersBuscador();
+//
+//        aniadirListenersBuscadoresText();
+
+        aniadirListenersProducto();
+        panel.add(grid);
+    }
+
+    public void onModuleLoad2(String oficina, String oficina1) {
+        panel = new Panel();
+         this.oficinaM= oficina;
+          this.oficinaM1= oficina1;
+        //panel.setId("panel-lista-productosproveedor");
+
+        dataProxy = new ScriptTagProxy("");
+        recordDef = new RecordDef(new FieldDef[]{
+                    new StringFieldDef(nombreCaso2Columns[0]),
+                    new StringFieldDef(nombreCaso2Columns[1]),
+                    new StringFieldDef(nombreCaso2Columns[2]),
+                    new StringFieldDef(nombreCaso2Columns[3]),
+                    new FloatFieldDef(nombreCaso2Columns[4]),
+                    new FloatFieldDef(nombreCaso2Columns[5]),
+                    new FloatFieldDef(nombreCaso2Columns[6])
+                //new FloatFieldDef(nombreCaso2Columns[19])
+                });
+        reader = new JsonReader(recordDef);
+        reader.setRoot("resultado");
+        reader.setTotalProperty("totalCount");
+        store = new Store(dataProxy, reader, true);
+          idColumn = new ColumnConfig("Id muestra", nombreCaso2Columns[0], 100, true);
+        codigoColumn = new ColumnConfig("Codigo", nombreCaso2Columns[1], 100, true);
+        clienteColumn = new ColumnConfig("Detalle", nombreCaso2Columns[2], 100, true);
+        totalparesColumn = new ColumnConfig("# Pares", nombreCaso2Columns[3], 80, true, null);
+        totalcajasColumn = new ColumnConfig("# Calzados", nombreCaso2Columns[4], 90, true, null);
+      talla34Column = new ColumnConfig(oficinaM.concat("/izq"), nombreCaso2Columns[5], 90, true, null);
+        talla35Column = new ColumnConfig(oficinaM1.concat("/der"), nombreCaso2Columns[6], 90, true, null);
+        
+TextField tex_detalle = new TextField();
+        clienteColumn.setEditor(new GridEditor(tex_detalle));
+        codigoColumn.setEditor(new GridEditor(metodoFeli()));
+
+        //num_field4.setMaxValue(1000);
+        talla34Column.setEditor(new GridEditor(metodoFeli()));
+        talla35Column.setEditor(new GridEditor(metodoFeli()));
+       
+        totalcajasColumn.setEditor(new GridEditor(metodoFeli()));
+        totalparesColumn.setEditor(new GridEditor(metodoFeli()));
+
+        cbSelectionModel = new CheckboxSelectionModel();
+        columns = new BaseColumnConfig[]{new RowNumberingColumnConfig(),
+                    new CheckboxColumnConfig(cbSelectionModel),
+                    codigoColumn,
+                    clienteColumn,
+                    totalparesColumn,
+                    totalcajasColumn,
+                    talla34Column,
+                    talla35Column
+                };
+
+        columnModel = new ColumnModel(columns);
+
+        grid = new EditorGridPanel();
+        //grid.setId("grid-lista-productosproveedor");
+        grid.setWidth("100%");
+        grid.setHeight(ALTO);
+        grid.setTitle("Lista de Calzados");
+        grid.setStore(store);
+        grid.setColumnModel(columnModel);
+        grid.setTrackMouseOver(true);
+        grid.setLoadMask(true);
+        grid.setSelectionModel(new RowSelectionModel());
+        grid.setSelectionModel(cbSelectionModel);
+        grid.setFrame(true);
+        grid.setStripeRows(true);
+        grid.setIconCls("grid-icon");
+        grid.setAutoScroll(true);
+        grid.setClicksToEdit(1);
+
+        eliminarProducto = new ToolbarButton("Quitar");
+        eliminarProducto.setEnableToggle(true);
+        QuickTipsConfig tipsConfig2 = new QuickTipsConfig();
+        tipsConfig2.setText("Quitar producto(s)");
+        //tipsConfig.setTitle("Tip Title");
+        eliminarProducto.setTooltip(tipsConfig2);
+
+        pagingToolbar = new PagingToolbar(store);
+        pagingToolbar.setPageSize(100);
+        pagingToolbar.setDisplayInfo(false);
+        pagingToolbar.setDisplayMsg("Mostrando {0} - {1} de {2}");
+        pagingToolbar.setEmptyMsg("No topics to display");
+        pagingToolbar.addSeparator();
+        pagingToolbar.addButton(eliminarProducto);
+
+        grid.setBottomToolbar(pagingToolbar);
+
+//        aniadirListenersBuscador();
+//
+//        aniadirListenersBuscadoresText();
+
+        aniadirListenersProducto();
+        panel.add(grid);
+    }
+
+      public void onModuleLoad3(String oficina, String oficina1, String oficina2) {
+      panel = new Panel();
+        this.oficinaM= oficina;
+          this.oficinaM1= oficina1;
+          this.oficinaM2= oficina2;
+
+          //panel.setId("panel-lista-productosproveedor");
+
+        dataProxy = new ScriptTagProxy("");
+        recordDef = new RecordDef(new FieldDef[]{
+                    new StringFieldDef(nombreCaso3Columns[0]),
+                    new StringFieldDef(nombreCaso3Columns[1]),
+                    new StringFieldDef(nombreCaso3Columns[2]),
+                    new StringFieldDef(nombreCaso3Columns[3]),
+                    new FloatFieldDef(nombreCaso3Columns[4]),
+                    new FloatFieldDef(nombreCaso3Columns[5]),
+                    new FloatFieldDef(nombreCaso3Columns[6]),
+                    new FloatFieldDef(nombreCaso3Columns[7])
+                //new FloatFieldDef(nombreCaso3Columns[29])
+                });
+        reader = new JsonReader(recordDef);
+        reader.setRoot("resultado");
+        reader.setTotalProperty("totalCount");
+        store = new Store(dataProxy, reader, true);
+           idColumn = new ColumnConfig("Id muestra", nombreCaso3Columns[0], 100, true);
+        codigoColumn = new ColumnConfig("Codigo", nombreCaso3Columns[1], 100, true);
+        clienteColumn = new ColumnConfig("Detalle", nombreCaso3Columns[2], 100, true);
+        totalparesColumn = new ColumnConfig("# Pares", nombreCaso3Columns[3], 80, true, null);
+        totalcajasColumn = new ColumnConfig("# Calzados", nombreCaso3Columns[4], 90, true, null);
+      talla34Column = new ColumnConfig(oficinaM.concat("/izq"), nombreCaso3Columns[5], 90, true, null);
+        talla35Column = new ColumnConfig(oficinaM1.concat("/der"), nombreCaso3Columns[6], 90, true, null);
+       talla36Column = new ColumnConfig(oficinaM2.concat("/der"), nombreCaso3Columns[7], 90, true, null);
+
+
+
+//        NumberField num_field1 = new NumberField();
+//        num_field1.setAllowBlank(false);
+//        num_field1.setAllowNegative(false);
+//        //num_field3.setMaxValue(1000);
+//
+//        NumberField num_field2 = new NumberField();
+//        num_field2.setAllowBlank(false);
+//        num_field2.setAllowNegative(false);
+//
+//        NumberField num_field3 = new NumberField();
+//        num_field3.setAllowBlank(false);
+//        num_field3.setAllowNegative(false);
+//
+//        NumberField num_field4 = new NumberField();
+//        num_field4.setAllowBlank(false);
+//        num_field4.setAllowNegative(false);
+
+TextField tex_detalle = new TextField();
+        clienteColumn.setEditor(new GridEditor(tex_detalle));
+        codigoColumn.setEditor(new GridEditor(metodoFeli()));
+        //num_field4.setMaxValue(1000);
+
+             totalparesColumn.setEditor(new GridEditor(metodoFeli()));
+  totalcajasColumn.setEditor(new GridEditor(metodoFeli()));
+
+talla34Column.setEditor(new GridEditor(metodoFeli()));
+        talla35Column.setEditor(new GridEditor(metodoFeli()));
+        talla36Column.setEditor(new GridEditor(metodoFeli()));
+
+        cbSelectionModel = new CheckboxSelectionModel();
+        columns = new BaseColumnConfig[]{new RowNumberingColumnConfig(),
+                    new CheckboxColumnConfig(cbSelectionModel),
+                   codigoColumn,
+                    clienteColumn,
+                    totalparesColumn,
+                    totalcajasColumn,
+                    talla34Column,
+                    talla35Column,
+                    talla36Column
+                };
+
+        columnModel = new ColumnModel(columns);
+
+        grid = new EditorGridPanel();
+        //grid.setId("grid-lista-productosproveedor");
+        grid.setWidth("100%");
+        grid.setHeight(ALTO);
+        grid.setTitle("Lista de Calzados");
+        grid.setStore(store);
+        grid.setColumnModel(columnModel);
+        grid.setTrackMouseOver(true);
+        grid.setLoadMask(true);
+        grid.setSelectionModel(new RowSelectionModel());
+        grid.setSelectionModel(cbSelectionModel);
+        grid.setFrame(true);
+        grid.setStripeRows(true);
+        grid.setIconCls("grid-icon");
+        grid.setAutoScroll(true);
+        grid.setClicksToEdit(1);
+
+        eliminarProducto = new ToolbarButton("Quitar");
+        eliminarProducto.setEnableToggle(true);
+        QuickTipsConfig tipsConfig2 = new QuickTipsConfig();
+        tipsConfig2.setText("Quitar producto(s)");
+        //tipsConfig.setTitle("Tip Title");
+        eliminarProducto.setTooltip(tipsConfig2);
+
+        pagingToolbar = new PagingToolbar(store);
+        pagingToolbar.setPageSize(100);
+        pagingToolbar.setDisplayInfo(false);
+        pagingToolbar.setDisplayMsg("Mostrando {0} - {1} de {2}");
+        pagingToolbar.setEmptyMsg("No topics to display");
+        pagingToolbar.addSeparator();
+        pagingToolbar.addButton(eliminarProducto);
+
+        grid.setBottomToolbar(pagingToolbar);
+
+//        aniadirListenersBuscador();
+//
+//        aniadirListenersBuscadoresText();
+
+        aniadirListenersProducto();
+        panel.add(grid);
+    }
+
+public void onModuleLoad4(String oficina, String oficina1, String oficina2, String oficina3) {
+        panel = new Panel();
+         this.oficinaM= oficina;
+          this.oficinaM1= oficina1;
+          this.oficinaM2= oficina2;
+    this.oficinaM3= oficina3;
+
+          dataProxy = new ScriptTagProxy("");
+        recordDef = new RecordDef(new FieldDef[]{
+                    new StringFieldDef(nombreCaso4Columns[0]),
+                    new StringFieldDef(nombreCaso4Columns[1]),
+                    new StringFieldDef(nombreCaso4Columns[2]),
+                    new StringFieldDef(nombreCaso4Columns[3]),
+                    new FloatFieldDef(nombreCaso4Columns[4]),
+                    new FloatFieldDef(nombreCaso4Columns[5]),
+                    new FloatFieldDef(nombreCaso4Columns[6]),
+                    new FloatFieldDef(nombreCaso4Columns[7]),
+                    new FloatFieldDef(nombreCaso4Columns[8])
+                });
+
+        reader = new JsonReader(recordDef);
+        reader.setRoot(
+                "resultado");
+        reader.setTotalProperty(
+                "totalCount");
+        store = new Store(dataProxy, reader, true);
+             idColumn = new ColumnConfig("Id muestra", nombreCaso4Columns[0], 100, true);
+        codigoColumn = new ColumnConfig("Codigo", nombreCaso4Columns[1], 100, true);
+        clienteColumn = new ColumnConfig("Detalle", nombreCaso4Columns[2], 100, true);
+        totalparesColumn = new ColumnConfig("# Pares", nombreCaso4Columns[3], 80, true, null);
+        totalcajasColumn = new ColumnConfig("# Calzados", nombreCaso4Columns[4], 90, true, null);
+      talla34Column = new ColumnConfig(oficinaM.concat("/izq"), nombreCaso4Columns[5], 90, true, null);
+        talla35Column = new ColumnConfig(oficinaM1.concat("/der"), nombreCaso4Columns[6], 90, true, null);
+       talla36Column = new ColumnConfig(oficinaM2.concat("/izq"), nombreCaso4Columns[7], 90, true, null);
+talla37Column = new ColumnConfig(oficinaM3.concat("/der"), nombreCaso4Columns[8], 90, true, null);
+
+
+
+TextField tex_detalle = new TextField();
+        clienteColumn.setEditor(new GridEditor(tex_detalle));
+        codigoColumn.setEditor(new GridEditor(metodoFeli()));
+        totalparesColumn.setEditor(new GridEditor(metodoFeli()));
+  totalcajasColumn.setEditor(new GridEditor(metodoFeli()));
+
+talla34Column.setEditor(new GridEditor(metodoFeli()));
+        talla35Column.setEditor(new GridEditor(metodoFeli()));
+        talla36Column.setEditor(new GridEditor(metodoFeli()));
+        talla37Column.setEditor(new GridEditor(metodoFeli()));
+
+        cbSelectionModel = new CheckboxSelectionModel();
+
+        columns = new BaseColumnConfig[]{new RowNumberingColumnConfig(),
+                    new CheckboxColumnConfig(cbSelectionModel),
+                    codigoColumn,
+                    clienteColumn,
+                    totalparesColumn,
+                    totalcajasColumn,
+                    talla34Column,
+                    talla35Column,
+                    talla36Column,
+                    talla37Column
+                };
+
+        columnModel = new ColumnModel(columns);
+
+        grid = new EditorGridPanel();
+        //grid.setId("grid-lista-productosproveedor");
+        grid.setWidth("100%");
+        grid.setHeight(ALTO);
+        grid.setTitle("Lista de Calzados");
+        grid.setStore(store);
+        grid.setColumnModel(columnModel);
+        grid.setTrackMouseOver(true);
+        grid.setLoadMask(true);
+        grid.setSelectionModel(new RowSelectionModel());
+        grid.setSelectionModel(cbSelectionModel);
+        grid.setFrame(true);
+        grid.setStripeRows(true);
+        grid.setIconCls("grid-icon");
+        grid.setAutoScroll(true);
+        grid.setClicksToEdit(1);
+
+        eliminarProducto = new ToolbarButton("Quitar");
+
+        eliminarProducto.setEnableToggle(true);
+        QuickTipsConfig tipsConfig2 = new QuickTipsConfig();
+
+        tipsConfig2.setText("Quitar producto(s)");
+        //tipsConfig.setTitle("Tip Title");
+
+        eliminarProducto.setTooltip(tipsConfig2);
+        pagingToolbar = new PagingToolbar(store);
+
+        pagingToolbar.setPageSize(100);
+
+        pagingToolbar.setDisplayInfo(false);
+
+        pagingToolbar.setDisplayMsg("Mostrando {0} - {1} de {2}");
+
+        pagingToolbar.setEmptyMsg("No topics to display");
+
+        pagingToolbar.addSeparator();
+
+        pagingToolbar.addButton(eliminarProducto);
+
+        grid.setBottomToolbar(pagingToolbar);
+
+//        aniadirListenersBuscador();
+//
+//        aniadirListenersBuscadoresText();
+        aniadirListenersProducto();
+
+        panel.add(grid);
+    }
+
+public void onModuleLoad5(String oficina, String oficina1, String oficina2, String oficina3, String oficina4) {
+        panel = new Panel();
+         this.oficinaM= oficina;
+          this.oficinaM1= oficina1;
+          this.oficinaM2= oficina2;
+    this.oficinaM3= oficina3;
+this.oficinaM4= oficina4;
+
+          dataProxy = new ScriptTagProxy("");
+        recordDef = new RecordDef(new FieldDef[]{
+                    new StringFieldDef(nombreCaso5Columns[0]),
+                    new StringFieldDef(nombreCaso5Columns[1]),
+                    new StringFieldDef(nombreCaso5Columns[2]),
+                    new StringFieldDef(nombreCaso5Columns[3]),
+                    new FloatFieldDef(nombreCaso5Columns[4]),
+                    new FloatFieldDef(nombreCaso5Columns[5]),
+                    new FloatFieldDef(nombreCaso5Columns[6]),
+                    new FloatFieldDef(nombreCaso5Columns[7]),
+                    new FloatFieldDef(nombreCaso5Columns[8]),
+                    new FloatFieldDef(nombreCaso5Columns[9])
+                            
+                });
+        reader = new JsonReader(recordDef);
+        reader.setRoot("resultado");
+        reader.setTotalProperty("totalCount");
+        store = new Store(dataProxy, reader, true);
+          idColumn = new ColumnConfig("Id muestra", nombreCaso5Columns[0], 100, true);
+        codigoColumn = new ColumnConfig("Codigo", nombreCaso5Columns[1], 100, true);
+        clienteColumn = new ColumnConfig("Detalle", nombreCaso5Columns[2], 100, true);
+        totalparesColumn = new ColumnConfig("# Pares", nombreCaso5Columns[3], 80, true, null);
+        totalcajasColumn = new ColumnConfig("# Calzados", nombreCaso5Columns[4], 90, true, null);
+      talla34Column = new ColumnConfig(oficinaM.concat("/izq"), nombreCaso5Columns[5], 90, true, null);
+        talla35Column = new ColumnConfig(oficinaM1.concat("/der"), nombreCaso5Columns[6], 90, true, null);
+       talla36Column = new ColumnConfig(oficinaM2.concat("/izq"), nombreCaso5Columns[7], 90, true, null);
+talla37Column = new ColumnConfig(oficinaM3.concat("/der"), nombreCaso5Columns[8], 90, true, null);
+
+        talla38Column = new ColumnConfig(oficinaM4.concat("/izq"), nombreCaso5Columns[9], 90, true, null);
+        
+TextField tex_detalle = new TextField();
+        clienteColumn.setEditor(new GridEditor(tex_detalle));
+        codigoColumn.setEditor(new GridEditor(metodoFeli()));
+//        //num_field4.setMaxValue(1000);
+//        colorColumn.setEditor(new GridEditor(metodoFeli()));
+//        materialColumn.setEditor(new GridEditor(metodoFeli()));
+        talla34Column.setEditor(new GridEditor(metodoFeli()));
+        talla35Column.setEditor(new GridEditor(metodoFeli()));
+        talla36Column.setEditor(new GridEditor(metodoFeli()));
+        talla37Column.setEditor(new GridEditor(metodoFeli()));
+        talla38Column.setEditor(new GridEditor(metodoFeli()));
+        totalcajasColumn.setEditor(new GridEditor(metodoFeli()));
+        totalparesColumn.setEditor(new GridEditor(metodoFeli()));
+
+
+
+        cbSelectionModel = new CheckboxSelectionModel();
+        columns = new BaseColumnConfig[]{new RowNumberingColumnConfig(),
+                    new CheckboxColumnConfig(cbSelectionModel),
+                    codigoColumn,
+                    clienteColumn,
+                    totalparesColumn,
+                    totalcajasColumn,
+                    talla34Column,
+                    talla35Column,
+                    talla36Column,
+                    talla37Column,
+                    talla38Column
+        };
+
+        columnModel = new ColumnModel(columns);
+
+        grid = new EditorGridPanel();
+        //grid.setId("grid-lista-productosproveedor");
+        grid.setWidth("100%");
+        grid.setHeight(ALTO);
+        grid.setTitle("Lista de Calzados");
+        grid.setStore(store);
+        grid.setColumnModel(columnModel);
+        grid.setTrackMouseOver(true);
+        grid.setLoadMask(true);
+        grid.setSelectionModel(new RowSelectionModel());
+        grid.setSelectionModel(cbSelectionModel);
+        grid.setFrame(true);
+        grid.setStripeRows(true);
+        grid.setIconCls("grid-icon");
+        grid.setAutoScroll(true);
+        grid.setClicksToEdit(1);
+
+        eliminarProducto = new ToolbarButton("Quitar");
+        eliminarProducto.setEnableToggle(true);
+        QuickTipsConfig tipsConfig2 = new QuickTipsConfig();
+        tipsConfig2.setText("Quitar producto(s)");
+        //tipsConfig.setTitle("Tip Title");
+        eliminarProducto.setTooltip(tipsConfig2);
+
+        pagingToolbar = new PagingToolbar(store);
+        pagingToolbar.setPageSize(100);
+        pagingToolbar.setDisplayInfo(false);
+        pagingToolbar.setDisplayMsg("Mostrando {0} - {1} de {2}");
+        pagingToolbar.setEmptyMsg("No topics to display");
+        pagingToolbar.addSeparator();
+        pagingToolbar.addButton(eliminarProducto);
+
+        grid.setBottomToolbar(pagingToolbar);
+
+//        aniadirListenersBuscador();
+//
+//        aniadirListenersBuscadoresText();
+
+        aniadirListenersProducto();
+        panel.add(grid);
+    }
+
+    public void onModuleLoad6(String oficina, String oficina1, String oficina2, String oficina3, String oficina4, String oficina5) {
+        panel = new Panel();
+         this.oficinaM= oficina;
+          this.oficinaM1= oficina1;
+          this.oficinaM2= oficina2;
+    this.oficinaM3= oficina3;
+this.oficinaM4= oficina4;
+this.oficinaM5= oficina5;
+
+dataProxy = new ScriptTagProxy("");
+        recordDef = new RecordDef(new FieldDef[]{
+                    new StringFieldDef(nombreCaso6Columns[0]),
+                    new StringFieldDef(nombreCaso6Columns[1]),
+                    new StringFieldDef(nombreCaso6Columns[2]),
+                    new StringFieldDef(nombreCaso6Columns[3]),
+                    new FloatFieldDef(nombreCaso6Columns[4]),
+                    new FloatFieldDef(nombreCaso6Columns[5]),
+                    new FloatFieldDef(nombreCaso6Columns[6]),
+                    new FloatFieldDef(nombreCaso6Columns[7]),
+                    new FloatFieldDef(nombreCaso6Columns[8]),
+                    new FloatFieldDef(nombreCaso6Columns[9]),
+                    new FloatFieldDef(nombreCaso6Columns[10])
+                });
+        reader = new JsonReader(recordDef);
+        reader.setRoot("resultado");
+        reader.setTotalProperty("totalCount");
+        store = new Store(dataProxy, reader, true);
+        idColumn = new ColumnConfig("Id muestra", nombreCaso6Columns[0], 100, true);
+        codigoColumn = new ColumnConfig("Codigo", nombreCaso6Columns[1], 100, true);
+        clienteColumn = new ColumnConfig("Detalle", nombreCaso6Columns[2], 100, true);
+        totalparesColumn = new ColumnConfig("# Pares", nombreCaso6Columns[3], 80, true, null);
+        totalcajasColumn = new ColumnConfig("# Calzados", nombreCaso6Columns[4], 80, true, null);
+      talla34Column = new ColumnConfig(oficinaM.concat("/izq"), nombreCaso6Columns[5], 80, true, null);
+        talla35Column = new ColumnConfig(oficinaM1.concat("/der"), nombreCaso6Columns[6], 80, true, null);
+       talla36Column = new ColumnConfig(oficinaM2.concat("/izq"), nombreCaso6Columns[7], 80, true, null);
+talla37Column = new ColumnConfig(oficinaM3.concat("/der"), nombreCaso6Columns[8], 80, true, null);
+
+        talla38Column = new ColumnConfig(oficinaM4.concat("/izq"), nombreCaso6Columns[9], 80, true, null);
+        talla39Column = new ColumnConfig(oficinaM5.concat("/der"), nombreCaso6Columns[10], 80, true, null);
+
+
+
+TextField tex_detalle = new TextField();
+        clienteColumn.setEditor(new GridEditor(tex_detalle));
+        codigoColumn.setEditor(new GridEditor(metodoFeli()));
+        totalparesColumn.setEditor(new GridEditor(metodoFeli()));
+  totalcajasColumn.setEditor(new GridEditor(metodoFeli()));
+
+talla34Column.setEditor(new GridEditor(metodoFeli()));
+        talla35Column.setEditor(new GridEditor(metodoFeli()));
+        talla36Column.setEditor(new GridEditor(metodoFeli()));
+        talla37Column.setEditor(new GridEditor(metodoFeli()));
+        talla38Column.setEditor(new GridEditor(metodoFeli()));
+        talla39Column.setEditor(new GridEditor(metodoFeli()));
+
+        cbSelectionModel = new CheckboxSelectionModel();
+        columns = new BaseColumnConfig[]{new RowNumberingColumnConfig(),
+                    new CheckboxColumnConfig(cbSelectionModel),
+                    codigoColumn,
+                    clienteColumn,
+                    totalparesColumn,
+                    totalcajasColumn,
+                    talla34Column,
+                    talla35Column,
+                    talla36Column,
+                    talla37Column,
+                    talla38Column,
+                    talla39Column
+                };
+
+        columnModel = new ColumnModel(columns);
+
+        grid = new EditorGridPanel();
+        //grid.setId("grid-lista-productosproveedor");
+        grid.setWidth("100%");
+        grid.setHeight(ALTO);
+        grid.setTitle("Lista de Calzados");
+        grid.setStore(store);
+        grid.setColumnModel(columnModel);
+        grid.setTrackMouseOver(true);
+        grid.setLoadMask(true);
+        grid.setSelectionModel(new RowSelectionModel());
+        grid.setSelectionModel(cbSelectionModel);
+        grid.setFrame(true);
+        grid.setStripeRows(true);
+        grid.setIconCls("grid-icon");
+        grid.setAutoScroll(true);
+        grid.setClicksToEdit(1);
+
+        eliminarProducto = new ToolbarButton("Quitar");
+        eliminarProducto.setEnableToggle(true);
+        QuickTipsConfig tipsConfig2 = new QuickTipsConfig();
+        tipsConfig2.setText("Quitar producto(s)");
+        //tipsConfig.setTitle("Tip Title");
+        eliminarProducto.setTooltip(tipsConfig2);
+
+        pagingToolbar = new PagingToolbar(store);
+        pagingToolbar.setPageSize(100);
+        pagingToolbar.setDisplayInfo(false);
+        pagingToolbar.setDisplayMsg("Mostrando {0} - {1} de {2}");
+        pagingToolbar.setEmptyMsg("No topics to display");
+        pagingToolbar.addSeparator();
+        pagingToolbar.addButton(eliminarProducto);
+
+
+        grid.setBottomToolbar(pagingToolbar);
+
+//        aniadirListenersBuscador();
+//
+//        aniadirListenersBuscadoresText();
+
+        aniadirListenersProducto();
+        panel.add(grid);
+    }
+
+   public void onModuleLoad7(String oficina, String oficina1, String oficina2, String oficina3, String oficina4, String oficina5, String oficina6) {
+        panel = new Panel();
+         this.oficinaM= oficina;
+          this.oficinaM1= oficina1;
+          this.oficinaM2= oficina2;
+    this.oficinaM3= oficina3;
+this.oficinaM4= oficina4;
+this.oficinaM5= oficina5;
+this.oficinaM6= oficina6;
+
+        dataProxy = new ScriptTagProxy("");
+        recordDef = new RecordDef(new FieldDef[]{
+                    new StringFieldDef(nombreCaso7Columns[0]),
+                    new StringFieldDef(nombreCaso7Columns[1]),
+                    new StringFieldDef(nombreCaso7Columns[2]),
+                    new StringFieldDef(nombreCaso7Columns[3]),
+                    new StringFieldDef(nombreCaso7Columns[4]),
+                    new StringFieldDef(nombreCaso7Columns[5]),
+                    new FloatFieldDef(nombreCaso7Columns[6]),
+                    new FloatFieldDef(nombreCaso7Columns[7]),
+                    new FloatFieldDef(nombreCaso7Columns[8]),
+                    new FloatFieldDef(nombreCaso7Columns[9]),
+                    new FloatFieldDef(nombreCaso7Columns[10]),
+                    new FloatFieldDef(nombreCaso7Columns[11])
+                });
+        reader = new JsonReader(recordDef);
+        reader.setRoot("resultado");
+        reader.setTotalProperty("totalCount");
+        store = new Store(dataProxy, reader, true);
+          idColumn = new ColumnConfig("Id muestra", nombreCaso7Columns[0], 100, true);
+        codigoColumn = new ColumnConfig("Codigo", nombreCaso7Columns[1], 100, true);
+        clienteColumn = new ColumnConfig("Detalle", nombreCaso7Columns[2], 100, true);
+        totalparesColumn = new ColumnConfig("# Pares", nombreCaso7Columns[3], 80, true, null);
+        totalcajasColumn = new ColumnConfig("# Calzados", nombreCaso7Columns[4], 80, true, null);
+      talla34Column = new ColumnConfig(oficinaM.concat("/izq"), nombreCaso7Columns[5], 80, true, null);
+        talla35Column = new ColumnConfig(oficinaM1.concat("/der"), nombreCaso7Columns[6], 80, true, null);
+       talla36Column = new ColumnConfig(oficinaM2.concat("/izq"), nombreCaso7Columns[7], 80, true, null);
+talla37Column = new ColumnConfig(oficinaM3.concat("/der"), nombreCaso7Columns[8], 80, true, null);
+
+        talla38Column = new ColumnConfig(oficinaM4.concat("/izq"), nombreCaso7Columns[9], 80, true, null);
+        talla39Column = new ColumnConfig(oficinaM5.concat("/der"), nombreCaso7Columns[10], 80, true, null);
+
+        talla40Column = new ColumnConfig(oficinaM6,  nombreCaso7Columns[11], 80, true, null);
+
+TextField tex_detalle = new TextField();
+        clienteColumn.setEditor(new GridEditor(tex_detalle));
+        codigoColumn.setEditor(new GridEditor(metodoFeli()));
+         totalparesColumn.setEditor(new GridEditor(metodoFeli()));
+  totalcajasColumn.setEditor(new GridEditor(metodoFeli()));
+
+talla34Column.setEditor(new GridEditor(metodoFeli()));
+        talla35Column.setEditor(new GridEditor(metodoFeli()));
+        talla36Column.setEditor(new GridEditor(metodoFeli()));
+        talla37Column.setEditor(new GridEditor(metodoFeli()));
+        talla38Column.setEditor(new GridEditor(metodoFeli()));
+        talla39Column.setEditor(new GridEditor(metodoFeli()));
+        talla40Column.setEditor(new GridEditor(metodoFeli()));
+      //  talla41Column.setEditor(new GridEditor(metodoFeli()));
+
+
+        cbSelectionModel = new CheckboxSelectionModel();
+        columns = new BaseColumnConfig[]{new RowNumberingColumnConfig(),
+                    new CheckboxColumnConfig(cbSelectionModel),
+                   codigoColumn,
+                    clienteColumn,
+                    totalparesColumn,
+                    totalcajasColumn,
+                    talla34Column,
+                    talla35Column,
+                    talla36Column,
+                    talla37Column,
+                    talla38Column,
+                    talla39Column,
+                    talla40Column
+                };
+
+        columnModel = new ColumnModel(columns);
+
+        grid = new EditorGridPanel();
+        //grid.setId("grid-lista-productosproveedor");
+        grid.setWidth("100%");
+        grid.setHeight(ALTO);
+        grid.setTitle("Lista de Calzados");
+        grid.setStore(store);
+        grid.setColumnModel(columnModel);
+        grid.setTrackMouseOver(true);
+        grid.setLoadMask(true);
+        grid.setSelectionModel(new RowSelectionModel());
+        grid.setSelectionModel(cbSelectionModel);
+        grid.setFrame(true);
+        grid.setStripeRows(true);
+        grid.setIconCls("grid-icon");
+        grid.setAutoScroll(true);
+        grid.setClicksToEdit(1);
+
+        eliminarProducto = new ToolbarButton("Quitar");
+        eliminarProducto.setEnableToggle(true);
+        QuickTipsConfig tipsConfig2 = new QuickTipsConfig();
+        tipsConfig2.setText("Quitar producto(s)");
+        //tipsConfig.setTitle("Tip Title");
+        eliminarProducto.setTooltip(tipsConfig2);
+
+        pagingToolbar = new PagingToolbar(store);
+        pagingToolbar.setPageSize(100);
+        pagingToolbar.setDisplayInfo(false);
+        pagingToolbar.setDisplayMsg("Mostrando {0} - {1} de {2}");
+        pagingToolbar.setEmptyMsg("No topics to display");
+        pagingToolbar.addSeparator();
+        pagingToolbar.addButton(eliminarProducto);
+
+        grid.setBottomToolbar(pagingToolbar);
+
+//        aniadirListenersBuscador();
+//
+//        aniadirListenersBuscadoresText();
+
+        aniadirListenersProducto();
+        panel.add(grid);
+    }
+
+   public void onModuleLoad8(String oficina, String oficina1, String oficina2, String oficina3, String oficina4, String oficina5, String oficina6, String oficina7) {
+        panel = new Panel();
+         this.oficinaM= oficina;
+          this.oficinaM1= oficina1;
+          this.oficinaM2= oficina2;
+    this.oficinaM3= oficina3;
+this.oficinaM4= oficina4;
+this.oficinaM5= oficina5;
+this.oficinaM6= oficina6;
+this.oficinaM7= oficina7;
+         dataProxy = new ScriptTagProxy("");
+        recordDef = new RecordDef(new FieldDef[]{
+                    new StringFieldDef(nombreCaso8Columns[0]),
+                    new StringFieldDef(nombreCaso8Columns[1]),
+                    new StringFieldDef(nombreCaso8Columns[2]),
+                    new StringFieldDef(nombreCaso8Columns[3]),
+                    new FloatFieldDef(nombreCaso8Columns[4]),
+                    new FloatFieldDef(nombreCaso8Columns[5]),
+                    new FloatFieldDef(nombreCaso8Columns[6]),
+                    new FloatFieldDef(nombreCaso8Columns[7]),
+                    new FloatFieldDef(nombreCaso8Columns[8]),
+                    new FloatFieldDef(nombreCaso8Columns[9]),
+                    new FloatFieldDef(nombreCaso8Columns[10]),
+                    new FloatFieldDef(nombreCaso8Columns[11]),
+                    new FloatFieldDef(nombreCaso8Columns[12])
+                });
+        reader = new JsonReader(recordDef);
+        reader.setRoot("resultado");
+        reader.setTotalProperty("totalCount");
+        store = new Store(dataProxy, reader, true);
+         idColumn = new ColumnConfig("Id muestra", nombreCaso8Columns[0], 100, true);
+        codigoColumn = new ColumnConfig("Codigo", nombreCaso8Columns[1], 100, true);
+        clienteColumn = new ColumnConfig("Detalle", nombreCaso8Columns[2], 100, true);
+        totalparesColumn = new ColumnConfig("# Pares", nombreCaso8Columns[3], 80, true, null);
+        totalcajasColumn = new ColumnConfig("# Calzados", nombreCaso8Columns[4], 80, true, null);
+      talla34Column = new ColumnConfig(oficinaM.concat("/izq"), nombreCaso8Columns[5], 80, true, null);
+        talla35Column = new ColumnConfig(oficinaM1.concat("/der"), nombreCaso8Columns[6], 80, true, null);
+       talla36Column = new ColumnConfig(oficinaM2.concat("/izq"), nombreCaso8Columns[7], 80, true, null);
+talla37Column = new ColumnConfig(oficinaM3.concat("/der"), nombreCaso8Columns[8], 80, true, null);
+
+        talla38Column = new ColumnConfig(oficinaM4.concat("/izq"), nombreCaso8Columns[9], 80, true, null);
+        talla39Column = new ColumnConfig(oficinaM5.concat("/der"), nombreCaso8Columns[10], 80, true, null);
+
+        talla40Column = new ColumnConfig(oficinaM6.concat("/izq"),  nombreCaso8Columns[11], 80, true, null);
+talla41Column = new ColumnConfig(oficinaM7.concat("/der"), nombreCaso8Columns[12], 80, true, null);
+
+TextField tex_detalle = new TextField();
+        clienteColumn.setEditor(new GridEditor(tex_detalle));
+        codigoColumn.setEditor(new GridEditor(metodoFeli()));
+ totalparesColumn.setEditor(new GridEditor(metodoFeli()));
+  totalcajasColumn.setEditor(new GridEditor(metodoFeli()));
+
+talla34Column.setEditor(new GridEditor(metodoFeli()));
+        talla35Column.setEditor(new GridEditor(metodoFeli()));
+        talla36Column.setEditor(new GridEditor(metodoFeli()));
+        talla37Column.setEditor(new GridEditor(metodoFeli()));
+        talla38Column.setEditor(new GridEditor(metodoFeli()));
+        talla39Column.setEditor(new GridEditor(metodoFeli()));
+        talla40Column.setEditor(new GridEditor(metodoFeli()));
+        talla41Column.setEditor(new GridEditor(metodoFeli()));
+       
+        cbSelectionModel = new CheckboxSelectionModel();
+        columns = new BaseColumnConfig[]{new RowNumberingColumnConfig(),
+                    new CheckboxColumnConfig(cbSelectionModel),
+                     codigoColumn,
+                    clienteColumn,
+                    totalparesColumn,
+                    totalcajasColumn,
+                    talla34Column,
+                    talla35Column,
+                    talla36Column,
+                    talla37Column,
+                    talla38Column,
+                    talla39Column,
+                    talla40Column,
+                    talla41Column
+                };
+
+        columnModel = new ColumnModel(columns);
+
+        grid = new EditorGridPanel();
+        //grid.setId("grid-lista-productosproveedor");
+        grid.setWidth("100%");
+        grid.setHeight(ALTO);
+        grid.setTitle("Lista de Calzados");
+        grid.setStore(store);
+        grid.setColumnModel(columnModel);
+        grid.setTrackMouseOver(true);
+        grid.setLoadMask(true);
+        grid.setSelectionModel(new RowSelectionModel());
+        grid.setSelectionModel(cbSelectionModel);
+        grid.setFrame(true);
+        grid.setStripeRows(true);
+        grid.setIconCls("grid-icon");
+        grid.setAutoScroll(true);
+        grid.setClicksToEdit(1);
+
+        eliminarProducto = new ToolbarButton("Quitar");
+        eliminarProducto.setEnableToggle(true);
+        QuickTipsConfig tipsConfig2 = new QuickTipsConfig();
+        tipsConfig2.setText("Quitar producto(s)");
+        //tipsConfig.setTitle("Tip Title");
+        eliminarProducto.setTooltip(tipsConfig2);
+
+        pagingToolbar = new PagingToolbar(store);
+        pagingToolbar.setPageSize(100);
+        pagingToolbar.setDisplayInfo(false);
+        pagingToolbar.setDisplayMsg("Mostrando {0} - {1} de {2}");
+        pagingToolbar.setEmptyMsg("No topics to display");
+        pagingToolbar.addSeparator();
+        pagingToolbar.addButton(eliminarProducto);
+
+        grid.setBottomToolbar(pagingToolbar);
+
+//        aniadirListenersBuscador();
+//
+//        aniadirListenersBuscadoresText();
+
+        aniadirListenersProducto();
+        panel.add(grid);
+    }
+
+    
+    public NumberField metodoFeli() {
+
+
+        NumberField num_field1 = new NumberField();
+        num_field1.setAllowDecimals(false);
+        num_field1.setAllowBlank(false);
+
+        num_field1.setAllowNegative(false);
+
+        return num_field1;
+    }
+
+    public EditorGridPanel getGrid() {
+        return grid;
+    }
+
+    public void setGrid(EditorGridPanel grid) {
+        this.grid = grid;
+    }
+
+    public Panel getPanel() {
+        return panel;
+    }
+
+    private void aniadirListenersProducto() {
+        //**************************************************
+        //***********ELIMINAR PRODUCTO
+        //**************************************************
+
+        eliminarProducto.addListener(new ButtonListenerAdapter() {
+
+            private boolean procederAEliminar;
+            int repeat = 0;
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                Record[] records = cbSelectionModel.getSelections();
+                if (records.length == 1) {
+                    selecionado = records[0].getAsString("idproducto");
+                    grid.stopEditing();
+                    store.remove(cbSelectionModel.getSelected());
+                    grid.startEditing(0, 0);
+                } else {
+                    MessageBox.alert("No hay producto selecionado para eliminar y/o selecciono mas de uno.");
+                }
+
+                eliminarProducto.setPressed(false);
+            }
+        });
+
+
+
+        //**************************************************
+        //*********** LISTENERS DE LA TABLA
+        //**************************************************
+        grid.addListener(
+                new PanelListenerAdapter() {
+
+                    @Override
+                    public void onRender(Component component) {
+                        store.load(0, 100);
+                    }
+                });
+        grid.addGridCellListener(
+                new GridCellListenerAdapter() {
+
+                    @Override
+                    public void onCellClick(GridPanel grid, int rowIndex, int colIndex, EventObject e) {
+                        if (grid.getColumnModel().getDataIndex(colIndex).equals("indoor")) {
+                            Record record = grid.getStore().getAt(rowIndex);
+                            record.set("indoor", !record.getAsBoolean("indoor"));
+                        }
+                        if (grid.getColumnModel().getDataIndex(colIndex).equals("color")) {
+//                            Record record = grid.getStore().getAt(rowIndex);
+//                            record.set("color", colIndex);
+//                            record.set('color', 'COLOR MEZCLA');
+                            //record.set("indoor", !record.getAsBoolean("indoor"));
+                           // colorpedido = new ColorPedido(colorM, ListaCalzadoPedido.this, colIndex, rowIndex);
+//
+                            //colorpedido.show();
+
+                        }
+                        if (grid.getColumnModel().getDataIndex(colIndex).equals("material")) {
+                            //Record record = grid.getStore().getAt(rowIndex);
+                            //record.set("indoor", !record.getAsBoolean("indoor"));
+                           // materialpedido = new MaterialPedido(materialM, ListaCalzadoPedido.this, colIndex, rowIndex);
+                            //materialpedido.show();
+
+                        }
+
+                    }
+                });
+
+    }
+
+    
+
+    private void quitarEsteItem(Record quitar) {
+
+        store.remove(quitar);
+        grid.setStore(store);
+        grid.startEditing(0, 0);
+    }
+
+    public RecordDef getRecordDef() {
+        return recordDef;
+    }
+
+    public void LimpiarGrid() {
+        store.removeAll();
+
+        grid.setStore(store);
+        grid.reconfigure(store, columnModel);
+
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public Record[] getRecords() {
+        Record[] records = cbSelectionModel.getSelections();
+        return records;
+    }
+
+    public ColumnModel getColumnModel() {
+        return columnModel;
+    }
+}

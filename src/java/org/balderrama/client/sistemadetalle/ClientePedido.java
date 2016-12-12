@@ -1,0 +1,283 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.sistemadetalle;
+
+/**
+ *
+ * @author 
+ */
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Position;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.Field;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.form.event.TextFieldListenerAdapter;
+import com.gwtext.client.widgets.layout.FitLayout;
+
+public class ClientePedido extends Window {
+
+    private Object[][] materialM;
+    private Button but_aceptarP;
+    private Button but_cancelarP;
+    private boolean nuevo;
+    private ComboBox com_material1;
+    private ComboBox com_material2;
+    private ComboBox com_material3;
+    private ComboBox com_material4;
+    private ComboBox com_material5;
+    private ComboBox com_material6;
+    ListaCalzadoPedido padre;
+    private FormPanel formPanel;
+    private int col;
+    private int row;
+
+    public ClientePedido(Object[][] materialM, ListaCalzadoPedido padre, int col, int row) {
+
+        this.materialM = materialM;
+        this.padre = padre;
+        this.col = col;
+        this.row = row;
+        String nombreBoton1 = "Guardar";
+        String nombreBoton2 = "Cancelar";
+
+        setTitle("Seleccionar Cliente");
+        setAutoHeight(true);
+        setLayout(new FitLayout());
+        setPaddings(8);
+        setButtonAlign(Position.CENTER);
+
+        setCloseAction(Window.CLOSE);
+        setPlain(true);
+        formPanel = new FormPanel();
+        formPanel.setBaseCls("x-plain");
+        //eventos a los botones
+        but_aceptarP = new Button(nombreBoton1, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                if (nuevo == false) {
+                    GuardarEditarAlmacen();
+                }
+            }
+        });
+        but_cancelarP = new Button(nombreBoton2, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                ClientePedido.this.close();
+                ClientePedido.this.destroy();
+                ClientePedido.this.setModal(false);
+            //formulario = null;
+            }
+        });
+
+        //combos
+        com_material1 = new ComboBox("codigo", "idcliente");
+        com_material2 = new ComboBox("codigo", "idcliente");
+        com_material3 = new ComboBox("codigo", "idcliente");
+        com_material4 = new ComboBox("codigo", "idcliente");
+        com_material5 = new ComboBox("codigo", "idcliente");
+        com_material6 = new ComboBox("codigo", "idcliente");
+
+
+
+        formPanel.add(com_material1);
+        formPanel.add(com_material2);
+        formPanel.add(com_material3);
+        formPanel.add(com_material4);
+        formPanel.add(com_material5);
+        formPanel.add(com_material6);
+
+
+
+
+
+
+        addButton(but_aceptarP);
+        addButton(but_cancelarP);
+        add(formPanel);
+        initCombos();
+        addListenerskey();
+    }
+private void addListenerskey() {
+
+    com_material1.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                  com_material2.focus();
+
+                }
+            }
+
+        });
+ com_material2.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                  com_material3.focus();
+
+                }
+            }
+        });
+         com_material3.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                 GuardarEditarAlmacen() ;
+                }
+            }
+
+        });
+
+}
+    private void initCombos() {
+
+        //color1
+        SimpleStore proveedorStore = new SimpleStore(new String[]{"idmaterial", "codigo"}, materialM);
+        proveedorStore.load();
+        com_material1.setMinChars(1);
+        com_material1.setFieldLabel("Material");
+        com_material1.setStore(proveedorStore);
+        com_material1.setValueField("codigo");
+        com_material1.setDisplayField("codigo");
+        com_material1.setForceSelection(true);
+        com_material1.setMode(ComboBox.LOCAL);
+        com_material1.setEmptyText("Buscar material");
+        com_material1.setLoadingText("buscando...");
+        com_material1.setTypeAhead(true);
+        com_material1.setSelectOnFocus(true);
+        com_material1.setWidth(150);
+
+        com_material1.setHideTrigger(true);
+
+        //color 2
+        SimpleStore proveedorStore2 = new SimpleStore(new String[]{"idmaterial", "codigo"}, materialM);
+        proveedorStore2.load();
+        com_material2.setMinChars(1);
+        com_material2.setFieldLabel("material");
+        com_material2.setStore(proveedorStore);
+        com_material2.setValueField("codigo");
+        com_material2.setDisplayField("codigo");
+        com_material2.setForceSelection(true);
+        com_material2.setMode(ComboBox.LOCAL);
+        com_material2.setEmptyText("Buscar material");
+        com_material2.setLoadingText("buscando...");
+        com_material2.setTypeAhead(true);
+        com_material2.setSelectOnFocus(true);
+
+        com_material2.setWidth(150);
+
+        com_material2.setHideTrigger(true);
+
+        //color3
+        SimpleStore proveedorStore3 = new SimpleStore(new String[]{"idmaterial", "codigo"}, materialM);
+        proveedorStore3.load();
+        com_material3.setMinChars(1);
+        com_material3.setFieldLabel("material");
+        com_material3.setStore(proveedorStore);
+        com_material3.setValueField("codigo");
+        com_material3.setDisplayField("codigo");
+        com_material3.setForceSelection(true);
+        com_material3.setMode(ComboBox.LOCAL);
+        com_material3.setEmptyText("Buscar material");
+        com_material3.setLoadingText("buscando...");
+        com_material3.setTypeAhead(true);
+        com_material3.setSelectOnFocus(true);
+        com_material3.setWidth(150);
+
+        com_material3.setHideTrigger(true);
+
+        //color4
+        SimpleStore proveedorStore4 = new SimpleStore(new String[]{"idmaterial", "codigo"}, materialM);
+        proveedorStore4.load();
+        com_material4.setMinChars(1);
+        com_material4.setFieldLabel("material");
+        com_material4.setStore(proveedorStore);
+        com_material4.setValueField("codigo");
+        com_material4.setDisplayField("codigo");
+        com_material4.setForceSelection(true);
+        com_material4.setMode(ComboBox.LOCAL);
+        com_material4.setEmptyText("Buscar material");
+        com_material4.setLoadingText("buscando...");
+        com_material4.setTypeAhead(true);
+        com_material4.setSelectOnFocus(true);
+        com_material4.setWidth(150);
+
+        com_material4.setHideTrigger(true);
+
+        //color5
+        SimpleStore proveedorStore5 = new SimpleStore(new String[]{"idmaterial", "codigo"}, materialM);
+        proveedorStore5.load();
+        com_material5.setMinChars(1);
+        com_material5.setFieldLabel("material");
+        com_material5.setStore(proveedorStore);
+        com_material5.setValueField("codigo");
+        com_material5.setDisplayField("codigo");
+        com_material5.setForceSelection(true);
+        com_material5.setMode(ComboBox.LOCAL);
+        com_material5.setEmptyText("Buscar material");
+        com_material5.setLoadingText("buscando...");
+        com_material5.setTypeAhead(true);
+        com_material5.setSelectOnFocus(true);
+        com_material5.setWidth(150);
+
+        com_material5.setHideTrigger(true);
+
+        //color6
+        SimpleStore proveedorStore6 = new SimpleStore(new String[]{"idmaterial", "codigo"}, materialM);
+        proveedorStore6.load();
+        com_material6.setMinChars(1);
+        com_material6.setFieldLabel("material");
+        com_material6.setStore(proveedorStore);
+        com_material6.setValueField("codigo");
+        com_material6.setDisplayField("codigo");
+        com_material6.setForceSelection(true);
+        com_material6.setMode(ComboBox.LOCAL);
+        com_material6.setEmptyText("Buscar material");
+        com_material6.setLoadingText("buscando...");
+        com_material6.setTypeAhead(true);
+        com_material6.setSelectOnFocus(true);
+        com_material6.setWidth(150);
+
+        com_material6.setHideTrigger(true);
+
+    }
+
+  
+
+    public void GuardarEditarAlmacen() {
+
+        String color1 = com_material1.getValue();
+        String color2 = com_material2.getValue();
+        String color3 = com_material3.getValue();
+        String color4 = com_material4.getValue();
+        String color5 = com_material5.getValue();
+        String color6 = com_material6.getValue();
+        String[] colores = {color1, color2, color3, color4, color5, color6};
+
+        String color = null;
+        int i;
+        for (i = 0; i < 6; i++) {
+            if (colores[i] != null) {
+                if (color != null) {
+                    color = color + "/" + colores[i];
+                } else {
+                    color = colores[i];
+                }
+
+            }
+
+        }
+
+        padre.InsertRowMaterial(row, col, color);
+        close();
+this.destroy();
+    }
+}

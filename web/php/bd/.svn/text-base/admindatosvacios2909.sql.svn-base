@@ -1,0 +1,2057 @@
+-- phpMyAdmin SQL Dump
+-- version 2.11.5
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Sep 29, 2010 at 11:39 AM
+-- Server version: 5.0.51
+-- PHP Version: 5.2.5
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- Database: `admin`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `almacenes`
+--
+
+CREATE TABLE `almacenes` (
+  `idalmacen` varchar(20) NOT NULL,
+  `idciudad` varchar(20) default NULL,
+  `nombre` varchar(500) default NULL,
+  `codigo` varchar(100) default NULL,
+  `direccion` varchar(1000) default NULL,
+  `responsable` varchar(200) default NULL,
+  `numero` int(11) default NULL,
+  `telefono` varchar(100) default NULL,
+  `fax` varchar(200) default NULL,
+  PRIMARY KEY  (`idalmacen`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `almacenes`
+--
+
+INSERT INTO `almacenes` (`idalmacen`, `idciudad`, `nombre`, `codigo`, `direccion`, `responsable`, `numero`, `telefono`, `fax`) VALUES
+('alm-1000', 'ciu-1000', 'ALMACEN COCHABAMBA', 'CBBA', 'c/moxos#2006', 'usr-1000', 1000, '254234', '254234');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `anio`
+--
+
+CREATE TABLE `anio` (
+  `anio` int(11) NOT NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`anio`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `anio`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `calzados`
+--
+
+CREATE TABLE `calzados` (
+  `idcalzado` varchar(20) NOT NULL,
+  `idcaracteristica` varchar(20) default '\r\n\r\n',
+  `idmodelo` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `precio1bs` decimal(22,11) default NULL,
+  `precio2bs` decimal(22,11) default NULL,
+  `precio3bs` decimal(22,11) default NULL,
+  `precio1sus` decimal(22,11) default NULL,
+  `precio2sus` decimal(22,11) default NULL,
+  `precio3sus` decimal(22,11) default NULL,
+  `imagen` varchar(20000) default NULL,
+  `stockminimo` int(11) default NULL,
+  PRIMARY KEY  (`idcalzado`),
+  KEY `idmodelo` (`idmodelo`),
+  KEY `idcaracteristica` (`idcaracteristica`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `calzados`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `calzadostallas`
+--
+
+CREATE TABLE `calzadostallas` (
+  `idcalzadotalla` varchar(30) NOT NULL COMMENT 'IDCALZADO TALLA (IDCALZADO-CODIGOTALLA)',
+  `idcalzado` varchar(20) default NULL,
+  `idtalla` varchar(20) default NULL,
+  PRIMARY KEY  (`idcalzadotalla`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `calzadostallas`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `caracteristicas`
+--
+
+CREATE TABLE `caracteristicas` (
+  `idcaracteristica` varchar(20) NOT NULL,
+  `descripcionmaterial` varchar(20000) default NULL COMMENT 'Cadena de las caracteristicas de material combinadas escritas en literas example\r\n(material1/material2/.../materialn)',
+  `numero` int(11) default NULL,
+  `detalle` varchar(20000) default NULL,
+  `descripcioncolor` varchar(20000) default NULL COMMENT 'Cadena formada por los colores pertenecientes a una caracteristica example(color1/color2/.../colorn)',
+  PRIMARY KEY  (`idcaracteristica`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `caracteristicas`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `caracteristicascolores`
+--
+
+CREATE TABLE `caracteristicascolores` (
+  `idcolor` varchar(20) NOT NULL,
+  `idcaracteristica` varchar(20) NOT NULL,
+  PRIMARY KEY  (`idcolor`,`idcaracteristica`),
+  KEY `idcolor` (`idcolor`),
+  KEY `idcaracteristicas` (`idcaracteristica`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `caracteristicascolores`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `caracteristicasmateriales`
+--
+
+CREATE TABLE `caracteristicasmateriales` (
+  `idcaracteristica` varchar(20) NOT NULL,
+  `idmateria` varchar(20) NOT NULL,
+  PRIMARY KEY  (`idcaracteristica`,`idmateria`),
+  KEY `idcaracteristica` (`idcaracteristica`),
+  KEY `idmateria` (`idmateria`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `caracteristicasmateriales`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `categoriafuncion`
+--
+
+CREATE TABLE `categoriafuncion` (
+  `idcategoriafuncion` char(10) NOT NULL,
+  `nombre` varchar(500) default NULL,
+  `codigo` varchar(100) default NULL,
+  `seguridad` varchar(200) default NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`idcategoriafuncion`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `categoriafuncion`
+--
+
+INSERT INTO `categoriafuncion` (`idcategoriafuncion`, `nombre`, `codigo`, `seguridad`, `estado`) VALUES
+('caf1000', 'Sistemas', NULL, NULL, 'Activo'),
+('caf1001', 'Configuracion', NULL, NULL, 'Activo'),
+('caf1002', 'Pedidos', NULL, NULL, 'Activo'),
+('caf1003', 'Muestras', NULL, NULL, 'Activo'),
+('caf1004', 'SistemaDetalle', NULL, NULL, 'Activo'),
+('caf1005', 'SistemaMayor', NULL, NULL, 'Activo'),
+('caf1006', 'SistemaCredito', NULL, NULL, 'Activo'),
+('caf1010', 'Reportes', NULL, NULL, 'Activo');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `categorias`
+--
+
+CREATE TABLE `categorias` (
+  `idcategoria` varchar(20) NOT NULL,
+  `nombre` varchar(500) default NULL,
+  `codigo` varchar(100) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idcategoria`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `categorias`
+--
+
+INSERT INTO `categorias` (`idcategoria`, `nombre`, `codigo`, `numero`) VALUES
+('caf1001', 'Calzados Para Varones', NULL, 1001),
+('caf1002', 'Calzados Unisex', NULL, 1002),
+('cat-1000', 'Calzados para Mujer', 'zpt1', 1000);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ciudades`
+--
+
+CREATE TABLE `ciudades` (
+  `idciudad` varchar(20) NOT NULL,
+  `nombre` varchar(500) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idciudad`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `ciudades`
+--
+
+INSERT INTO `ciudades` (`idciudad`, `nombre`, `numero`) VALUES
+('ciu-1000', 'Cochabamba', 1000),
+('ciu-1001', 'Santa Cruz', 1001),
+('ciu-1002', 'Lapaz', 1002),
+('ciu-1003', 'Sucre', 1003),
+('ciu-1004', 'Oruro', 1004);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `clienteempresa`
+--
+
+CREATE TABLE `clienteempresa` (
+  `idclienteempresa` int(11) NOT NULL auto_increment,
+  `codigo` varchar(20) default NULL,
+  `nombre` varchar(2000) default NULL,
+  `apellido` varchar(20) default NULL,
+  `idempresa` varchar(20) default NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`idclienteempresa`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `clienteempresa`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `clientes`
+--
+
+CREATE TABLE `clientes` (
+  `idcliente` varchar(20) NOT NULL,
+  `idtipocliente` varchar(20) default NULL,
+  `idalmacen` varchar(20) default NULL,
+  `codigo` varchar(100) default NULL,
+  `nombre` varchar(500) default NULL,
+  `telefono` varchar(100) default NULL,
+  `direccion` varchar(1000) default NULL,
+  `email` varchar(1000) default NULL,
+  `fax` varchar(200) default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`idcliente`),
+  KEY `fk_relationship_18` (`idalmacen`),
+  KEY `fk_relationship_20` (`idtipocliente`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `clientes`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `codigobarramodelodetalle`
+--
+
+CREATE TABLE `codigobarramodelodetalle` (
+  `idcbmd` int(11) NOT NULL auto_increment,
+  `idkardextienda` varchar(20) default NULL,
+  `codigobarra` varchar(20) default NULL,
+  `codigomodelo` varchar(20) default NULL,
+  PRIMARY KEY  (`idcbmd`),
+  KEY `idkardextienda` (`idkardextienda`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `codigobarramodelodetalle`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `codigocoleccion`
+--
+
+CREATE TABLE `codigocoleccion` (
+  `idcodigocoleccion` int(11) NOT NULL auto_increment,
+  `idmarca` varchar(20) default NULL,
+  `idcoleccion` varchar(20) default NULL,
+  `codigobarra` int(11) default NULL,
+  PRIMARY KEY  (`idcodigocoleccion`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `codigocoleccion`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `codigonumeracion`
+--
+
+CREATE TABLE `codigonumeracion` (
+  `idcodigonumeracion` int(30) NOT NULL auto_increment,
+  `idcoleccion` varchar(20) default NULL,
+  `codigobarra` int(30) default NULL,
+  PRIMARY KEY  (`idcodigonumeracion`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `codigonumeracion`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `coleccion`
+--
+
+CREATE TABLE `coleccion` (
+  `idcoleccion` varchar(20) NOT NULL,
+  `anio` int(11) default NULL,
+  `detalle` varchar(20000) default NULL,
+  `numero` int(11) default NULL,
+  `codigo` varchar(100) default NULL,
+  `idmarca` varchar(20) default NULL,
+  `estado` varchar(20) default NULL COMMENT '(VIGENTE/PASADO) cuando se crea una nueva coleecion la coleccion nueva pasa a ser VIGENTE y las otras a PASADO',
+  `codigobarra` int(11) default NULL,
+  `codigobarra1` int(11) default NULL,
+  PRIMARY KEY  (`idcoleccion`),
+  KEY `fk_relationship_30` (`anio`),
+  KEY `idmarca` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `coleccion`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `colores`
+--
+
+CREATE TABLE `colores` (
+  `idcolor` varchar(20) NOT NULL,
+  `nombre` varchar(500) default NULL,
+  `descripcion` varchar(1000) default NULL,
+  `codigo` varchar(100) default NULL,
+  `numero` int(11) default NULL,
+  `codigobarra` varchar(200) default NULL,
+  PRIMARY KEY  (`idcolor`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `colores`
+--
+
+INSERT INTO `colores` (`idcolor`, `nombre`, `descripcion`, `codigo`, `numero`, `codigobarra`) VALUES
+('col-1', 'AZUL', 'Azul', NULL, 1, NULL),
+('col-10', 'AZUL EGIPCIO', 'Azul egipcio', NULL, 10, NULL),
+('col-100', 'OPALINO', 'Opalino', NULL, 100, NULL),
+('col-101', 'ORO', 'Oro', NULL, 101, NULL),
+('col-102', 'ORO VIEJO', 'Oro viejo', NULL, 102, NULL),
+('col-103', 'ORQUÃ­DEA', 'OrquÃ­dea', NULL, 103, NULL),
+('col-104', 'Ã“XIDO', 'Ã“xido', NULL, 104, NULL),
+('col-105', 'PAJIZO', 'Pajizo', NULL, 105, NULL),
+('col-106', 'PAPAYA', 'Papaya', NULL, 106, NULL),
+('col-107', 'PARDO', 'Pardo', NULL, 107, NULL),
+('col-108', 'PERA', 'Pera', NULL, 108, NULL),
+('col-109', 'PERLA', 'Perla', NULL, 109, NULL),
+('col-11', 'AZUL DE PRUSIA', 'Azul de Prusia', NULL, 11, NULL),
+('col-110', 'PERSIMONIO', 'Persimonio', NULL, 110, NULL),
+('col-111', 'PISTACHO', 'Pistacho', NULL, 111, NULL),
+('col-112', 'PLATA', 'Plata', NULL, 112, NULL),
+('col-113', 'PÃºRPURA', 'PÃºrpura', NULL, 113, NULL),
+('col-114', 'PÃºRPURA DE TIRO', 'PÃºrpura de Tiro', NULL, 114, NULL),
+('col-115', 'RIBOFLAVINA', 'Riboflavina', NULL, 115, NULL),
+('col-116', 'ROJO', 'Rojo', NULL, 116, NULL),
+('col-117', 'ROJO CADMIO', 'Rojo cadmio', NULL, 117, NULL),
+('col-118', 'ROJO DE VENECIA', 'Rojo de Venecia', NULL, 118, NULL),
+('col-119', 'ROJO INDIO', 'Rojo indio', NULL, 119, NULL),
+('col-12', 'AZUL MARINO', 'Azul marino', NULL, 12, NULL),
+('col-120', 'ROJO REMOLACHA', 'Rojo remolacha', NULL, 120, NULL),
+('col-121', 'ROSA', 'Rosa', NULL, 121, NULL),
+('col-122', 'ROSA FUCSIA', 'Rosa fucsia', NULL, 122, NULL),
+('col-123', 'RUBÃ­', 'RubÃ­', NULL, 123, NULL),
+('col-124', 'SABLE', 'Sable', NULL, 124, NULL),
+('col-125', 'SALMÃ³N', 'SalmÃ³nes', NULL, 125, NULL),
+('col-126', 'SANGRÃ­A', 'SangrÃ­a', NULL, 126, NULL),
+('col-127', 'SANGUÃ­NEO', 'SanguÃ­neo', NULL, 127, NULL),
+('col-128', 'SEPIA', 'Sepia', NULL, 128, NULL),
+('col-129', 'SIENA', 'Siena', NULL, 129, NULL),
+('col-13', 'AZUL MAYA', 'Azul maya', NULL, 13, NULL),
+('col-130', 'SINOPLE', 'Sinople', NULL, 130, NULL),
+('col-131', 'SOLIDAGO', 'Solidago', NULL, 131, NULL),
+('col-132', 'TARTRACINAE', 'Tartracinae', NULL, 132, NULL),
+('col-133', 'TÃ© VERDE', 'TÃ© verde', NULL, 133, NULL),
+('col-134', 'TERRACOTA', 'Terracota', NULL, 134, NULL),
+('col-135', 'TOMATE', 'Tomate', NULL, 135, NULL),
+('col-136', 'TRIGO', 'Trigo', NULL, 136, NULL),
+('col-137', 'TURQUESA', 'Turquesa', NULL, 137, NULL),
+('col-138', 'TURQUI', 'Turqui', NULL, 138, NULL),
+('col-139', 'ULTRAMARINO', 'Ultramarino', NULL, 139, NULL),
+('col-14', 'AZUL REAL', 'Azul real', NULL, 14, NULL),
+('col-140', 'VERDE', 'Verde', NULL, 140, NULL),
+('col-141', 'VERDE AMARILLENTO', 'Verde amarillento', NULL, 141, NULL),
+('col-142', 'VERDE BOSQUE', 'Verde bosque', NULL, 142, NULL),
+('col-143', 'VERDE BOSQUE', 'Verde bosque', NULL, 143, NULL),
+('col-144', 'VERDE CAMUFLAJE', 'Verde camuflaje', NULL, 144, NULL),
+('col-145', 'VERDE CARIBE', 'Verde Caribe', NULL, 145, NULL),
+('col-146', 'VERDE CAZADOR', 'Verde cazador', NULL, 146, NULL),
+('col-147', 'VERDE ESMERALDA', 'Verde esmeralda', NULL, 147, NULL),
+('col-148', 'VERDE LIMA', 'Verde lima', NULL, 148, NULL),
+('col-149', 'VERDE MALAQUITA', 'Verde malaquita', NULL, 149, NULL),
+('col-15', 'AZUR', 'Azur', NULL, 15, NULL),
+('col-150', 'VERDE MUSGO', 'Verde musgo', NULL, 150, NULL),
+('col-151', 'VERDE MANZANA', 'Verde manzana', NULL, 151, NULL),
+('col-152', 'VERDE OSCURO', 'Verde oscuro', NULL, 152, NULL),
+('col-153', 'VERDE VERONÃ©S', 'Verde veronÃ©s', NULL, 153, NULL),
+('col-154', 'VERDE VIRIDIAN', 'Verde viridian', NULL, 154, NULL),
+('col-155', 'VIOLETA', 'Violeta', NULL, 155, NULL),
+('col-156', 'VIOLETA CLARO', 'Violeta claro', NULL, 156, NULL),
+('col-157', 'VIOLÃ­N ', 'ViolÃ­n ', NULL, 157, NULL),
+('col-158', 'WISTERIA', 'Wisteria', NULL, 158, NULL),
+('col-159', 'ZAFIRO', 'Zafiro', NULL, 159, NULL),
+('col-16', 'BERMELLÃ³N', 'BermellÃ³n', NULL, 16, NULL),
+('col-160', 'ZANAHORIA', 'Zanahoria', NULL, 160, NULL),
+('col-161', 'ZINNWALDITA', 'Zinnwaldita', NULL, 161, NULL),
+('col-17', 'BISQUE', 'Bisque', NULL, 17, NULL),
+('col-18', 'BLANCO', 'Blanco', NULL, 18, NULL),
+('col-19', 'BLANCO DE ESPAÃ±A', 'Blanco de EspaÃ±a', NULL, 19, NULL),
+('col-2', 'AMARILLO', 'amarillo', NULL, 2, NULL),
+('col-20', 'BORGOÃ±A', 'BorgoÃ±a', NULL, 20, NULL),
+('col-21', 'BRONCE', 'Bronce', NULL, 21, NULL),
+('col-22', 'BURDEO', 'Burdeo', NULL, 22, NULL),
+('col-23', 'CAFÃ©', 'CafÃ©', NULL, 23, NULL),
+('col-24', 'CALABAZA', 'Calabaza', NULL, 24, NULL),
+('col-25', 'CANARIO', 'Canario', NULL, 25, NULL),
+('col-26', 'CANELO', 'Canelo', NULL, 26, NULL),
+('col-27', 'CAOBA', 'Caoba', NULL, 27, NULL),
+('col-28', 'CAQUI', 'Caqui', NULL, 28, NULL),
+('col-29', 'CARAMELO', 'Caramelo', NULL, 29, NULL),
+('col-3', 'VERDE', 'verde', NULL, 3, NULL),
+('col-30', 'CARDO', 'Cardo', NULL, 30, NULL),
+('col-31', 'CARMÃ­N DE ALIZARINA', 'CarmÃ­n de alizarina', NULL, 31, NULL),
+('col-32', 'CELESTE', 'Celeste', NULL, 32, NULL),
+('col-33', 'CERCETA', 'Cerceta', NULL, 33, NULL),
+('col-34', 'CHOCOLATE', 'Chocolate', NULL, 34, NULL),
+('col-35', 'CIAN', 'Cian', NULL, 35, NULL),
+('col-36', 'CINZOLINO', 'Cinzolino', NULL, 36, NULL),
+('col-37', 'CIRUELA', 'Ciruela', NULL, 37, NULL),
+('col-38', 'CLOROFILA', 'Clorofila', NULL, 38, NULL),
+('col-39', 'COBRE', 'Cobre', NULL, 39, NULL),
+('col-4', 'AMARANTO', 'amaranto\n', NULL, 4, NULL),
+('col-40', 'COLORADO', 'Colorado', NULL, 40, NULL),
+('col-41', 'CORAL', 'Coral', NULL, 41, NULL),
+('col-42', 'CREMA', 'Cremaes\n', NULL, 42, NULL),
+('col-43', 'CRUDO', 'Crudo', NULL, 43, NULL),
+('col-44', 'DENIM', 'Denim', NULL, 44, NULL),
+('col-45', 'DIENTE DE LEÃ³N', 'Diente de leÃ³n', NULL, 45, NULL),
+('col-46', 'DIÃ³XIDO DE HIERRO', 'DiÃ³xido de hierro', NULL, 46, NULL),
+('col-47', 'DULCAMARA O AMARGAMIEL', 'Dulcamara o Amargamiel', NULL, 47, NULL),
+('col-48', 'ENCAJE ANTIGUO', 'Encaje antiguo', NULL, 48, NULL),
+('col-49', 'ENCARNACIÃ³N', 'EncarnaciÃ³n', NULL, 49, NULL),
+('col-5', 'ALBARICOQUEES', 'Albaricoquees', NULL, 5, NULL),
+('col-50', 'ENCARNADO', 'Encarnado', NULL, 50, NULL),
+('col-51', 'ESCARLATA', 'Escarlata', NULL, 51, NULL),
+('col-52', 'ESMERALDA', 'Esmeralda', NULL, 52, NULL),
+('col-53', 'ESPÃ¡RRAGO', 'EspÃ¡rrago', NULL, 53, NULL),
+('col-54', 'FRAMBUESA', 'Frambuesa', NULL, 54, NULL),
+('col-55', 'FRESA', 'Fresa', NULL, 55, NULL),
+('col-56', 'FUCSIA ', 'Fucsia ', NULL, 56, NULL),
+('col-57', 'GAMBOGE ', 'Gamboge ', NULL, 57, NULL),
+('col-58', 'GRANATEES ', 'Granatees ', NULL, 58, NULL),
+('col-59', 'GRIS OSCURO', 'Gris oscuro', NULL, 59, NULL),
+('col-6', 'ALMAGRO', 'Almagro', NULL, 6, NULL),
+('col-60', 'GRIS PIZARRA', 'Gris pizarra', NULL, 60, NULL),
+('col-61', 'GRIS PLOMO', 'Gris plomo', NULL, 61, NULL),
+('col-62', 'GULES', 'Gules', NULL, 62, NULL),
+('col-63', 'HELECHO', 'Helecho', NULL, 63, NULL),
+('col-64', 'ÃNDIGO', 'Ãndigo', NULL, 64, NULL),
+('col-65', 'JADE', 'Jade', NULL, 65, NULL),
+('col-66', 'LADRILLO', 'Ladrillo', NULL, 66, NULL),
+('col-67', 'LATÃ³N', 'LatÃ³n', NULL, 67, NULL),
+('col-68', 'LATÃ³N ANTIGUO', 'LatÃ³n antiguo', NULL, 68, NULL),
+('col-69', 'LAVANDA', 'Lavanda', NULL, 69, NULL),
+('col-7', 'ÃMBAR', 'Ãmbar', NULL, 7, NULL),
+('col-70', 'LAVANDA AZULADO', 'Lavanda azulado', NULL, 70, NULL),
+('col-71', 'LEONADO', 'Leonado', NULL, 71, NULL),
+('col-72', 'LILA', 'Lila', NULL, 72, NULL),
+('col-73', 'LIMA', 'Lima', NULL, 73, NULL),
+('col-74', 'LIMÃ³N', 'LimÃ³n', NULL, 74, NULL),
+('col-75', 'LINO', 'Lino', NULL, 75, NULL),
+('col-76', 'LUNA', 'Luna', NULL, 76, NULL),
+('col-77', 'MADERA', 'Madera', NULL, 77, NULL),
+('col-78', 'MAGENTA', 'Magenta', NULL, 78, NULL),
+('col-79', 'MAGNOLIA', 'Magnolia', NULL, 79, NULL),
+('col-8', 'AMPO', 'Ampo', NULL, 8, NULL),
+('col-80', 'MAÃ­Z', 'MaÃ­z', NULL, 80, NULL),
+('col-81', 'MALVA', 'Malva', NULL, 81, NULL),
+('col-82', 'MANDARINA', 'Mandarina', NULL, 82, NULL),
+('col-83', 'MARFIL', 'Marfil', NULL, 83, NULL),
+('col-84', 'MELOCOTÃ³N', 'MelocotÃ³n', NULL, 84, NULL),
+('col-85', 'MENTA', 'Menta', NULL, 85, NULL),
+('col-86', 'MIEL', 'Miel', NULL, 86, NULL),
+('col-87', 'MARRÃ³N', 'MarrÃ³n', NULL, 87, NULL),
+('col-88', 'MARRÃ³N TOPO', 'MarrÃ³n topo', NULL, 88, NULL),
+('col-89', 'MORADO', 'Morado', NULL, 89, NULL),
+('col-9', 'AZAFRÃ¡N', 'AzafrÃ¡n', NULL, 9, NULL),
+('col-90', 'MOSTAZA', 'Mostaza', NULL, 90, NULL),
+('col-91', 'NÃ¡CAR', 'NÃ¡car', NULL, 91, NULL),
+('col-92', 'NARANJA', 'Naranja', NULL, 92, NULL),
+('col-93', 'NEGRO', 'Negro', NULL, 93, NULL),
+('col-94', 'NEGRO DE HUMO', 'Negro de humo', NULL, 94, NULL),
+('col-95', 'NEGRO DE MARFIL', 'Negro de marfil', NULL, 95, NULL),
+('col-96', 'OCRE', 'Ocre', NULL, 96, NULL),
+('col-97', 'OCRE AMARILLO', 'Ocre amarillo', NULL, 97, NULL),
+('col-98', 'OCRE ROJO', 'Ocre rojo', NULL, 98, NULL),
+('col-99', 'OLIVA', 'Oliva', NULL, 99, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `color_marca`
+--
+
+CREATE TABLE `color_marca` (
+  `idcolor` varchar(20) NOT NULL,
+  `idmarca` varchar(20) NOT NULL,
+  `codigo` varchar(100) default NULL,
+  `existe` varchar(20) default NULL,
+  PRIMARY KEY  (`idcolor`,`idmarca`),
+  KEY `fk_relationship_7` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `color_marca`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `confirmarpedidos`
+--
+
+CREATE TABLE `confirmarpedidos` (
+  `idconfirmarpedido` varchar(20) NOT NULL,
+  `numerofactura` varchar(20) default NULL,
+  `numeroproforma` varchar(20) default NULL,
+  `responsable` varchar(20) default NULL,
+  `estado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `idpedido` varchar(20) default NULL,
+  `observacion` varchar(20000) default NULL,
+  `montosus` decimal(22,11) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `totalcajas` int(11) default NULL,
+  `totalpares` int(11) default NULL,
+  `montototal` decimal(22,11) default NULL,
+  PRIMARY KEY  (`idconfirmarpedido`),
+  KEY `idpedido` (`idpedido`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `confirmarpedidos`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `detalleconfirmarpedidos`
+--
+
+CREATE TABLE `detalleconfirmarpedidos` (
+  `iddetalleconfirmarpedido` varchar(20) NOT NULL,
+  `numerocajas` int(11) default NULL,
+  `numeropares` int(11) default NULL,
+  `precio1sus` decimal(22,11) default NULL,
+  `precio2sus` decimal(22,11) default NULL,
+  `precio3sus` decimal(22,11) default NULL,
+  `codigobarra` int(12) default NULL,
+  `idcalzado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `idcliente` varchar(20) default NULL,
+  `idvendedor` varchar(20) default NULL,
+  `idconfirmarpedido` varchar(20) default NULL,
+  PRIMARY KEY  (`iddetalleconfirmarpedido`),
+  KEY `idcalzado` (`idcalzado`),
+  KEY `idconfirmarpedido` (`idconfirmarpedido`),
+  KEY `idcliente` (`idcliente`),
+  KEY `idvendedor` (`idvendedor`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `detalleconfirmarpedidos`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `detalleingreso`
+--
+
+CREATE TABLE `detalleingreso` (
+  `idmodelo` varchar(20) default NULL,
+  `totalpares` int(11) default NULL,
+  `totalbs` decimal(22,11) default NULL,
+  `idingreso` varchar(20) default NULL,
+  `iddetalleingreso` varchar(40) NOT NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`iddetalleingreso`),
+  KEY `idingreso` (`idingreso`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `detalleingreso`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `detalleingresotalla`
+--
+
+CREATE TABLE `detalleingresotalla` (
+  `iddetalleingresotalla` int(50) NOT NULL auto_increment,
+  `talla` int(11) default NULL,
+  `idmodelo` varchar(20) default NULL,
+  `iddetalleingreso` varchar(20) default NULL,
+  `cantidad` int(11) default NULL,
+  PRIMARY KEY  (`iddetalleingresotalla`),
+  KEY `iddetalleingreso` (`iddetalleingreso`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `detalleingresotalla`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `detallepedido`
+--
+
+CREATE TABLE `detallepedido` (
+  `iddetallepedido` varchar(20) NOT NULL,
+  `numerocajas` int(11) default NULL,
+  `numeropares` int(11) default NULL,
+  `idcliente` varchar(20) default NULL,
+  `idvendedor` varchar(20) default NULL,
+  `idcalzado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`iddetallepedido`),
+  KEY `idcliente` (`idcliente`),
+  KEY `idvendedor` (`idvendedor`),
+  KEY `idcalzado` (`idcalzado`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `detallepedido`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `empleados`
+--
+
+CREATE TABLE `empleados` (
+  `idempleado` varchar(20) NOT NULL,
+  `codigo` varchar(20) default NULL,
+  `nombres` varchar(20000) default NULL,
+  `apellidos` varchar(2000) default NULL,
+  `telefeno` varchar(200) default NULL,
+  `celular` varchar(200) default NULL,
+  `direccion` varchar(20000) default NULL,
+  `tipoempleado` varchar(20) default NULL,
+  `estado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `observacion` varchar(20000) default NULL,
+  `email` varchar(1000) default NULL,
+  `idtienda` varchar(20) default NULL,
+  `idalmacen` varchar(20) default NULL,
+  PRIMARY KEY  (`idempleado`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `empleados`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `empresas`
+--
+
+CREATE TABLE `empresas` (
+  `idempresa` varchar(20) NOT NULL,
+  `codigo` varchar(10) default NULL,
+  `nombre` varchar(20000) default NULL,
+  `direccion` varchar(2000) default NULL,
+  `telefono` varchar(100) default NULL,
+  `fax` varchar(100) default NULL,
+  `responsable` varchar(20) default NULL,
+  `estado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `comision` varchar(20) default NULL,
+  `fecha` date default NULL,
+  `fechacontrato` date default NULL,
+  `email` varchar(20) default NULL,
+  `idciudad` varchar(20) default NULL,
+  PRIMARY KEY  (`idempresa`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `empresas`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `estilomarca`
+--
+
+CREATE TABLE `estilomarca` (
+  `idmarca` varchar(20) NOT NULL,
+  `idestilo` varchar(20) NOT NULL,
+  `existe` varchar(2) default NULL,
+  PRIMARY KEY  (`idmarca`,`idestilo`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `estilomarca`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `estilos`
+--
+
+CREATE TABLE `estilos` (
+  `idestilo` varchar(20) NOT NULL,
+  `nombre` varchar(1000) default NULL,
+  `descripcion` varchar(2000) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idestilo`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `estilos`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `etapas`
+--
+
+CREATE TABLE `etapas` (
+  `idetapa` varchar(20) NOT NULL,
+  `nombre` varchar(2000) default NULL,
+  `observacion` varchar(20000) default NULL,
+  `numero` int(11) default NULL,
+  UNIQUE KEY `idetapa` (`idetapa`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `etapas`
+--
+
+INSERT INTO `etapas` (`idetapa`, `nombre`, `observacion`, `numero`) VALUES
+('eta-1', 'SALIDA DE FABRICA', 'SALIDA DE FABRICA', 1),
+('eta-2', 'LLEGADA A FRONTERA', 'LLEGADA A FRONTERA', 2),
+('eta-3', 'LLEGADA A ZONA FRANCA', 'LLEGADA A ZONA FRANCA', 3),
+('eta-4', 'CRUCE DE FRONTERA', 'CRECE DE FRONTERA', 4),
+('eta-5', 'LLEGADA A SANTA CRUZ', 'LLEGADA A SANTA CRUZ', 5),
+('eta-6', 'LLEGADA A COCHABAMBA', 'LLEGADA A COCHABAMBA', 6),
+('eta-7', 'LLEGADA DESTINO FINAL', 'LLEGADA DESTINO FINAL', 7);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `etapaspedidosconfirmados`
+--
+
+CREATE TABLE `etapaspedidosconfirmados` (
+  `idetapapedidoconfirmado` varchar(20) NOT NULL,
+  `idetapa` varchar(20) default NULL,
+  `idconfirmarpedido` varchar(20) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `responsable` varchar(20) default NULL,
+  `obervacion` varchar(20000) default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL COMMENT 'PENDIENTE / CONFIRMADO / PROGRESO\r\n',
+  PRIMARY KEY  (`idetapapedidoconfirmado`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `etapaspedidosconfirmados`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `funcion`
+--
+
+CREATE TABLE `funcion` (
+  `idfuncion` varchar(20) NOT NULL,
+  `idcategoriafuncion` char(10) default NULL,
+  `descripcion` varchar(1000) default NULL,
+  `mostrar` varchar(20) default NULL,
+  PRIMARY KEY  (`idfuncion`),
+  KEY `fk_relationship_25` (`idcategoriafuncion`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `funcion`
+--
+
+INSERT INTO `funcion` (`idfuncion`, `idcategoriafuncion`, `descripcion`, `mostrar`) VALUES
+('fun1000', 'caf1000', 'Proveedores', 'si'),
+('fun1001', 'caf1000', 'Marca , Nuevo Editar Eliminar', 'si'),
+('fun1002', 'caf1000', 'Clientes', 'si'),
+('fun1003', 'caf1000', 'Modelos ,  Editar Eliminar', 'si'),
+('fun1004', 'caf1000', 'Almacenes', 'si'),
+('fun1005', 'caf1000', 'Listar Usuarios', 'si'),
+('fun1006', 'caf1000', 'Usuarios Administradores', ' '),
+('fun1007', 'caf1000', 'Roles', 'si'),
+('fun1008', 'caf1000', 'Cargar Datos', 'si'),
+('fun1009', 'caf1000', 'Control de Precios', 'si'),
+('fun1010', 'caf1000', 'Lista de Calzados, Editar Eliminar', 'si'),
+('fun1011', 'caf1000', 'Tienda , Editar Eliminar', 'si'),
+('fun1012', 'caf1000', 'Lista Empleados , Nuevo Editar Eliminar', 'si'),
+('fun1101', 'caf1010', 'Reporte de Almacenes', 'si'),
+('fun1102', 'caf1010', 'Reporte de Ventas', 'si'),
+('fun1103', 'caf1010', 'Reporte de Clientes', 'si'),
+('fun1104', 'caf1010', 'Reporte de Pedidos', 'si'),
+('fun1105', 'caf1010', 'Reporte de Pedidos Confirmados', 'si'),
+('fun1106', 'caf1001', 'Estilos , Nuevo Editar Eliminar', 'si'),
+('fun2001', 'caf1001', 'Colores, Nuevo Editar Eliminar', 'si'),
+('fun2002', 'caf1001', 'Lineas Editar Eliminar ', 'si'),
+('fun2003', 'caf1001', 'Materiales. Nuevo Editar Eliminar', 'si'),
+('fun2005', 'caf1001', 'Colecciones, Nuevo Editar Eliminar', 'si'),
+('fun2006', 'caf1004', 'Empresas Nuevo Editar Eliminar', 'si'),
+('fun2007', 'caf1001', 'Configuracion de Parametros', 'si'),
+('fun3001', 'caf1002', 'Pedidos , Editar Eliminar', 'si'),
+('fun3002', 'caf1002', 'Lista de Pedidos Confirmados', 'si'),
+('fun4000', 'caf1003', 'Listar Muestras', 'si'),
+('fun4001', 'caf1004', 'Gastos Tienda, Nuevo Editar Eliminar', 'si'),
+('fun5001', 'caf1004', 'Marca al Detalle, Nuevo Editar Eliminar', 'si'),
+('fun5002', 'caf1004', 'Compra De Mercaderia', 'si'),
+('fun5003', 'caf1004', 'Modelo Detalle ,Nuevo Editar Eliminar', 'si'),
+('fun5004', 'caf1004', 'Ingreso a Tienda', 'si'),
+('fun5005', 'caf1004', 'Lista De Ingresos Editar Eliminar', 'si'),
+('fun5006', 'caf1004', 'Ingreso A tienda De Pedido Confirmado', 'si');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gastoscaja`
+--
+
+CREATE TABLE `gastoscaja` (
+  `idgastocaja` int(11) NOT NULL auto_increment,
+  `idempleado` varchar(20) default NULL,
+  `idtienda` varchar(20) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `monto` decimal(22,2) default NULL,
+  `idtipogasto` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idgastocaja`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `gastoscaja`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ingresotienda`
+--
+
+CREATE TABLE `ingresotienda` (
+  `idingreso` varchar(20) NOT NULL,
+  `codigo` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `totalpares` int(11) default NULL,
+  `totalbs` decimal(22,11) default NULL,
+  `responsable` varchar(20) default NULL,
+  `observacion` varchar(10000) default NULL,
+  `idmarca` varchar(20) default NULL,
+  `idtienda` varchar(20) default NULL,
+  PRIMARY KEY  (`idingreso`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `ingresotienda`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `itemsdetalleconfirmarpedido`
+--
+
+CREATE TABLE `itemsdetalleconfirmarpedido` (
+  `iditemsdetalleconfirmarpedido` varchar(20) NOT NULL,
+  `iddetalleconfirmarpedido` varchar(20) default NULL,
+  `idcalzadotalla` varchar(20) default NULL,
+  `cantidad` int(11) default NULL,
+  `numero` int(11) default NULL,
+  `precio1sus` decimal(22,11) default NULL,
+  PRIMARY KEY  (`iditemsdetalleconfirmarpedido`),
+  KEY `iddetalleconfirmarpedido` (`iddetalleconfirmarpedido`),
+  KEY `idcalzadotalla` (`idcalzadotalla`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `itemsdetalleconfirmarpedido`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `itemsdetallepedido`
+--
+
+CREATE TABLE `itemsdetallepedido` (
+  `iditemsdetallepedido` varchar(20) NOT NULL,
+  `numero` int(11) default NULL,
+  `idcalzadotalla` varchar(20) default NULL,
+  `iddetallepedido` varchar(20) default NULL,
+  `cantidad` int(11) default NULL,
+  PRIMARY KEY  (`iditemsdetallepedido`),
+  KEY `idcalzadotalla` (`idcalzadotalla`),
+  KEY `iddetallepedido` (`iddetallepedido`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `itemsdetallepedido`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kardextienda`
+--
+
+CREATE TABLE `kardextienda` (
+  `idkardextienda` varchar(20) NOT NULL,
+  `idmodelodetalle` varchar(20) default NULL,
+  `idtienda` varchar(20) default NULL,
+  `codigobarra` varchar(20) default NULL,
+  `saldocantidad` int(11) default NULL,
+  `cantidad` int(11) default NULL,
+  `numero` int(11) default NULL,
+  `talla` int(11) default NULL,
+  `precio1bs` decimal(22,11) default NULL,
+  `precio2bs` decimal(22,11) default NULL,
+  `precio3bs` decimal(22,11) default NULL,
+  `precio1sus` decimal(22,11) default NULL,
+  `precio2sus` decimal(22,11) default NULL,
+  `precio3sus` decimal(22,11) default NULL,
+  `idcalzado` varchar(20) default NULL,
+  `idoperacion` varchar(20) default NULL,
+  `codigobarraean13` varchar(20) default NULL,
+  PRIMARY KEY  (`idkardextienda`),
+  KEY `idmodelodetalle` (`idmodelodetalle`),
+  KEY `idtienda` (`idtienda`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `kardextienda`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lineas`
+--
+
+CREATE TABLE `lineas` (
+  `idlinea` varchar(20) NOT NULL,
+  `codigo` varchar(100) default NULL,
+  `descripcion` varchar(1000) default NULL,
+  `numero` int(11) default NULL,
+  `idmarca` varchar(20) default NULL,
+  `idestilo` varchar(20) default NULL,
+  `idcoleccion` varchar(20) default NULL,
+  PRIMARY KEY  (`idlinea`),
+  KEY `idmarca` (`idmarca`),
+  KEY `idestilo` (`idestilo`),
+  KEY `idcoleccion` (`idcoleccion`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `lineas`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `listaprecios`
+--
+
+CREATE TABLE `listaprecios` (
+  `idprecio` char(10) NOT NULL,
+  `fecha` date default NULL,
+  `numero` int(11) default NULL,
+  `responsable` varchar(200) default NULL,
+  `descripcion` varchar(1000) default NULL,
+  `idcoleecion` varchar(20) default NULL,
+  `fechaini` date default NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`idprecio`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `listaprecios`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `marcadetalle`
+--
+
+CREATE TABLE `marcadetalle` (
+  `idmarcadetalle` varchar(20) NOT NULL,
+  `codigo` varchar(20) default NULL,
+  `nombre` varchar(200) default NULL,
+  `codigobarra` varchar(2) default NULL,
+  `imagen` varchar(10000) default NULL,
+  `talla` varchar(20) default NULL,
+  `idciudad` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `opcion` int(11) default NULL,
+  PRIMARY KEY  (`idmarcadetalle`),
+  KEY `idciudad` (`idciudad`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `marcadetalle`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `marcaetapas`
+--
+
+CREATE TABLE `marcaetapas` (
+  `idetapa` varchar(20) NOT NULL,
+  `idmarca` varchar(20) NOT NULL,
+  `existe` varchar(2) default NULL,
+  `nivel` int(11) default NULL,
+  PRIMARY KEY  (`idetapa`,`idmarca`),
+  KEY `idetapa` (`idetapa`),
+  KEY `idmarca` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `marcaetapas`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `marcas`
+--
+
+CREATE TABLE `marcas` (
+  `idmarca` varchar(20) NOT NULL,
+  `idproveedor` varchar(20) default NULL,
+  `codigo` varchar(100) default NULL,
+  `codigobarra` varchar(200) default NULL,
+  `nombre` varchar(500) default NULL,
+  `imagen` varchar(2000) default NULL,
+  `numero` int(11) default NULL,
+  `idalmacen` varchar(20) default NULL,
+  `pedido` varchar(200) default NULL,
+  `origen` varchar(200) default NULL,
+  `talla` varchar(20) default NULL,
+  `opcion` int(11) default NULL,
+  PRIMARY KEY  (`idmarca`),
+  KEY `fk_2` (`idproveedor`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `marcas`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `materiales`
+--
+
+CREATE TABLE `materiales` (
+  `idmateria` varchar(20) NOT NULL,
+  `codigo` varchar(100) default NULL,
+  `nombre` varchar(500) default NULL,
+  `numero` int(11) default NULL,
+  `descripcion` varchar(1000) default NULL,
+  PRIMARY KEY  (`idmateria`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `materiales`
+--
+
+INSERT INTO `materiales` (`idmateria`, `codigo`, `nombre`, `numero`, `descripcion`) VALUES
+('ma-1009', '9001', 'Metal Soft', 1009, 'Metal Soft'),
+('mat-1000', '1001', 'CONFORT SOFT', 1000, 'CONFORTSOFT/ NAPA SOFT / VEMIZ PLUS'),
+('mat-1001', '2001', 'Napa Soft', 1001, 'napa soft usado en ramadim'),
+('mat-1002', '3001', 'VERNIZ SOFT', 1002, 'VERNIS SOFT'),
+('mat-1003', '4001', 'nobuksahne', 1003, 'nobukoshane'),
+('mat-1004', '5001', 'Napa Vestuario Plus', 1004, 'vestuario pluss'),
+('mat-1005', '6001', 'Relax Soft', 1005, 'Relax Soft Relax Soft'),
+('mat-1006', '6002', 'Napa Vestuario', 1006, 'Napa Vestuario / Ramadis'),
+('mat-1007', '7001', 'Camurga Pluss', 1007, 'Camurga Plus'),
+('mat-1008', '8001', 'Tejos Soft', 1008, 'Tejos  Soft'),
+('mat-1010', '1010', 'Toronto Plus', 1010, 'Toronto Plus'),
+('mat-1011', '1020', 'CONFORT SOFT/RELAX SOFT/FLORAL', 1011, 'CONFORT SOFT/RELAX SOFT/FLORAL'),
+('mat-1012', NULL, 'Relax Soft', 1012, 'Relax Soft'),
+('mat-1013', NULL, 'Napa Soft Plus', 1013, 'Napa Soft Plus'),
+('mat-1014', NULL, 'Napa Vestuario Pluz', 1014, 'Napa Vestuario Pluz'),
+('mat-1015', NULL, 'Floral Metal Soft', 1015, 'Floral Metal Soft'),
+('mat-1016', NULL, 'Nobuk Snake Soft', 1016, 'Nobuk Snake Soft'),
+('mat-1017', NULL, 'Verniz Soft', 1017, 'Verniz Soft'),
+('mat-1018', NULL, 'Verniz Vestuario', 1018, 'Verniz Vestuario'),
+('mat-1019', NULL, 'Verniz Pluz', 1019, 'Verniz Pluz'),
+('mat-1020', NULL, 'Croco Soft', 1020, 'Croco Soft'),
+('mat-1021', NULL, 'Piton Metal Soft', 1021, 'Piton Metal Soft'),
+('mat-1022', NULL, 'Camurga Plus', 1022, 'Camurga Plus'),
+('mat-1023', NULL, 'Safari Plus', 1023, 'Safari Plus');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `materia_marca`
+--
+
+CREATE TABLE `materia_marca` (
+  `idmarca` varchar(20) NOT NULL,
+  `idmateria` varchar(20) NOT NULL,
+  `codigo` varchar(100) default NULL,
+  `existe` varchar(20) default NULL,
+  PRIMARY KEY  (`idmarca`,`idmateria`),
+  KEY `fk_relationship_12` (`idmateria`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `materia_marca`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `modelodetalle`
+--
+
+CREATE TABLE `modelodetalle` (
+  `idmodelodetalle` varchar(20) NOT NULL,
+  `idmarcadetalle` varchar(20) default NULL,
+  `codigo` varchar(20) default NULL,
+  `stylename` varchar(100) default NULL,
+  `color` varchar(1000) default NULL,
+  `material` varchar(1000) default NULL,
+  `detalle` varchar(2000) default NULL,
+  `imagen` varchar(1000) default NULL,
+  `numero` int(11) default NULL,
+  `precio1` decimal(22,2) default NULL,
+  `precio2` decimal(22,2) default NULL,
+  `precio3` decimal(22,2) default NULL,
+  PRIMARY KEY  (`idmodelodetalle`),
+  KEY `idmarcadetalle` (`idmarcadetalle`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `modelodetalle`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `modelos`
+--
+
+CREATE TABLE `modelos` (
+  `idmodelo` varchar(20) NOT NULL,
+  `idmarca` varchar(20) default NULL,
+  `codigo` varchar(100) default NULL,
+  `numero` int(11) default NULL,
+  `precio` decimal(22,2) default NULL,
+  `stylename` varchar(2000) default NULL,
+  `idcoleccion` varchar(20) default NULL,
+  `idlinea` varchar(20) default NULL,
+  `detalle` varchar(20000) default NULL,
+  `imagen` varchar(20000) default NULL,
+  PRIMARY KEY  (`idmodelo`),
+  KEY `fk_relationship_3` (`idmarca`),
+  KEY `idcoleccion` (`idcoleccion`),
+  KEY `idlinea` (`idlinea`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `modelos`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `modelo_muestra`
+--
+
+CREATE TABLE `modelo_muestra` (
+  `idmodelomuestra` varchar(20) NOT NULL,
+  `idmodelo` varchar(20) default NULL,
+  `idmuestra` varchar(20) default NULL,
+  `cantidad` int(11) default NULL,
+  `preciooficina` decimal(22,11) default NULL,
+  `preciomayor` decimal(11,3) default NULL,
+  `estado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idmodelomuestra`),
+  KEY `fk_relationship_36` (`idmuestra`),
+  KEY `fk_relationship_37` (`idmodelo`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `modelo_muestra`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `movimientokardextienda`
+--
+
+CREATE TABLE `movimientokardextienda` (
+  `idmovimientokardextienda` varchar(20) NOT NULL,
+  `idkardextienda` varchar(20) default NULL,
+  `idtienda` varchar(20) default NULL,
+  `entrada` int(11) default NULL,
+  `salida` int(11) default NULL,
+  `saldo` int(11) default NULL,
+  `costounitario` decimal(22,11) default NULL,
+  `ingreso` decimal(22,11) default NULL,
+  `egreso` decimal(22,11) default NULL,
+  `saldobs` decimal(22,11) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `descripcion` varchar(20000) default NULL,
+  `numero` int(11) default NULL,
+  `saldocantidad` int(11) NOT NULL,
+  PRIMARY KEY  (`idmovimientokardextienda`,`saldocantidad`),
+  KEY `idkardextienda` (`idkardextienda`),
+  KEY `idtienda` (`idtienda`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `movimientokardextienda`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `muestras`
+--
+
+CREATE TABLE `muestras` (
+  `idmuestra` varchar(20) NOT NULL,
+  `idmarca` varchar(20) default NULL,
+  `observacion` varchar(3000) default NULL,
+  `responsable` varchar(200) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  `coleccion` varchar(20) default NULL,
+  PRIMARY KEY  (`idmuestra`),
+  KEY `fk_relationship_35` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `muestras`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pedidos`
+--
+
+CREATE TABLE `pedidos` (
+  `idpedido` varchar(20) NOT NULL,
+  `idmarca` varchar(20) default NULL,
+  `fecha` date default NULL,
+  `observacion` varchar(3000) default NULL,
+  `totalpares` int(11) default NULL,
+  `totalcajas` int(11) default NULL,
+  `numeropedido` varchar(20) default NULL,
+  `responsable` varchar(200) default NULL,
+  `estado` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `hora` time default NULL,
+  `np` int(11) default NULL,
+  PRIMARY KEY  (`idpedido`),
+  KEY `fk_relationship_34` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `pedidos`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `precio_modelo`
+--
+
+CREATE TABLE `precio_modelo` (
+  `idpreciomodelo` varchar(20) NOT NULL,
+  `idprecio` char(10) default NULL,
+  `idmodelo` varchar(20) default NULL,
+  `precio` decimal(11,2) default NULL,
+  `fecha` date default NULL,
+  `responsable` varchar(200) default NULL,
+  `diferencia` int(11) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idpreciomodelo`),
+  KEY `fk_relationship_27` (`idmodelo`),
+  KEY `fk_relationship_28` (`idprecio`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `precio_modelo`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `proveedores`
+--
+
+CREATE TABLE `proveedores` (
+  `idproveedor` varchar(20) NOT NULL,
+  `codigo` varchar(100) default NULL,
+  `nombre` varchar(500) default NULL,
+  `telefono` varchar(100) default NULL,
+  `representante` varchar(1000) default NULL,
+  `ciudad` varchar(2000) default NULL,
+  `pais` varchar(100) default NULL,
+  `direccion` varchar(1000) default NULL,
+  `web` varchar(1000) default NULL,
+  `email` varchar(1000) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idproveedor`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `proveedores`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rol`
+--
+
+CREATE TABLE `rol` (
+  `idrol` varchar(20) NOT NULL,
+  `nombre` varchar(500) default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  `seguridad` varchar(20) default NULL,
+  PRIMARY KEY  (`idrol`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `rol`
+--
+
+INSERT INTO `rol` (`idrol`, `nombre`, `numero`, `estado`, `seguridad`) VALUES
+('rol-1000', 'administrador', 1000, 'Activo', NULL),
+('rol-1001', 'administrador almacen', 1001, 'Activo', NULL),
+('rol-1002', 'administrador tienda', 1002, 'Activo', NULL),
+('rol-1003', 'Prueba', 1003, 'Activo', 'admin1276088696'),
+('rol-1004', 'cajero', 1004, 'Activo', 'admin1276056238');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rolfuncion`
+--
+
+CREATE TABLE `rolfuncion` (
+  `idrol` varchar(20) NOT NULL,
+  `idfuncion` varchar(20) NOT NULL,
+  PRIMARY KEY  (`idrol`,`idfuncion`),
+  KEY `fk_relationship_24` (`idfuncion`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `rolfuncion`
+--
+
+INSERT INTO `rolfuncion` (`idrol`, `idfuncion`) VALUES
+('rol-1000', 'fun1000'),
+('rol-1003', 'fun1000'),
+('rol-1000', 'fun1001'),
+('rol-1000', 'fun1002'),
+('rol-1000', 'fun1003'),
+('rol-1000', 'fun1004'),
+('rol-1000', 'fun1005'),
+('rol-1000', 'fun1006'),
+('rol-1000', 'fun1007'),
+('rol-1000', 'fun1008'),
+('rol-1004', 'fun1008'),
+('rol-1000', 'fun1009'),
+('rol-1003', 'fun1009'),
+('rol-1000', 'fun1010'),
+('rol-1000', 'fun1011'),
+('rol-1000', 'fun1012'),
+('rol-1000', 'fun1101'),
+('rol-1000', 'fun1102'),
+('rol-1000', 'fun1103'),
+('rol-1000', 'fun1104'),
+('rol-1000', 'fun1105'),
+('rol-1000', 'fun1106'),
+('rol-1000', 'fun2001'),
+('rol-1000', 'fun2002'),
+('rol-1000', 'fun2003'),
+('rol-1000', 'fun2005'),
+('rol-1000', 'fun2006'),
+('rol-1000', 'fun2007'),
+('rol-1000', 'fun3001'),
+('rol-1000', 'fun3002'),
+('rol-1000', 'fun4000'),
+('rol-1000', 'fun4001'),
+('rol-1000', 'fun5001'),
+('rol-1000', 'fun5002'),
+('rol-1000', 'fun5003'),
+('rol-1000', 'fun5004'),
+('rol-1000', 'fun5005'),
+('rol-1000', 'fun5006');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `salida_muestra`
+--
+
+CREATE TABLE `salida_muestra` (
+  `idsalidamuestra` varchar(20) NOT NULL,
+  `responsable` varchar(200) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `observacion` varchar(3000) default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  `numerosalida` varchar(20) default NULL,
+  `totalpares` int(11) default NULL,
+  PRIMARY KEY  (`idsalidamuestra`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `salida_muestra`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `salida_muestra_modelo`
+--
+
+CREATE TABLE `salida_muestra_modelo` (
+  `idsalidamuestramodelo` varchar(20) NOT NULL,
+  `idmodelomuestra` varchar(20) default NULL,
+  `idsalidamuestra` varchar(20) default NULL,
+  `almacen` varchar(20) default NULL,
+  `muestra` varchar(20) default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`idsalidamuestramodelo`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `salida_muestra_modelo`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tallas`
+--
+
+CREATE TABLE `tallas` (
+  `idtalla` int(11) NOT NULL,
+  `codigo` varchar(100) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idtalla`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tallas`
+--
+
+INSERT INTO `tallas` (`idtalla`, `codigo`, `numero`) VALUES
+(13, '13', 13),
+(14, '14', 14),
+(15, '15', 15),
+(16, '16', 16),
+(17, '17', 17),
+(18, '18', 18),
+(19, '19', 19),
+(20, '20', 20),
+(21, '21', 21),
+(22, '22', 22),
+(23, '23', 23),
+(24, '24', 24),
+(25, '25', 25),
+(26, '26', 26),
+(27, '27', 27),
+(28, '28', 28),
+(29, '29', 29),
+(30, '30', 30),
+(31, '31', 31),
+(32, '32', 32),
+(33, '33', 33),
+(34, '34', 34),
+(35, '35', 35),
+(36, '36', 36),
+(37, '37', 37),
+(38, '38', 38),
+(39, '39', 39),
+(40, '40', 40),
+(41, '41', 41),
+(42, '42', 42),
+(43, '43', 43),
+(44, '44', 44),
+(45, '45', 45),
+(46, '46', 46),
+(47, '1', 47),
+(48, '1 1/2', 48),
+(49, '2', 48),
+(50, '2 1/2', 50),
+(51, '3', 51),
+(52, '3 1/2', 52),
+(53, '4', 53),
+(54, '4 1/2', 54),
+(55, '5', 55),
+(56, '5 1/2', 56),
+(57, '6', 57),
+(58, '6 1/2', 58),
+(59, '7', 59),
+(60, '7 1/2', 60),
+(61, '8', 61),
+(62, '8 1/2', 62),
+(63, '9', 63),
+(64, '9 1/2', 64),
+(65, '10', 65),
+(66, '10 1/2', 66),
+(67, '11', 67),
+(68, '11 1/2', 68),
+(69, '12', 69),
+(70, '12 1/2', 70);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `talla_marca`
+--
+
+CREATE TABLE `talla_marca` (
+  `idtalla` int(11) NOT NULL,
+  `idmarca` varchar(20) NOT NULL,
+  `existe` varchar(200) default NULL,
+  PRIMARY KEY  (`idtalla`,`idmarca`),
+  KEY `fk_relationship_5` (`idmarca`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `talla_marca`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tiendas`
+--
+
+CREATE TABLE `tiendas` (
+  `idtienda` varchar(20) NOT NULL,
+  `idalmacen` varchar(20) default NULL,
+  `codigo` varchar(100) default NULL,
+  `nombre` varchar(500) default NULL,
+  `responsable` varchar(200) default NULL,
+  `direccion` varchar(1000) default NULL,
+  `telefono` varchar(100) default NULL,
+  `email` varchar(1000) default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  `idcliente` varchar(20) NOT NULL,
+  `fax` varchar(100) default NULL,
+  PRIMARY KEY  (`idtienda`),
+  KEY `fk_relationship_29` (`idalmacen`),
+  KEY `idcliente` (`idcliente`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tiendas`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tipogasto`
+--
+
+CREATE TABLE `tipogasto` (
+  `idtipogasto` int(11) NOT NULL auto_increment,
+  `nombre` varchar(2000) default NULL,
+  `tipogasto` varchar(1) default NULL COMMENT 'E gastos mayores a 1000Bs o gastos Fuertes\r\nT gastos menores que solo se realizaran en tiendas\r\n',
+  `detalle` varchar(2000) default NULL,
+  PRIMARY KEY  (`idtipogasto`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `tipogasto`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tipo_clientes`
+--
+
+CREATE TABLE `tipo_clientes` (
+  `idtipocliente` varchar(20) NOT NULL,
+  `nombre` varchar(500) default NULL,
+  `descripcion` varchar(1000) default NULL,
+  `numero` int(11) default NULL,
+  PRIMARY KEY  (`idtipocliente`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tipo_clientes`
+--
+
+INSERT INTO `tipo_clientes` (`idtipocliente`, `nombre`, `descripcion`, `numero`) VALUES
+('tcl-1000', 'Cliente Mayorista', 'Cliente Mayorista', 1000),
+('tcl-1001', 'Tienda', 'Tiendas que pertenecen a Balderrama', 1001);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `usuario`
+--
+
+CREATE TABLE `usuario` (
+  `idusuario` varchar(20) NOT NULL,
+  `idrol` varchar(20) default NULL,
+  `idalmacen` varchar(20) default NULL,
+  `nombre` varchar(500) default NULL,
+  `apellido1` varchar(2000) default NULL,
+  `apellido2` varchar(2000) default NULL,
+  `ci` varchar(20) default NULL,
+  `email` varchar(1000) default NULL,
+  `telefono` varchar(100) default NULL,
+  `celular` varchar(100) default NULL,
+  `login` varchar(20) default NULL,
+  `paswd` varchar(2000) default NULL,
+  `fechareg` date default NULL,
+  `numero` int(11) default NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`idusuario`),
+  KEY `fk_relationship_21` (`idalmacen`),
+  KEY `fk_relationship_22` (`idrol`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `usuario`
+--
+
+INSERT INTO `usuario` (`idusuario`, `idrol`, `idalmacen`, `nombre`, `apellido1`, `apellido2`, `ci`, `email`, `telefono`, `celular`, `login`, `paswd`, `fechareg`, `numero`, `estado`) VALUES
+('usr-1000', 'rol-1000', 'alm-1000', 'Admin', 'admin', 'admin', '121212', 'admin@admin.com', '1234567', '1234567', 'admin', '21232f297a57a5a743894a0e4a801fc3', '2010-04-10', 1000, 'Activo');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `vendedores`
+--
+
+CREATE TABLE `vendedores` (
+  `idvendedor` varchar(20) NOT NULL,
+  `idtienda` varchar(20) default NULL,
+  `codigo` varchar(100) default NULL,
+  `nombre` varchar(500) default NULL,
+  `apellido1` varchar(2000) default NULL,
+  `apellido2` varchar(2000) default NULL,
+  `telefono` varchar(100) default NULL,
+  `direccion` varchar(1000) default NULL,
+  `numero` int(11) default NULL,
+  `fecha` date default NULL,
+  `responsable` varchar(200) default NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`idvendedor`),
+  KEY `fk_relationship_26` (`idtienda`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `vendedores`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ventasdetalle`
+--
+
+CREATE TABLE `ventasdetalle` (
+  `idventadetalle` varchar(40) NOT NULL,
+  `numero` int(20) default NULL,
+  `numerodocumento` varchar(40) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `totalbs` decimal(22,11) default NULL,
+  `cantidad` int(11) default NULL,
+  `idempleado` varchar(20) default NULL,
+  `idtienda` varchar(20) default NULL,
+  `descuento` decimal(22,11) default NULL,
+  PRIMARY KEY  (`idventadetalle`),
+  KEY `idtienda` (`idtienda`),
+  KEY `ventasdetalle_fk1` (`idempleado`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `ventasdetalle`
+--
+
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `calzados`
+--
+ALTER TABLE `calzados`
+  ADD CONSTRAINT `calzados_fk` FOREIGN KEY (`idmodelo`) REFERENCES `modelos` (`idmodelo`),
+  ADD CONSTRAINT `calzados_fk1` FOREIGN KEY (`idcaracteristica`) REFERENCES `caracteristicas` (`idcaracteristica`);
+
+--
+-- Constraints for table `caracteristicascolores`
+--
+ALTER TABLE `caracteristicascolores`
+  ADD CONSTRAINT `caracteristicascolores_fk` FOREIGN KEY (`idcolor`) REFERENCES `colores` (`idcolor`),
+  ADD CONSTRAINT `caracteristicascolores_fk1` FOREIGN KEY (`idcaracteristica`) REFERENCES `caracteristicas` (`idcaracteristica`);
+
+--
+-- Constraints for table `caracteristicasmateriales`
+--
+ALTER TABLE `caracteristicasmateriales`
+  ADD CONSTRAINT `caracteristicasmateriales_fk` FOREIGN KEY (`idcaracteristica`) REFERENCES `caracteristicas` (`idcaracteristica`),
+  ADD CONSTRAINT `caracteristicasmateriales_fk1` FOREIGN KEY (`idmateria`) REFERENCES `materiales` (`idmateria`);
+
+--
+-- Constraints for table `clientes`
+--
+ALTER TABLE `clientes`
+  ADD CONSTRAINT `fk_relationship_18` FOREIGN KEY (`idalmacen`) REFERENCES `almacenes` (`idalmacen`),
+  ADD CONSTRAINT `fk_relationship_20` FOREIGN KEY (`idtipocliente`) REFERENCES `tipo_clientes` (`idtipocliente`);
+
+--
+-- Constraints for table `codigobarramodelodetalle`
+--
+ALTER TABLE `codigobarramodelodetalle`
+  ADD CONSTRAINT `codigobarramodelodetalle_fk` FOREIGN KEY (`idkardextienda`) REFERENCES `kardextienda` (`idkardextienda`);
+
+--
+-- Constraints for table `coleccion`
+--
+ALTER TABLE `coleccion`
+  ADD CONSTRAINT `coleccion_fk` FOREIGN KEY (`idmarca`) REFERENCES `marcas` (`idmarca`),
+  ADD CONSTRAINT `fk_relationship_30` FOREIGN KEY (`anio`) REFERENCES `anio` (`anio`);
+
+--
+-- Constraints for table `color_marca`
+--
+ALTER TABLE `color_marca`
+  ADD CONSTRAINT `fk_relationship_6` FOREIGN KEY (`idcolor`) REFERENCES `colores` (`idcolor`),
+  ADD CONSTRAINT `fk_relationship_7` FOREIGN KEY (`idmarca`) REFERENCES `marcas` (`idmarca`);
+
+--
+-- Constraints for table `confirmarpedidos`
+--
+ALTER TABLE `confirmarpedidos`
+  ADD CONSTRAINT `confirmarpedidos_fk` FOREIGN KEY (`idpedido`) REFERENCES `pedidos` (`idpedido`);
+
+--
+-- Constraints for table `detalleconfirmarpedidos`
+--
+ALTER TABLE `detalleconfirmarpedidos`
+  ADD CONSTRAINT `detalleconfirmarpedidos_fk` FOREIGN KEY (`idcalzado`) REFERENCES `calzados` (`idcalzado`),
+  ADD CONSTRAINT `detalleconfirmarpedidos_fk1` FOREIGN KEY (`idconfirmarpedido`) REFERENCES `confirmarpedidos` (`idconfirmarpedido`),
+  ADD CONSTRAINT `detalleconfirmarpedidos_fk2` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`),
+  ADD CONSTRAINT `detalleconfirmarpedidos_fk3` FOREIGN KEY (`idvendedor`) REFERENCES `vendedores` (`idvendedor`);
+
+--
+-- Constraints for table `detalleingreso`
+--
+ALTER TABLE `detalleingreso`
+  ADD CONSTRAINT `detalleingreso_fk` FOREIGN KEY (`idingreso`) REFERENCES `ingresotienda` (`idingreso`);
+
+--
+-- Constraints for table `detalleingresotalla`
+--
+ALTER TABLE `detalleingresotalla`
+  ADD CONSTRAINT `detalleingresotalla_fk` FOREIGN KEY (`iddetalleingreso`) REFERENCES `detalleingreso` (`iddetalleingreso`);
+
+--
+-- Constraints for table `detallepedido`
+--
+ALTER TABLE `detallepedido`
+  ADD CONSTRAINT `detallepedido_fk` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`),
+  ADD CONSTRAINT `detallepedido_fk1` FOREIGN KEY (`idvendedor`) REFERENCES `vendedores` (`idvendedor`),
+  ADD CONSTRAINT `detallepedido_fk2` FOREIGN KEY (`idcalzado`) REFERENCES `calzados` (`idcalzado`);
+
+--
+-- Constraints for table `funcion`
+--
+ALTER TABLE `funcion`
+  ADD CONSTRAINT `fk_relationship_25` FOREIGN KEY (`idcategoriafuncion`) REFERENCES `categoriafuncion` (`idcategoriafuncion`);
+
+--
+-- Constraints for table `itemsdetalleconfirmarpedido`
+--
+ALTER TABLE `itemsdetalleconfirmarpedido`
+  ADD CONSTRAINT `itemsdetalleconfirmarpedido_fk` FOREIGN KEY (`iddetalleconfirmarpedido`) REFERENCES `detalleconfirmarpedidos` (`iddetalleconfirmarpedido`),
+  ADD CONSTRAINT `itemsdetalleconfirmarpedido_fk1` FOREIGN KEY (`idcalzadotalla`) REFERENCES `calzadostallas` (`idcalzadotalla`);
+
+--
+-- Constraints for table `itemsdetallepedido`
+--
+ALTER TABLE `itemsdetallepedido`
+  ADD CONSTRAINT `itemsdetallepedido_fk` FOREIGN KEY (`idcalzadotalla`) REFERENCES `calzadostallas` (`idcalzadotalla`),
+  ADD CONSTRAINT `itemsdetallepedido_fk1` FOREIGN KEY (`iddetallepedido`) REFERENCES `detallepedido` (`iddetallepedido`);
+
+--
+-- Constraints for table `kardextienda`
+--
+ALTER TABLE `kardextienda`
+  ADD CONSTRAINT `kardextienda_fk` FOREIGN KEY (`idmodelodetalle`) REFERENCES `modelodetalle` (`idmodelodetalle`),
+  ADD CONSTRAINT `kardextienda_fk1` FOREIGN KEY (`idtienda`) REFERENCES `tiendas` (`idtienda`);
+
+--
+-- Constraints for table `lineas`
+--
+ALTER TABLE `lineas`
+  ADD CONSTRAINT `lineas_fk` FOREIGN KEY (`idmarca`) REFERENCES `marcas` (`idmarca`),
+  ADD CONSTRAINT `lineas_fk1` FOREIGN KEY (`idestilo`) REFERENCES `estilos` (`idestilo`),
+  ADD CONSTRAINT `lineas_fk2` FOREIGN KEY (`idcoleccion`) REFERENCES `coleccion` (`idcoleccion`);
+
+--
+-- Constraints for table `marcadetalle`
+--
+ALTER TABLE `marcadetalle`
+  ADD CONSTRAINT `marcadetalle_fk` FOREIGN KEY (`idciudad`) REFERENCES `ciudades` (`idciudad`);
+
+--
+-- Constraints for table `marcaetapas`
+--
+ALTER TABLE `marcaetapas`
+  ADD CONSTRAINT `marcaetapas_fk` FOREIGN KEY (`idetapa`) REFERENCES `etapas` (`idetapa`),
+  ADD CONSTRAINT `marcaetapas_fk1` FOREIGN KEY (`idmarca`) REFERENCES `marcas` (`idmarca`);
+
+--
+-- Constraints for table `marcas`
+--
+ALTER TABLE `marcas`
+  ADD CONSTRAINT `fk_2` FOREIGN KEY (`idproveedor`) REFERENCES `proveedores` (`idproveedor`);
+
+--
+-- Constraints for table `materia_marca`
+--
+ALTER TABLE `materia_marca`
+  ADD CONSTRAINT `fk_relationship_11` FOREIGN KEY (`idmarca`) REFERENCES `marcas` (`idmarca`),
+  ADD CONSTRAINT `fk_relationship_12` FOREIGN KEY (`idmateria`) REFERENCES `materiales` (`idmateria`);
+
+--
+-- Constraints for table `modelodetalle`
+--
+ALTER TABLE `modelodetalle`
+  ADD CONSTRAINT `modelodetalle_fk` FOREIGN KEY (`idmarcadetalle`) REFERENCES `marcadetalle` (`idmarcadetalle`);
+
+--
+-- Constraints for table `modelos`
+--
+ALTER TABLE `modelos`
+  ADD CONSTRAINT `fk_relationship_3` FOREIGN KEY (`idmarca`) REFERENCES `marcas` (`idmarca`),
+  ADD CONSTRAINT `modelos_fk` FOREIGN KEY (`idcoleccion`) REFERENCES `coleccion` (`idcoleccion`),
+  ADD CONSTRAINT `modelos_fk1` FOREIGN KEY (`idlinea`) REFERENCES `lineas` (`idlinea`);
+
+--
+-- Constraints for table `modelo_muestra`
+--
+ALTER TABLE `modelo_muestra`
+  ADD CONSTRAINT `fk_relationship_36` FOREIGN KEY (`idmuestra`) REFERENCES `muestras` (`idmuestra`),
+  ADD CONSTRAINT `fk_relationship_37` FOREIGN KEY (`idmodelo`) REFERENCES `modelos` (`idmodelo`);
+
+--
+-- Constraints for table `movimientokardextienda`
+--
+ALTER TABLE `movimientokardextienda`
+  ADD CONSTRAINT `movimientokardextienda_fk` FOREIGN KEY (`idkardextienda`) REFERENCES `kardextienda` (`idkardextienda`),
+  ADD CONSTRAINT `movimientokardextienda_fk1` FOREIGN KEY (`idtienda`) REFERENCES `tiendas` (`idtienda`);
+
+--
+-- Constraints for table `muestras`
+--
+ALTER TABLE `muestras`
+  ADD CONSTRAINT `fk_relationship_35` FOREIGN KEY (`idmarca`) REFERENCES `marcas` (`idmarca`);
+
+--
+-- Constraints for table `pedidos`
+--
+ALTER TABLE `pedidos`
+  ADD CONSTRAINT `fk_relationship_34` FOREIGN KEY (`idmarca`) REFERENCES `marcas` (`idmarca`);
+
+--
+-- Constraints for table `precio_modelo`
+--
+ALTER TABLE `precio_modelo`
+  ADD CONSTRAINT `fk_relationship_27` FOREIGN KEY (`idmodelo`) REFERENCES `modelos` (`idmodelo`),
+  ADD CONSTRAINT `fk_relationship_28` FOREIGN KEY (`idprecio`) REFERENCES `listaprecios` (`idprecio`);
+
+--
+-- Constraints for table `rolfuncion`
+--
+ALTER TABLE `rolfuncion`
+  ADD CONSTRAINT `fk_relationship_23` FOREIGN KEY (`idrol`) REFERENCES `rol` (`idrol`),
+  ADD CONSTRAINT `fk_relationship_24` FOREIGN KEY (`idfuncion`) REFERENCES `funcion` (`idfuncion`);
+
+--
+-- Constraints for table `talla_marca`
+--
+ALTER TABLE `talla_marca`
+  ADD CONSTRAINT `fk_relationship_4` FOREIGN KEY (`idtalla`) REFERENCES `tallas` (`idtalla`),
+  ADD CONSTRAINT `fk_relationship_5` FOREIGN KEY (`idmarca`) REFERENCES `marcas` (`idmarca`);
+
+--
+-- Constraints for table `tiendas`
+--
+ALTER TABLE `tiendas`
+  ADD CONSTRAINT `fk_relationship_29` FOREIGN KEY (`idalmacen`) REFERENCES `almacenes` (`idalmacen`),
+  ADD CONSTRAINT `tiendas_fk` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`);
+
+--
+-- Constraints for table `usuario`
+--
+ALTER TABLE `usuario`
+  ADD CONSTRAINT `fk_relationship_21` FOREIGN KEY (`idalmacen`) REFERENCES `almacenes` (`idalmacen`),
+  ADD CONSTRAINT `fk_relationship_22` FOREIGN KEY (`idrol`) REFERENCES `rol` (`idrol`);
+
+--
+-- Constraints for table `vendedores`
+--
+ALTER TABLE `vendedores`
+  ADD CONSTRAINT `fk_relationship_26` FOREIGN KEY (`idtienda`) REFERENCES `tiendas` (`idtienda`);
+
+--
+-- Constraints for table `ventasdetalle`
+--
+ALTER TABLE `ventasdetalle`
+  ADD CONSTRAINT `ventasdetalle_fk` FOREIGN KEY (`idtienda`) REFERENCES `tiendas` (`idtienda`),
+  ADD CONSTRAINT `ventasdetalle_fk1` FOREIGN KEY (`idempleado`) REFERENCES `empleados` (`idempleado`);

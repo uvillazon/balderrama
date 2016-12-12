@@ -1,0 +1,343 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.system;
+
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Position;
+import com.gwtext.client.data.Record;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.MessageBox;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.form.Checkbox;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.Field;
+import com.gwtext.client.widgets.form.FieldSet;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.form.TextArea;
+import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import com.gwtext.client.widgets.layout.HorizontalLayout;
+import com.gwtext.client.widgets.layout.VerticalLayout;
+import com.gwtext.client.widgets.form.event.ComboBoxListenerAdapter;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import org.balderrama.client.util.Conector;
+import org.balderrama.client.util.Utils;
+
+/**
+ *
+ * @author buggy
+ */
+public class EditarEstiloForm extends Window {
+
+    private final int ANCHO = 600;
+    private final int ALTO = 450;
+    private final AnchorLayoutData ANCHO_LAYOUT_DATA = new AnchorLayoutData("90%");
+    private final int WINDOW_PADDING = 5;
+    private FormPanel formPanel;
+    private FormPanel formPanelEtapas;
+//    private TextField tex_codigoM;
+    private TextField tex_nombreM;
+//    private TextField tex_codigobarraM;
+    private TextArea tex_descripcion;
+    private Button but_aceptarP;
+    private Button but_cancelarP;
+    private String idestiloM;
+    private String nombreM;
+    private String codigobarraM;
+//    private String codigoM;
+    private String descripcionM;
+    private String mostrar;
+    private Object[][] tallasM;
+    private boolean nuevo;
+    private Estilo padre;
+
+    public EditarEstiloForm(String idestiloM, String nombreM, String descripcionM, Object[][] tallas, Estilo padre) {
+
+        this.idestiloM = idestiloM;
+//        this.codigoM = codigoM;
+        this.nombreM = nombreM;
+//        this.idalmacenM = idalmacnen;
+//        this.codigobarraM = M;
+
+        this.descripcionM = descripcionM;
+
+        this.tallasM = tallas;
+
+
+        this.padre = padre;
+
+        String nombreBoton1 = "Guardar";
+        String nombreBoton2 = "Cancelar";
+        String tituloTabla = "Registar nuevo Estilo";
+
+        if (idestiloM != null) {
+//                MessageBox.alert("Envio parametros");
+            nombreBoton1 = "Modificar";
+            tituloTabla = "Editar Estilo";
+            nuevo = false;
+        } else {
+            
+        
+            nuevo = true;
+
+        }
+
+        setId("win-Estilos");
+        but_aceptarP = new Button(nombreBoton1, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                if (nuevo == false) {
+                    GuardarEditarEstilo();
+                } else {
+                    GuardarNuevaEstilo();
+                }
+            }
+        });
+        but_cancelarP = new Button(nombreBoton2, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                EditarEstiloForm.this.close();
+                EditarEstiloForm.this.setModal(false);
+            //formulario = null;
+            }
+        });
+
+        setTitle(tituloTabla);
+        setWidth(ANCHO);
+        setMinWidth(ANCHO);
+        setLayout(new FitLayout());
+        setPaddings(WINDOW_PADDING);
+        setButtonAlign(Position.CENTER);
+        addButton(but_aceptarP);
+        addButton(but_cancelarP);
+
+        setCloseAction(Window.CLOSE);
+        setPlain(true);
+        formPanel = new FormPanel();
+        formPanel.setBaseCls("x-plain");
+        formPanel.setLabelWidth(ANCHO - 400);
+        formPanel.setWidth(ANCHO);
+        formPanel.setHeight(ALTO);
+
+//        tex_codigoM = new TextField("Codigo", "codigo");
+        tex_nombreM = new TextField("Nombre ", "nombre");
+//        tex_codigobarraM = new TextArea("Codigo Barra", "codigobarra");
+        tex_descripcion = new TextArea("Descripcion", "descripcion");
+
+        formPanel.setLabelWidth(ANCHO - 400 - 5);
+//        formPanel.add(tex_codigoM, ANCHO_LAYOUT_DATA);
+        formPanel.add(tex_nombreM, ANCHO_LAYOUT_DATA);
+//        formPanel.add(tex_codigobarraM, ANCHO_LAYOUT_DATA);
+        formPanel.add(tex_descripcion, ANCHO_LAYOUT_DATA);
+
+        initcrearFielsets();
+
+
+        add(formPanel);
+//        initCombos();
+        initValues();
+    }
+
+//  
+    private void initcrearFielsets() {
+
+        Panel root = new Panel();
+        root.setBaseCls("x-plain");
+        root.setId("root");
+        root.setAutoScroll(true);
+
+        root.setWidth(ANCHO - 30);
+        root.setHeight(ALTO - 50);
+
+        FieldSet field = new FieldSet("Lista Marcas");
+
+        field.setLayout(new HorizontalLayout(10));
+        field.setId("hola");
+        int auxFilas = 0;
+        float auxCantFilasF = tallasM.length / 9;
+
+        int auxCantFilas = 0;
+//        auxCantFilas = redondedo(auxCantFilasF);
+        Checkbox manager1;
+
+
+        //funcS = conec.getObjects(cadS, null);
+        ////auxCantFilas = (int) Math.floor(funcS.length/4);
+        Panel pan_checks = null;
+//        MessageBox.alert("LLEGO");
+        for (int ii = 0; ii < tallasM.length; ii++) {
+//         MessageBox.alert("No Hay datos en la consulta");
+            if (auxFilas == 0) {
+
+                String idpanel = "Panel" + ii;
+                pan_checks = new Panel();
+                pan_checks.setId(idpanel);
+                pan_checks.setLayout(new VerticalLayout(10));
+                pan_checks.setBaseCls("x-plain");
+                field.add(pan_checks);
+
+
+            }
+
+            auxFilas++;
+            String nom = tallasM[ii][1].toString();
+            String idchek = tallasM[ii][0].toString();
+            manager1 = new Checkbox(nom);
+            manager1.setStyleName("x-plain");
+            manager1.setName(nom);
+            manager1.setId("F" + idchek);
+            manager1.setValue("a");
+            if (idestiloM != null) {
+                String existe = tallasM[ii][2].toString();
+                if (existe.equalsIgnoreCase("si")) {
+                    manager1.setChecked(true);
+                }
+            }
+
+            if (auxFilas >= auxCantFilas) {
+                auxFilas = 0;
+            }
+            pan_checks.add(manager1);
+
+
+
+        }
+
+        root.add(field);
+        //pan_checks = null;
+
+
+        formPanel.add(field);
+
+
+    }
+
+    private void initValues() {
+//        tex_codigoM.setValue(codigoM);
+        tex_nombreM.setValue(nombreM);
+//        tex_codigobarraM.setValue(codigobarraM);
+        tex_descripcion.setValue(descripcionM);
+
+
+
+    }
+
+    public Button getBut_aceptar() {
+        return but_aceptarP;
+    }
+
+    public Button getBut_cancelar() {
+        return but_cancelarP;
+    }
+
+    public void GuardarNuevaEstilo() {
+        String cadena = "php/Estilo.php?funcion=GuardarEnlace";
+        cadena = cadena + "&" + formPanel.getForm().getValues();
+        final Conector conec = new Conector(cadena, false);
+        Utils.setErrorPrincipal("Guardando el nuevo Estilo", "guardar");
+        try {
+            conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                public void onResponseReceived(Request request, Response response) {
+                    String data = response.getText();
+                    JSONValue jsonValue = JSONParser.parse(data);
+                    JSONObject jsonObject;
+
+                    if ((jsonObject = jsonValue.isObject()) != null) {
+                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                        if (errorR.equalsIgnoreCase("true")) {
+                            Utils.setErrorPrincipal(mensajeR, "mensaje");
+                            close();
+
+                            padre.reload();
+                        } else {
+                            Utils.setErrorPrincipal(mensajeR, "error");
+                        }
+
+                    }
+
+                }
+
+                public void onError(Request request, Throwable exception) {
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            });
+
+        } catch (RequestException ex) {
+            ex.getMessage();
+            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+        }
+
+    }
+
+    public void GuardarEditarEstilo() {
+        String cadena = "php/Estilo.php?funcion=GuardarEditarEnlace&idestilo=" + idestiloM;
+        cadena =
+                cadena + "&" + formPanel.getForm().getValues();
+        final Conector conec = new Conector(cadena, false);
+        Utils.setErrorPrincipal("Actualizando los cambios en Estilos", "guardar");
+        try {
+            conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                public void onResponseReceived(Request request, Response response) {
+                    String data = response.getText();
+                    JSONValue jsonValue = JSONParser.parse(data);
+                    JSONObject jsonObject;
+
+                    if ((jsonObject = jsonValue.isObject()) != null) {
+                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                        if (errorR.equalsIgnoreCase("true")) {
+                            Utils.setErrorPrincipal(mensajeR, "mensaje");
+                            close();
+
+                            padre.reload();
+                        } else {
+                            Utils.setErrorPrincipal(mensajeR, "error");
+                        }
+
+                    }
+                }
+
+                public void onError(Request request, Throwable exception) {
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            });
+
+        } catch (RequestException ex) {
+            ex.getMessage();
+            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+        }
+    }
+
+    public int redondedo(float f) {
+        int aux = (int) f;
+        if (aux < f) {
+            aux = aux + 1;
+        }
+        return aux;
+    }
+}

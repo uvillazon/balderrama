@@ -1,0 +1,23 @@
+Ok	admin	Haydee	10:43:13	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='no',fallado='0' where idalmacen='alm-3' and saldocantidad='1' ; -- 
+
+Ok	admin	Haydee	10:43:25	/mayorgeneral/php/IngresoAlmacen.phpINSERT INTO pareshabilitados (idkardexunico , fecha , idkardex , idmodelo , talla , idmarca , idvendedor , pares , preciounitario ) VALUES('157' , '2015-12-16' , 'kar-25' , 'm-14' , 'M' , 'mar-32' , 'emp-41' , '1' , '43.33' ); -- UPDATE kardexdetallepar kp,modelo m SET kp.saldocantidad='1',kp.idoperacion='no' WHERE kp.idmodelo=m.idmodelo and m.idvendedor='emp-41' and kp.codigobarra='3210000156400' and kp.saldocantidad='0';  -- 
+
+Ok	admin	Haydee	10:48:52	/mayorgeneral/php/IngresoAlmacen.phpINSERT INTO pareshabilitados (idkardexunico , fecha , idkardex , idmodelo , talla , idmarca , idvendedor , pares , preciounitario ) VALUES('157' , '2015-12-16' , 'kar-25' , 'm-14' , '40' , 'mar-32' , 'emp-41' , '1' , '35.00' ); -- UPDATE kardexdetallepar kp,modelo m SET kp.saldocantidad='1',kp.idoperacion='no' WHERE kp.idmodelo=m.idmodelo and m.idvendedor='emp-41' and kp.codigobarra='3210000156400' and kp.saldocantidad='0';  -- 
+
+Ok	admin	Haydee	10:51:57	/mayorgeneral/php/IngresoAlmacen.phpINSERT INTO pareshabilitados (idkardexunico , fecha , idkardex , idmodelo , talla , idmarca , idvendedor , preciounitario ) VALUES('157' , '2015-12-16' , 'kar-25' , 'm-14' , '40' , 'mar-32' , 'emp-41' , '35.00' ); -- UPDATE kardexdetallepar kp,modelo m SET kp.saldocantidad='1',kp.idoperacion='no' WHERE kp.idmodelo=m.idmodelo and m.idvendedor='emp-41' and kp.codigobarra='3210000156400' and kp.saldocantidad='0';  -- 
+
+Ok	admin	Haydee	10:56:02	/mayorgeneral/php/IngresoAlmacen.phpINSERT INTO pareshabilitados (idkardexunico , fecha , idkardex , idmodelo , talla , idmarca , idvendedor , pares , preciounitario ) VALUES('157' , '2015-12-16' , 'kar-25' , 'm-14' , '40' , 'mar-32' , 'emp-41' , '6' , '35.00' ); -- UPDATE kardexdetallepar kp,modelo m SET kp.saldocantidad='1',kp.idoperacion='no' WHERE kp.idmodelo=m.idmodelo and m.idvendedor='emp-41' and
+   kp.idmodelo='m-14' and kp.idkardex='kar-25' and kp.saldocantidad='0';  -- 
+
+Ok	admin	Haydee	10:58:35	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='no',fallado='0' where idalmacen='alm-3' and saldocantidad='1' ; -- 
+
+Ok	admin	Haydee	10:59:03	/mayorgeneral/php/IngresoAlmacen.phpINSERT INTO pareshabilitados (idkardexunico , fecha , idkardex , idmodelo , talla , idmarca , idvendedor , pares , preciounitario ) VALUES('157' , '2015-12-16' , 'kar-25' , 'm-14' , '40' , 'mar-32' , 'emp-41' , '6' , '35.00' ); -- UPDATE kardexdetallepar kp,modelo m SET kp.saldocantidad='1',kp.idoperacion='no' WHERE kp.idmodelo=m.idmodelo and m.idvendedor='emp-41' and
+   kp.idmodelo='m-14' and kp.idkardex='kar-25' and kp.saldocantidad='0';  -- 
+
+Ok	admin	Haydee	11:03:51	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='no',fallado='0' where idalmacen='alm-3' and saldocantidad='1' ; -- 
+
+Ok	admin	Haydee	11:04:01	/mayorgeneral/php/IngresoAlmacen.phpINSERT INTO pareshabilitados (idkardexunico , fecha , idkardex , idmodelo , talla , idmarca , idvendedor , pares , preciounitario ) VALUES('157' , '2015-12-16' , 'kar-25' , 'm-14' , '40' , 'mar-32' , 'emp-41' , '6' , '35.00' ); -- UPDATE kardexdetallepar kp,modelo m SET kp.saldocantidad='1',kp.idoperacion='no' WHERE kp.idmodelo=m.idmodelo and m.idvendedor='emp-41' and
+   kp.idmodelo='m-14' and kp.idkardex='kar-25' and kp.saldocantidad='0';  -- 
+
+Ok	admin	Haydee	11:04:01	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='leido'  where idkardex='kar-25'; -- 
+

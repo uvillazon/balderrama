@@ -1,0 +1,49 @@
+<?php 
+session_name("balderrama");
+session_start();
+include("impl/Ciudad.php");
+include("impl/Cargo.php");
+include("impl/Empleado.php");
+include("impl/Utils.php");
+include("bd/bd.php");
+require_once("impl/JSON.php");
+
+
+if(permitido("fun1001", $_SESSION['codigo'])==true)
+{
+    $funcion = $_GET['funcion'];
+    if($funcion == "ListarEmpleados"){
+        ListarEmpleados($_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], $_GET['where'], false);
+    }
+
+    else if($funcion == "CargarNuevoEmpleado"){
+
+        CargarNuevoEmpleado(false);
+    }
+    else if($funcion == "GuardarNuevoEmpleado"){
+//        echo "hola";exit();pruebafinal
+        InsertarNuevoEmpleado(false);
+    }
+    else if($funcion =="CargarDatosEditarEmpleado"){
+        $idempleado = $_GET['idempleado'];
+        CargarDatosEditarEmpleado($idempleado,$_GET['callback'], $_GET['_dc'],false);
+    }
+    else if($funcion =="GuardarEditarEmpleado"){
+        
+        GuardarEditarEmpleado(false);
+    }
+    else{
+        echo "else";
+    }
+
+
+}
+else
+{
+    $dev['mensaje'] = "Ud no tiene privilegios para esta funcion";
+    $dev['error'] = "false";
+    $json = new Services_JSON();
+    $output = $json->encode($dev);
+    print($output);
+}
+?>

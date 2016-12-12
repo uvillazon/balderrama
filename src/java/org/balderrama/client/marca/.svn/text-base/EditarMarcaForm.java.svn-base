@@ -1,0 +1,382 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.marca;
+
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Position;
+import com.gwtext.client.data.Record;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.form.Checkbox;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.Field;
+import com.gwtext.client.widgets.form.FieldSet;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.form.TextArea;
+import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import com.gwtext.client.widgets.layout.HorizontalLayout;
+import com.gwtext.client.widgets.layout.VerticalLayout;
+import com.gwtext.client.widgets.form.event.ComboBoxListenerAdapter;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import org.balderrama.client.util.Conector;
+import org.balderrama.client.util.Utils;
+
+/**
+ *
+ * @author buggy
+ */
+public class EditarMarcaForm extends Window {
+
+    private final int ANCHO = 600;
+    private final int ALTO = 400;
+    private final AnchorLayoutData ANCHO_LAYOUT_DATA = new AnchorLayoutData("90%");
+    private final int WINDOW_PADDING = 5;
+    private FormPanel formPanel;
+    private FormPanel formPanelEtapas;
+    private TextField tex_codigoM;
+    private TextField tex_nombreM;
+    private TextField tex_codigobarraM;
+    private TextField tex_imagenM;
+    private ComboBox com_proveedorM;
+    private ComboBox com_categoriaM;
+    private ComboBox com_almacenM;
+    private ComboBox com_mostrarP;
+    private ComboBox com_origenM;
+    private ComboBox com_tallaM;
+//    private Panel formpanel;
+    private Button but_aceptarP;
+    private Button but_cancelarP;
+    private String idmarcaM;
+    private String nombreM;
+    private String codigobarraM;
+    private String codigoM;
+    private String imagenM;
+    private String idcategoriaM;
+    private String idproveedorM;
+    private String idalmacenM;
+    private String mostrar;
+    private String origen;
+    private String talla;
+    private Object[][] categoriasM;
+    private Object[][] proveedoresM;
+    private Object[][] almancenesM;
+    private Object[][] etapasM;
+    private String[] mostrarM;
+    private String[] origenM;
+    private String[] tallaM;
+    private boolean nuevo;
+    private Marca padre;
+
+    public EditarMarcaForm(String idmarcaM, String idcategoriaM, String idproveedorM, String codigoM, String codigobarraM, String nombreM, String imagenM, String idalmacnen, String mostrarM, String origenM, String tallaM, Object[][] almacenes, Object[][] proveedores, Marca padre) {
+        //com.google.gwt.user.client.Window.alert("Cuantas veces");
+        this.idmarcaM = idmarcaM;
+        this.codigoM = codigoM;
+        this.nombreM = nombreM;
+        this.idalmacenM = idalmacnen;
+        this.codigobarraM = codigobarraM;
+        this.idproveedorM = idproveedorM;
+        this.idcategoriaM = idcategoriaM;
+
+        this.proveedoresM = proveedores;
+        this.imagenM = imagenM;
+        if (mostrarM == null) {
+            this.mostrar = "CODIGO";
+
+        } else {
+            this.mostrar = mostrarM;
+        }
+        if (origenM == null) {
+            this.origen = "BRAZIL";
+
+        } else {
+            this.origen = origenM;
+        }
+        if (tallaM == null) {
+            this.talla = "14-38";
+        } else {
+            this.talla = tallaM;
+
+        }
+        this.mostrarM = new String[]{"CODIGO", "CODIGO-COLOR-MATERIAL", "LINEA-CODIGO-COLOR", "CODIGO-COLOR-STYLENAME"};
+        this.origenM = new String[]{"BRAZIL", "CHILE"};
+        this.tallaM = new String[]{"14-38", "33-45", "1-12"};
+
+        this.almancenesM = almacenes;
+
+
+        this.padre = padre;
+
+        String nombreBoton1 = "Guardar";
+        String nombreBoton2 = "Cancelar";
+        String tituloTabla = "Registar nueva Marca";
+
+        if (idmarcaM != null) {
+            nombreBoton1 = "Modificar";
+            tituloTabla = "Editar Marca";
+            nuevo = false;
+        } else {
+            this.idmarcaM = "nuevo";
+            nuevo = true;
+
+        }
+
+        setId("win-Marcas");
+        but_aceptarP = new Button(nombreBoton1, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                if (nuevo == false) {
+                    GuardarEditarMarca();
+                } else {
+                    GuardarNuevaMarca();
+                }
+            }
+        });
+        but_cancelarP = new Button(nombreBoton2, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                EditarMarcaForm.this.close();
+                EditarMarcaForm.this.setModal(false);
+            //formulario = null;
+            }
+        });
+
+        setTitle(tituloTabla);
+        setAutoWidth(true);
+        setAutoHeight(true);
+        setLayout(new FitLayout());
+        setPaddings(WINDOW_PADDING);
+        setButtonAlign(Position.CENTER);
+        addButton(but_aceptarP);
+        addButton(but_cancelarP);
+
+        setCloseAction(Window.CLOSE);
+        setPlain(true);
+        formPanel = new FormPanel();
+        formPanel.setBaseCls("x-plain");
+
+        tex_codigoM = new TextField("Codigo", "codigo", 50);
+        tex_codigoM.setMaxLength(6);
+        tex_codigoM.setMaxLengthText("Solo 6 Caracteres es PERMITIDO");
+        tex_nombreM = new TextField("Nombre Marca", "nombre", 150);
+
+//        tex_codigobarraM = new TextField(tituloTabla, nombreM, ANCHO, talla)
+        tex_codigobarraM = new TextField("Codigo Barra", "codigobarra", 50);
+        tex_codigobarraM.setMaxLength(2);
+        tex_codigobarraM.setMaxLengthText("El tamano permitido para codigos de barra es de tamano 2");
+
+        tex_imagenM = new TextField("Path Imagen", "imagen", 200);
+
+        com_proveedorM = new ComboBox("Proveedor", "proveedor");
+        com_categoriaM = new ComboBox("Categoria", "categoria");
+        com_almacenM = new ComboBox("Llegada de mercaderia", "almacen");
+        com_mostrarP = new ComboBox("Mostar Datos Para Pedido", "mostrar");
+        com_origenM = new ComboBox("Origen de Mercaderia", "origen");
+        com_tallaM = new ComboBox("Tallas Existentes en la MARCA", "talla");
+
+
+
+
+
+        formPanel.add(tex_codigoM);
+        formPanel.add(tex_nombreM);
+        formPanel.add(tex_codigobarraM);
+        formPanel.add(tex_imagenM);
+        formPanel.add(com_almacenM);
+        formPanel.add(com_mostrarP);
+        formPanel.add(com_tallaM);
+        formPanel.add(com_origenM);
+        formPanel.add(com_proveedorM);
+//        formPanel.add(com_categoriaM, ANCHO_LAYOUT_DATA);
+
+//        initetapasFliedsets();
+//        initcrearFielsets();
+
+
+        add(formPanel);
+        initCombos();
+        initValues();
+    }
+
+    private void initCombos() {
+
+        com_proveedorM.setValueField("idproveedor");
+        com_proveedorM.setDisplayField("nombre");
+        com_proveedorM.setForceSelection(true);
+        com_proveedorM.setMinChars(1);
+        com_proveedorM.setMode(ComboBox.LOCAL);
+        com_proveedorM.setTriggerAction(ComboBox.ALL);
+        com_proveedorM.setEmptyText("Seleccione un Proveedor");
+        com_proveedorM.setLoadingText("Buscando");
+        com_proveedorM.setTypeAhead(true);
+        com_proveedorM.setSelectOnFocus(true);
+        com_proveedorM.setHideTrigger(false);
+        com_proveedorM.setReadOnly(true);
+        SimpleStore proveedorStore = new SimpleStore(new String[]{"idproveedor", "nombre"}, proveedoresM);
+        proveedorStore.load();
+        com_proveedorM.setStore(proveedorStore);
+
+
+
+        com_almacenM.setValueField("idalmacen");
+        com_almacenM.setDisplayField("nombre");
+        com_almacenM.setForceSelection(true);
+        com_almacenM.setMinChars(1);
+        com_almacenM.setMode(ComboBox.LOCAL);
+        com_almacenM.setTriggerAction(ComboBox.ALL);
+        com_almacenM.setEmptyText("Seleccione un Almacen Destino");
+        com_almacenM.setLoadingText("Buscando");
+        com_almacenM.setTypeAhead(true);
+        com_almacenM.setSelectOnFocus(true);
+        com_almacenM.setHideTrigger(false);
+        com_almacenM.setReadOnly(true);
+        SimpleStore almanceStore = new SimpleStore(new String[]{"idalmacen", "nombre"}, almancenesM);
+        almanceStore.load();
+        com_almacenM.setStore(almanceStore);
+
+        SimpleStore estadosStore = new SimpleStore("mostrar", mostrarM);
+        estadosStore.load();
+        com_mostrarP.setDisplayField("mostrar");
+        com_mostrarP.setStore(estadosStore);
+
+        SimpleStore estadosStore1 = new SimpleStore("origen", origenM);
+        estadosStore1.load();
+        com_origenM.setDisplayField("origen");
+        com_origenM.setStore(estadosStore1);
+
+        SimpleStore tallaStore = new SimpleStore("talla", tallaM);
+        tallaStore.load();
+        com_tallaM.setDisplayField("talla");
+        com_tallaM.setStore(tallaStore);
+    }
+
+    private void initValues() {
+        tex_codigoM.setValue(codigoM);
+        tex_nombreM.setValue(nombreM);
+        tex_codigobarraM.setValue(codigobarraM);
+        tex_imagenM.setValue(imagenM);
+        com_categoriaM.setValue(idcategoriaM);
+        com_proveedorM.setValue(idproveedorM);
+        com_almacenM.setValue(idalmacenM);
+        com_mostrarP.setValue(mostrar);
+        com_origenM.setValue(origen);
+        com_tallaM.setValue(talla);
+
+
+    }
+
+    public Button getBut_aceptar() {
+        return but_aceptarP;
+    }
+
+    public Button getBut_cancelar() {
+        return but_cancelarP;
+    }
+
+    public void GuardarNuevaMarca() {
+        String cadena = "php/Marca.php?funcion=GuardarNuevaMarca";
+        cadena =
+                cadena + "&" + formPanel.getForm().getValues();
+        final Conector conec = new Conector(cadena, false);
+        Utils.setErrorPrincipal("Guardando el nuevo proveedor", "guardar");
+        try {
+            conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                public void onResponseReceived(Request request, Response response) {
+                    String data = response.getText();
+                    JSONValue jsonValue = JSONParser.parse(data);
+                    JSONObject jsonObject;
+
+                    if ((jsonObject = jsonValue.isObject()) != null) {
+                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                        if (errorR.equalsIgnoreCase("true")) {
+                            Utils.setErrorPrincipal(mensajeR, "mensaje");
+                            close();
+
+                            padre.reload();
+                        } else {
+                            Utils.setErrorPrincipal(mensajeR, "error");
+                        }
+
+                    }
+
+                }
+
+                public void onError(Request request, Throwable exception) {
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            });
+
+        } catch (RequestException ex) {
+            ex.getMessage();
+            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+        }
+
+    }
+
+    public void GuardarEditarMarca() {
+        String cadena = "php/Marca.php?funcion=GuardarEditarMarca&idmarca=" + idmarcaM;
+        cadena =
+                cadena + "&" + formPanel.getForm().getValues();
+        final Conector conec = new Conector(cadena, false);
+        Utils.setErrorPrincipal("Actualizando los cambios en Proveedor", "guardar");
+        try {
+            conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                public void onResponseReceived(Request request, Response response) {
+                    String data = response.getText();
+                    JSONValue jsonValue = JSONParser.parse(data);
+                    JSONObject jsonObject;
+
+                    if ((jsonObject = jsonValue.isObject()) != null) {
+                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                        if (errorR.equalsIgnoreCase("true")) {
+                            Utils.setErrorPrincipal(mensajeR, "mensaje");
+                            close();
+
+                            padre.reload();
+                        } else {
+                            Utils.setErrorPrincipal(mensajeR, "error");
+                        }
+
+                    }
+                }
+
+                public void onError(Request request, Throwable exception) {
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            });
+
+        } catch (RequestException ex) {
+            ex.getMessage();
+            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+        }
+    }
+
+    public int redondedo(float f) {
+        int aux = (int) f;
+        if (aux < f) {
+            aux = aux + 1;
+        }
+        return aux;
+    }
+}

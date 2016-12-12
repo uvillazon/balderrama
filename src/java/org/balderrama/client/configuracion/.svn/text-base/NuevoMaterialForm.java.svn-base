@@ -1,0 +1,259 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.configuracion;
+
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.ui.DecoratorPanel;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Position;
+import com.gwtext.client.data.Record;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.form.Checkbox;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.Field;
+import com.gwtext.client.widgets.form.FieldSet;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.form.Hidden;
+import com.gwtext.client.widgets.form.TextArea;
+import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import com.gwtext.client.widgets.layout.HorizontalLayout;
+import com.gwtext.client.widgets.layout.VerticalLayout;
+import com.gwtext.client.widgets.form.event.ComboBoxListenerAdapter;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import org.balderrama.client.util.Conector;
+import org.balderrama.client.util.Utils;
+
+/**
+ *
+ * @author buggy
+ */
+public class NuevoMaterialForm extends Window {
+
+    private final int ANCHO = 500;
+    private final int ALTO = 120;
+    private final AnchorLayoutData ANCHO_LAYOUT_DATA = new AnchorLayoutData("90%");
+    private final int WINDOW_PADDING = 5;
+    private FormPanel formPanel;
+    private TextField tex_codigoM;
+    private TextField tex_nombreM;
+    private TextArea text_descripcion;
+    private Hidden hid_idmarca;
+    private TextField tex_marcaM;
+    private Button but_aceptarP;
+    private Button but_cancelarP;
+    private String idmaterial;
+    private String nombreL;
+    private String codigoL;
+    private String descripcionL;
+    private boolean nuevo;
+    private Material padre;
+    private String idmarca;
+    private String nombrem;
+
+    public NuevoMaterialForm(String idmaterialL, String codigoL, String nombreL, String descripcionL, String nombrem, String idmarca, Material padre) {
+        //com.google.gwt.user.client.Window.alert("Cuantas veces");
+        this.idmaterial = idmaterialL;
+        this.codigoL = codigoL;
+        this.nombreL = nombreL;
+        this.descripcionL = descripcionL;
+        this.idmarca = idmarca;
+        this.nombrem = nombrem;
+
+
+
+        this.padre = padre;
+
+        String nombreBoton1 = "Guardar";
+        String nombreBoton2 = "Cancelar";
+        String tituloTabla = "Registar nuevo Material";
+
+        if (idmaterialL != null) {
+            nombreBoton1 = "Modificar";
+            tituloTabla = "Editar Material";
+            nuevo = false;
+        } else {
+            this.idmaterial = "nuevo";
+            nuevo = true;
+
+        }
+
+        setId("win-Materiales");
+        but_aceptarP = new Button(nombreBoton1, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                if (nuevo == false) {
+                    GuardarEditarMaterial();
+                } else {
+                    GuardarNuevoMaterial();
+                }
+            }
+        });
+        but_cancelarP = new Button(nombreBoton2, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                NuevoMaterialForm.this.close();
+                NuevoMaterialForm.this.setModal(false);
+            //formulario = null;
+            }
+        });
+
+        setTitle(tituloTabla);
+        setAutoHeight(true);
+        setAutoWidth(true);
+        setLayout(new FitLayout());
+        setPaddings(WINDOW_PADDING);
+        setButtonAlign(Position.CENTER);
+        addButton(but_aceptarP);
+        addButton(but_cancelarP);
+
+        setCloseAction(Window.CLOSE);
+        setPlain(true);
+        DecoratorPanel decPanel = new DecoratorPanel();
+        decPanel.setTitle("Registro De Colores");
+        formPanel = new FormPanel();
+        tex_codigoM = new TextField("Codigo", "codigo", 100);
+        tex_nombreM = new TextField("Nombre Material", "nombre", 200);
+        text_descripcion = new TextArea("Descripcion", "descripcion");
+
+        tex_marcaM = new TextField("Marca", "marca", 200);
+        hid_idmarca = new Hidden("idmarca", idmarca);
+
+        formPanel.add(tex_marcaM);
+        formPanel.add(tex_nombreM);
+
+        formPanel.add(text_descripcion);
+        formPanel.add(hid_idmarca);
+
+        decPanel.add(formPanel);
+//        add(formPanel);
+        add(decPanel);
+
+        initValues();
+    }
+
+    private void initValues() {
+        tex_codigoM.setValue(codigoL);
+        tex_nombreM.setValue(nombreL);
+        text_descripcion.setValue(descripcionL);
+        tex_marcaM.setValue(nombrem);
+        tex_marcaM.setReadOnly(true);
+
+
+
+    }
+
+    public Button getBut_aceptar() {
+        return but_aceptarP;
+    }
+
+    public Button getBut_cancelar() {
+        return but_cancelarP;
+    }
+
+    public void GuardarNuevoMaterial() {
+        String cadena = "php/Material.php?funcion=insertarMaterial";
+        cadena = cadena + "&" + formPanel.getForm().getValues();
+        final Conector conec = new Conector(cadena, false);
+        Utils.setErrorPrincipal("Guardando el nuevo material", "guardar");
+        try {
+            conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                public void onResponseReceived(Request request, Response response) {
+                    String data = response.getText();
+                    JSONValue jsonValue = JSONParser.parse(data);
+                    JSONObject jsonObject;
+
+                    if ((jsonObject = jsonValue.isObject()) != null) {
+                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                        if (errorR.equalsIgnoreCase("true")) {
+                            Utils.setErrorPrincipal(mensajeR, "mensaje");
+                            close();
+
+                            padre.reload();
+                        } else {
+                            Utils.setErrorPrincipal(mensajeR, "error");
+                        }
+
+                    }
+
+                }
+
+                public void onError(Request request, Throwable exception) {
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            });
+
+        } catch (RequestException ex) {
+            ex.getMessage();
+            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+        }
+
+    }
+
+    public void GuardarEditarMaterial() {
+        String cadena = "php/Material.php?funcion=modificarMaterial&idmaterial=" + idmaterial;
+        cadena =
+                cadena + "&" + formPanel.getForm().getValues();
+        final Conector conec = new Conector(cadena, false);
+        Utils.setErrorPrincipal("Actualizando los cambios en material", "guardar");
+        try {
+            conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                public void onResponseReceived(Request request, Response response) {
+                    String data = response.getText();
+                    JSONValue jsonValue = JSONParser.parse(data);
+                    JSONObject jsonObject;
+
+                    if ((jsonObject = jsonValue.isObject()) != null) {
+                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                        if (errorR.equalsIgnoreCase("true")) {
+                            Utils.setErrorPrincipal(mensajeR, "mensaje");
+                            close();
+
+                            padre.reload();
+                        } else {
+                            Utils.setErrorPrincipal(mensajeR, "error");
+                        }
+
+                    }
+                }
+
+                public void onError(Request request, Throwable exception) {
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            });
+
+        } catch (RequestException ex) {
+            ex.getMessage();
+            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+        }
+    }
+
+    public int redondedo(float f) {
+        int aux = (int) f;
+        if (aux < f) {
+            aux = aux + 1;
+        }
+        return aux;
+    }
+}

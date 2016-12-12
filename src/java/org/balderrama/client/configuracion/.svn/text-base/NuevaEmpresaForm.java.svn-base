@@ -1,0 +1,543 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.configuracion;
+
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
+import com.gwtext.client.core.Position;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.util.DateUtil;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.TabPanel;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.DateField;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.form.HtmlEditor;
+import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.layout.*;
+import org.balderrama.client.util.Conector;
+import org.balderrama.client.util.Utils;
+
+public class NuevaEmpresaForm implements EntryPoint {
+
+    private DateField dat_fecha;
+    private DateField dat_fecha1;
+    private ComboBox com_estadoC;
+    private ComboBox com_comisionC;
+
+    private ComboBox com_ciudadC;
+    private ComboBox com_cobradorC;
+    private String[] estadoM;
+    private String[] comisionM;
+
+    private Object[][] ciudadM;
+   private Object[][] cobradorM;
+    private TextField codigo;
+    private TextField nombre;
+    private TextField direccion;
+    private TextField telefono;
+    private TextField nombreResponsable;
+    private TextField apellidoResponsable;
+     private TextField nitResponsable;
+    private TextField telefonoResponasable;
+    private TextField celularResponsable;
+    private TextField emailResponsable;
+    private TextField direccionresponsable;
+    private TextField comisionResponsable;
+//    private TextField telefonoFijo;
+//    private TextField telefonoTrabajo;
+//    private TextField telefonoCelular;
+    private TextField saldoAnterior;
+    private TextField saldoActual;
+    private TextField planillaActual;
+    private TextField tipoPlanilla;
+   // private TextField empleadoAsignado;
+
+    private TextField fax;
+
+    private Button but_aceptarP;
+    private Button but_cancelarP;
+
+    private Empresa padre;
+
+
+   private String idempresaD;
+   private String codigoD;
+   private String nombreD;
+   private String direccionD;
+   private String telefonoD;
+   private String faxD;
+   private String fechaD;
+   private String fechaContratod;
+   private String estadoD;
+   private String ciudadD;
+   private String cobradorD;
+   private String nombresD;
+   private String apellidosD;
+    private String nitD;
+   private String telefonoResD;
+   private String celularResD;
+   private String emailD;
+   private String direccionResD;
+   private String comisionD;
+//   private String telefonoFijoD;
+//   private String telefonoTrabajoD;
+//   private String telefonoCelD;
+ private String saldoAnteriorD;
+   private String saldoActualD;
+   private String planillaActualD;
+    private String tipoPlanillaD;
+   private String empleadoAsignadoD;
+
+   private boolean nuevo;
+   // private Object window;
+    
+
+    public NuevaEmpresaForm(String idempresa,Object[][] ciudades,Object[][] cobrador, String codigo,String nombre, String direccion,String telefono,String fax,String fecha, String fechaContrato, String estado,String ciudad, String nombres, String apellidos,String nit, String telefonoRes, String celularRes, String email, String direccionRes, String comision, String saldoAnterior, String saldoActual, String planillaActual, String tipoPlanilla,String empleadoAsignado,Empresa padre)
+   // public NuevaEmpresaForm(String idempresa,Object[][] ciudades, String codigo,String nombre, String direccion,String telefono,String fax,String fecha, String fechaContrato, String estado,String ciudad, String nombres, String apellidos, String telefonoRes, String celularRes, String email, String direccionRes, String comision, String saldoAnterior, String saldoActual, String planillaActual, String tipoPlanilla,String empleadoAsignado,Empresa padre)
+
+    {
+
+        this.idempresaD = idempresa;
+       this.ciudadM = ciudades;
+        this.cobradorM = cobrador;
+        this.codigoD = codigo;
+        this.nombreD = nombre;
+        this.direccionD = direccion;
+        this.telefonoD = telefono;
+        this.faxD  = fax;
+        this.fechaD = fecha;
+        this.fechaContratod = fechaContrato;
+        this.estadoD = estado;
+         this.ciudadD = ciudad;
+        this.nombresD = nombres;
+        this.apellidosD = apellidos;
+         this.nitD = nit;
+        this.telefonoResD = telefonoRes;
+        this.celularResD = celularRes;
+        this.emailD = email;
+        this.direccionResD = direccionRes;
+        this.comisionD = comision;
+        this.saldoAnteriorD = saldoAnterior;
+        this.saldoActualD = saldoActual;
+        this.planillaActualD = planillaActual;
+        this.tipoPlanillaD = tipoPlanilla;
+ this.empleadoAsignadoD = empleadoAsignado;
+
+        this.padre = padre;
+
+
+
+        String nombreBoton1 = "Registrar";
+        String nombreBoton2 = "Cancelar";
+//        String tituloTabla = "Registar nueva Modelo";
+
+        if (idempresa != null) {
+            nombreBoton1 = "Modificar";
+//            tituloTabla = "Editar Empresa";
+            nuevo = false;
+        } else {
+            this.idempresaD = "nuevo";
+            nuevo = true;
+
+        }
+
+//        setId("win-Modelos");
+        but_aceptarP = new Button(nombreBoton1, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                if (nuevo == false) {
+                    GuardarEditarAlmacen();
+                } else {
+                    GuardarNuevoAlmacen();
+                }
+            }
+        });
+        but_cancelarP = new Button(nombreBoton2, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+               NuevaEmpresaForm.this.closeTabCompraDirecta();
+             //  NuevaEmpresaForm.this.setModal(false);
+              //  NuevaEmpresaForm.this.
+//                NuevaEmpresaForm.this.setModal(false);
+            //formulario = null;
+             
+            }
+        });
+    }
+
+
+    public void onModuleLoad() {
+        Panel panel = new Panel();
+        panel.setBorder(false);
+        panel.setPaddings(15);
+
+        Window window = new Window();
+        window.setTitle("Empresa");
+         window.setCloseAction(Window.HIDE);
+       panel.setBorder(false);
+        panel.setPaddings(15);
+//setCloseAction(Window.CLOSE);
+        FormPanel formPanel = new FormPanel();
+        formPanel.setLabelAlign(Position.TOP);
+        formPanel.setTitle("Informacion");
+        formPanel.setPaddings(5);
+        formPanel.setWidth(600);
+
+        Panel topPanel = new Panel();
+        topPanel.setLayout(new ColumnLayout());
+        topPanel.setBorder(false);
+
+        Panel firstColumn = new Panel();
+        firstColumn.setLayout(new FormLayout());
+        firstColumn.setBorder(false);
+
+
+
+
+        //SimpleStore cotegoriaStore  = new SimpleStore("estados", estadoM);
+com_cobradorC = new ComboBox("Cobrador", "empleado");
+        SimpleStore cotegoriaStore1 = new SimpleStore(new String[]{"idempleado", "nombre"}, cobradorM);
+        cotegoriaStore1.load();
+        com_cobradorC.setMinChars(1);
+        com_cobradorC.setFieldLabel("Cobrador");
+        com_cobradorC.setStore(cotegoriaStore1);
+        com_cobradorC.setValueField("idempleado");
+        com_cobradorC.setDisplayField("nombre");
+        com_cobradorC.setForceSelection(true);
+        com_cobradorC.setMode(ComboBox.LOCAL);
+        com_cobradorC.setEmptyText("Buscar Cobrador");
+        com_cobradorC.setLoadingText("buscando...");
+        com_cobradorC.setTypeAhead(true);
+        com_cobradorC.setSelectOnFocus(true);
+        com_cobradorC.setWidth(200);
+
+        com_cobradorC.setHideTrigger(true);
+
+
+
+        firstColumn.add(codigo = new TextField("codigo", "codigo",100));
+        firstColumn.add(nombre = new TextField("Nombre", "nombre",230));
+        firstColumn.add(direccion = new TextField("Direccion", "direccion",230));
+        firstColumn.add(telefono = new TextField("Telefono", "telefono",100));
+      firstColumn.add(com_cobradorC, new AnchorLayoutData("90%"));
+
+        topPanel.add(firstColumn, new ColumnLayoutData(0.5));
+
+        Panel secondColumn = new Panel();
+        secondColumn.setLayout(new FormLayout());
+        secondColumn.setBorder(false);
+
+        secondColumn.add(fax = new TextField("Fax", "fax",100));
+
+
+        dat_fecha = new DateField("Fecha", "d-m-Y");
+        dat_fecha1 = new DateField("Fecha Contrato", "d-m-Y");
+
+        estadoM = new String[]{"ACTIVO", "INACTIVO", "PENDIENTE"};
+
+        com_estadoC = new ComboBox("Estado", "estado");
+        SimpleStore estadosStore = new SimpleStore("estados", estadoM);
+        estadosStore.load();
+        com_estadoC.setDisplayField("estados");
+        com_estadoC.setStore(estadosStore);
+
+
+        //SimpleStore cotegoriaStore  = new SimpleStore("estados", estadoM);
+com_ciudadC = new ComboBox("Ciudad", "ciudad");
+        SimpleStore cotegoriaStore = new SimpleStore(new String[]{"idciudad", "nombre"}, ciudadM);
+        cotegoriaStore.load();
+        com_ciudadC.setMinChars(1);
+        com_ciudadC.setFieldLabel("Ciudad");
+        com_ciudadC.setStore(cotegoriaStore);
+        com_ciudadC.setValueField("idciudad");
+        com_ciudadC.setDisplayField("nombre");
+        com_ciudadC.setForceSelection(true);
+        com_ciudadC.setMode(ComboBox.LOCAL);
+        com_ciudadC.setEmptyText("Buscar Ciudad");
+        com_ciudadC.setLoadingText("buscando...");
+        com_ciudadC.setTypeAhead(true);
+        com_ciudadC.setSelectOnFocus(true);
+        com_ciudadC.setWidth(200);
+
+        com_ciudadC.setHideTrigger(true);
+
+
+        secondColumn.add(dat_fecha, new AnchorLayoutData("70%"));
+        secondColumn.add(dat_fecha1, new AnchorLayoutData("70%"));
+        secondColumn.add(com_estadoC, new AnchorLayoutData("70%"));
+        secondColumn.add(com_ciudadC, new AnchorLayoutData("70%"));
+        topPanel.add(secondColumn, new ColumnLayoutData(0.5));
+
+        formPanel.add(topPanel);
+
+        TabPanel tabPanel = new TabPanel();
+        tabPanel.setPlain(true);
+        tabPanel.setActiveTab(0);
+        tabPanel.setHeight(410);
+
+        Panel firstTab = new Panel();
+        firstTab.setTitle("Detalle Responsable");
+        firstTab.setLayout(new FormLayout());
+        firstTab.setPaddings(10);
+ comisionM = new String[]{"1", "2", "5", "10"};
+
+        com_comisionC = new ComboBox("Comision (%)", "comision");
+        SimpleStore comisionStore = new SimpleStore("comision", comisionM);
+        comisionStore.load();
+        com_comisionC.setDisplayField("comision");
+        com_comisionC.setStore(comisionStore);
+
+        firstTab.add(nombreResponsable = new TextField("Nombre(s)", "nombre", 230));
+        firstTab.add(apellidoResponsable = new TextField("Apellido(s)", "apellido", 230));
+        firstTab.add(nitResponsable = new TextField("Nit", "nit", 100));
+        firstTab.add(telefonoResponasable = new TextField("Telefono", "telefono", 100));
+        firstTab.add(celularResponsable = new TextField("Celular", "celular", 100));
+        firstTab.add(emailResponsable = new TextField("Email", "email", 230));
+        firstTab.add(direccionresponsable = new TextField("Direccion", "direccion", 230));
+        //firstTab.add(comisionResponsable = new TextField("Comision", "comision", 230));
+        firstTab.add(com_comisionC, new AnchorLayoutData("15%"));
+
+        tabPanel.add(firstTab);
+
+        Panel secondTab = new Panel();
+        secondTab.setTitle("Estado Cuentas");
+        secondTab.setLayout(new FormLayout());
+        secondTab.setPaddings(10);
+
+        secondTab.add(saldoAnterior = new TextField("Saldo Anterior", "saldoant", 230));
+        secondTab.add(saldoActual = new TextField("saldo Actual", "saldoac", 230));
+        secondTab.add(planillaActual = new TextField("Planilla Actual", "plaactual", 230));
+       secondTab.add(tipoPlanilla = new TextField("Tipo Planilla", "tipopla", 230));
+        //secondTab.add(empleadoAsignado = new TextField("Cobrador", "cobradpr", 230));
+
+        tabPanel.add(secondTab);
+
+        Panel thirdPanel = new Panel();
+        thirdPanel.setTitle("Detalle");
+        thirdPanel.setLayout(new FitLayout());
+        thirdPanel.add(new HtmlEditor("observacion"));
+        tabPanel.add(thirdPanel);
+
+        formPanel.add(tabPanel);
+        
+        formPanel.addButton(but_aceptarP);
+        formPanel.addButton(but_cancelarP);
+        panel.add(formPanel);
+
+        window.add(panel);
+        window.show();
+        initValues();
+    }
+
+    public void initValues() {
+
+
+        codigo.setValue(codigoD);
+        nombre.setValue(nombreD);
+        direccion.setValue(direccionD);
+        telefono.setValue(telefonoD);
+        com_cobradorC.setValue(empleadoAsignadoD);
+
+        fax.setValue(faxD);
+        dat_fecha.setValue(fechaD);
+        dat_fecha1.setValue(fechaContratod);
+        com_estadoC.setValue(estadoD);
+        com_ciudadC.setValue(ciudadD);
+       // com_cobradorC.setValue(empleadoAsignadoD);
+        nombreResponsable.setValue(nombresD);
+        apellidoResponsable.setValue(apellidosD);
+        nitResponsable.setValue(nitD);
+
+        telefonoResponasable.setValue(telefonoResD);
+        celularResponsable.setValue(celularResD);
+        emailResponsable.setValue(emailD);
+        direccionresponsable.setValue(direccionResD);
+      //  comisionResponsable.setValue(comisionD);
+        com_comisionC.setValue(comisionD);
+        saldoAnterior.setValue(saldoAnteriorD);
+        saldoActual.setValue(saldoActualD);
+        planillaActual.setValue(planillaActualD);
+        tipoPlanilla.setValue(tipoPlanillaD);
+     //   empleadoAsignado.setValue(empleadoAsignadoD);
+    }
+
+      public void GuardarNuevoAlmacen() {
+        String codigoempD = codigo.getValueAsString();
+        String nombreempD = nombre.getValueAsString();
+        String direccionempD = direccion.getValueAsString();
+        String telefonoempD = telefono.getText();
+        String idempleado = com_cobradorC.getValueAsString();
+        String faxempD = fax.getValueAsString();
+         String fecha = DateUtil.format(dat_fecha.getValue(), "Y-m-d");
+         String fecha1 = DateUtil.format(dat_fecha1.getValue(), "Y-m-d");
+        String estadoempD = com_estadoC.getValueAsString();
+        String idciudad = com_ciudadC.getValueAsString();
+        String nombreresp = nombreResponsable.getText();
+        String aperesp = apellidoResponsable.getText();
+        String nitresp = nitResponsable.getText();
+        String telefresp = telefonoResponasable.getText();
+        String celresp = celularResponsable.getText();
+        String mailresp = emailResponsable.getText();
+        String dirresp = direccionresponsable.getText();
+        String comisresp = com_comisionC.getValueAsString();
+        String saldoant = saldoAnterior.getValueAsString();
+        String saldoact = saldoActual.getText();
+        String planilla = planillaActual.getText();
+         String tipoplanilla = tipoPlanilla.getText();
+            JSONObject compraObject = new JSONObject();
+            compraObject.put("codigo", new JSONString(codigoempD));
+            compraObject.put("nombre", new JSONString(nombreempD));
+            compraObject.put("direccion", new JSONString(direccionempD));
+            compraObject.put("telefono", new JSONString(telefonoempD));
+            compraObject.put("idempleado", new JSONString(idempleado));
+            compraObject.put("fax", new JSONString(faxempD));
+            compraObject.put("fecha", new JSONString(fecha));
+            compraObject.put("fecha1", new JSONString(fecha1));
+            compraObject.put("estado", new JSONString(estadoempD));
+            compraObject.put("idciudad", new JSONString(idciudad));
+            compraObject.put("nombreresp", new JSONString(nombreresp));
+            compraObject.put("aperesp", new JSONString(aperesp));
+             compraObject.put("nitresp", new JSONString(nitresp));
+            compraObject.put("telefresp", new JSONString(telefresp));
+            compraObject.put("celresp", new JSONString(celresp));
+            compraObject.put("mailresp", new JSONString(mailresp));
+            compraObject.put("dirresp", new JSONString(dirresp));
+            compraObject.put("comisresp", new JSONString(comisresp));
+            compraObject.put("saldoant", new JSONString(saldoant));
+            compraObject.put("saldoact", new JSONString(saldoact));
+            compraObject.put("planilla", new JSONString(planilla));
+            compraObject.put("tipoplanilla", new JSONString(tipoplanilla));
+            JSONObject resultado = new JSONObject();
+            resultado.put("empresa", compraObject);
+            String datos = "resultado=" + resultado.toString();
+            Utils.setErrorPrincipal("registrando", "cargar");
+            String url = "./php/Empresa.php?funcion=GuardarNuevaEmpresa&" + datos;
+            final Conector conec = new Conector(url, false, "POST");
+      try {
+            conec.getRequestBuilder().sendRequest(datos, new RequestCallback() {
+
+                public void onResponseReceived(Request request, Response response) {
+                    String data = response.getText();
+                    JSONValue jsonValue = JSONParser.parse(data);
+                    JSONObject jsonObject;
+                    if ((jsonObject = jsonValue.isObject()) != null) {
+                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                        if (errorR.equalsIgnoreCase("true")) {
+                             Utils.setErrorPrincipal(mensajeR, "mensaje");
+                           // this.destroy();
+                            padre.reload();
+                         closeTabCompraDirecta();
+                        } else {
+                            com.google.gwt.user.client.Window.alert("No se puede realizar ");
+                            Utils.setErrorPrincipal(mensajeR, "error");
+                        }
+                    } else {
+                        com.google.gwt.user.client.Window.alert("error 1001");
+                        Utils.setErrorPrincipal("Error en la respuesta del servidor", "error");
+                    }
+                }
+                public void onError(Request request, Throwable exception) {
+                    //Window.alert("Ocurrio un error al conectar con el servidor ");
+                    com.google.gwt.user.client.Window.alert("error 1002");
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            });
+        } catch (RequestException ex) {
+                Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+            }
+        //
+
+    }
+   public void closeTabCompraDirecta() {
+//        window.setCloseAction(Window.HIDE);
+//      window.this.clear();
+//            TraspasoWindow.this.destroy();
+//            TraspasoWindow.this.close();
+//       formPanel.
+//        listaCompra.getTap_panel().remove("tab-" + COMPRA_DIRECTA_TABBED + idpanel);
+//  //      listaCompra.reload();
+    }
+
+    public void GuardarEditarAlmacen() {
+         JSONObject usuarioSoU = new JSONObject();
+                    usuarioSoU.put("idempresa", new JSONString(idempresaD));
+                    usuarioSoU.put("codigo", new JSONString(codigo.getText()));
+                    usuarioSoU.put("nombre", new JSONString(nombre.getText()));
+                    usuarioSoU.put("direccion", new JSONString(direccion.getText()));
+                    usuarioSoU.put("telefono", new JSONString(telefono.getText()));
+                    usuarioSoU.put("idcobrador", new JSONString(com_cobradorC.getText()));
+                    usuarioSoU.put("fax", new JSONString(fax.getText()));
+                    usuarioSoU.put("fecha", new JSONString(dat_fecha.getText()));
+                    usuarioSoU.put("fecha1", new JSONString(dat_fecha1.getText()));
+                   usuarioSoU.put("estado", new JSONString(com_estadoC.getText()));
+                    usuarioSoU.put("idciudad", new JSONString(com_ciudadC.getText()));
+                    usuarioSoU.put("responsable", new JSONString(nombreResponsable.getText()));
+                    usuarioSoU.put("apellidores", new JSONString(apellidoResponsable.getText()));
+                    usuarioSoU.put("nitres", new JSONString(nitResponsable.getText()));
+                    usuarioSoU.put("telefres", new JSONString(telefonoResponasable.getText()));
+                    usuarioSoU.put("celres", new JSONString(celularResponsable.getText()));
+                    usuarioSoU.put("mailres", new JSONString(emailResponsable.getText()));
+                    usuarioSoU.put("dirres", new JSONString(direccionresponsable.getText()));
+                    usuarioSoU.put("comision", new JSONString(com_comisionC.getText()));
+                    usuarioSoU.put("saldoant", new JSONString(saldoAnterior.getText()));
+                    usuarioSoU.put("saldoactual", new JSONString(saldoActual.getText()));
+                    usuarioSoU.put("planillaactual", new JSONString(planillaActual.getText()));
+                    usuarioSoU.put("tipoplanilla", new JSONString(tipoPlanilla.getText()));
+
+                    String datos = "resultado=" + usuarioSoU.toString();
+                    String enlace = "php/Empresa.php?funcion=modificarempresa&" + datos;
+                    Utils.setErrorPrincipal("Guardando los cambios de empresa", "cargar");
+                    final Conector conec = new Conector(enlace, false, "GET");
+                    try {
+                        conec.getRequestBuilder().sendRequest(datos, new RequestCallback() {
+
+                            public void onResponseReceived(Request request, Response response) {
+
+                                String data = response.getText();
+                                JSONValue jsonValue = JSONParser.parse(data);
+                                JSONObject jsonObject;
+                                if ((jsonObject = jsonValue.isObject()) != null) {
+                                    String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                    String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                    if (errorR.equalsIgnoreCase("true")) {
+                                        padre.buscarSegunParametros();
+                                        Utils.setErrorPrincipal(mensajeR, "mensaje");
+
+//                                        EditarClienteForm.this.destroy();
+//                                        EditarClienteForm.this.close();
+
+                                    } else {
+                                        Utils.setErrorPrincipal(mensajeR, "error");
+                                    }
+                                }
+                            }
+
+                            public void onError(Request request, Throwable exception) {
+                                Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                            }
+                        });
+                    } catch (RequestException ex) {
+                        Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                    }
+    }
+
+
+
+}

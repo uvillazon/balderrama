@@ -1,0 +1,58 @@
+-- phpMyAdmin SQL Dump
+-- version 2.11.5
+-- http://www.phpmyadmin.net
+--
+-- Servidor: localhost
+-- Tiempo de generación: 18-04-2011 a las 00:18:16
+-- Versión del servidor: 5.0.51
+-- Versión de PHP: 5.2.5
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- Base de datos: `admin`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `categoriafuncion`
+--
+
+CREATE TABLE `categoriafuncion` (
+  `idcategoriafuncion` char(10) NOT NULL,
+  `nombre` varchar(50) default NULL,
+  `codigo` varchar(20) default NULL,
+  `seguridad` varchar(100) default NULL,
+  `estado` varchar(20) default NULL,
+  PRIMARY KEY  (`idcategoriafuncion`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `categoriafuncion`
+--
+
+INSERT INTO `categoriafuncion` (`idcategoriafuncion`, `nombre`, `codigo`, `seguridad`, `estado`) VALUES
+('caf1000', 'Archivos', NULL, NULL, 'Activo'),
+('caf1001', 'Configuracion', NULL, NULL, 'Activo'),
+('caf1002', 'Pedidos', NULL, NULL, 'Activo'),
+('caf1003', 'Muestras', NULL, NULL, 'Inactivo'),
+('caf1004', 'Venta -Detalle', NULL, NULL, 'Activo'),
+('caf1005', 'Venta-Mayor', NULL, NULL, 'Activo'),
+('caf1006', 'SistemaCredito', NULL, NULL, 'Inactivo'),
+('caf1008', 'Almacenes', NULL, NULL, 'Activo'),
+('caf1009', 'Muestras', NULL, NULL, 'Activo'),
+('caf1010', 'Reportes', NULL, NULL, 'Activo'),
+('caf1011', 'Inventario-Detalle', NULL, NULL, 'Activo'),
+('caf1012', 'Inventario-Mayor', NULL, NULL, 'Activo'),
+('caf1013', 'Herramientas', NULL, NULL, 'Activo'),
+('caf1014', 'Configuracion De Articulos', NULL, NULL, 'Activo'),
+('caf1015', 'Cobros', NULL, NULL, 'Activo'),
+('caf1016', 'Ventas - Credito', NULL, NULL, 'Activo'),
+('caf1017', 'Planillas', NULL, NULL, 'Activo'),
+('caf1018', 'Consultas', NULL, NULL, 'Activo'),
+('caf1019', 'Control Etapas', NULL, NULL, 'Activo'),
+('caf1020', 'Procesos', NULL, NULL, 'Activo'),
+('caf1021', 'Reportes', NULL, NULL, 'Inactivo'),
+('caf1022', 'Mantenimiento', NULL, NULL, 'Activo'),
+('caf1023', 'Ingresos Tienda/Cod Barras', NULL, NULL, 'Activo');

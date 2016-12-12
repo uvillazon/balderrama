@@ -1,0 +1,1308 @@
+<?php
+function BuscarMarcaEstilo(){
+    $categorias = ListarMarcas('', '', '', '', '', '',"",true);
+    if($categorias['error'] == true)
+    {
+        $value['marcas'] = "true";
+        $value['marcaM'] = $categorias['resultado'];
+    }
+$empleado = ListarEstiloMarca('', '', '', '', '', '',"",true);
+
+    if($empleado['error'] == true)
+    {
+        $value['estilos'] = "true";
+        $value['estiloM'] = $empleado['resultado'];
+
+
+    }
+    $dev['mensaje'] = "Se cargo el formulario";
+    $dev['error']   = "true";
+    $dev['resultado'] = $value;
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function buscarlistamodelos($idmarca,$start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = "true")
+{
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+  $sqlmarca = "
+SELECT
+  mad.opcion
+FROM
+  `marcas` mad
+WHERE
+  mad.idmarca = '$idmarca'
+";
+
+    $opcionA = findBySqlReturnCampoUnique($sqlmarca, true, true, "opcion");
+   $opcion = $opcionA['resultado'];
+        $sql = "
+SELECT mo.idmodelo, mo.idmarca, mo.codigo, mo.numero, mo.precio, co.codigo AS coleccion,mo.stylename, mo.idcoleccion, mo.idlinea, mo.detalle, mo.imagen, li.codigo AS linea, 0 AS '33', 0 AS '34', 0 AS '35', 0 AS '36', 0 AS '37', 0 AS '38', 0 AS '39', 0 AS '40', 0 AS '41', 0 AS '42', 0 AS '43', 0 AS '44', 0 AS '45', 1 AS totalcajas, 0 AS totalpares
+FROM `modelos` mo, `lineas` li,`coleccion` co
+WHERE mo.idlinea = li.idlinea AND mo.idcoleccion = co.idcoleccion
+AND mo.idmarca = '$idmarca';
+";
+ $select ="mo.idmodelo, mo.idmarca, mo.codigo, mo.numero, mo.precio, co.codigo AS coleccion, mo.stylename, mo.idcoleccion, mo.idlinea, mo.detalle, mo.imagen, li.codigo AS linea";
+    $from = "`modelos` mo, `lineas` li,`coleccion` co";
+    $where = "mo.idlinea = li.idlinea AND mo.idcoleccion = co.idcoleccion AND mo.idmarca = '$idmarca'";
+        if($opcion == "1" || $opcion == "2"|| $opcion == "3"|| $opcion == "4")
+    {
+        $select .= ",0 AS '14',0 AS '15',0 AS '16',0 AS '17',0 AS '18',0 AS '19',0 AS '20',0 AS '21',0 AS '22',0 AS '23',0 AS '24',0 AS '25',0 AS '26',0 AS '27',0 AS '28',0 AS '29',0 AS '30',0 AS '31',0 AS '32', 0 AS '33', 0 AS '34', 0 AS '35', 0 AS '36', 0 AS '37', 0 AS '38', 1 AS totalcajas, 0 AS totalpares";
+
+    }
+if($opcion == "5" || $opcion == "6"|| $opcion == "7"|| $opcion == "8")
+    {
+      //  $where .= " AND pc.no_planilla ='$planilla' ";
+        $select .= " ,0 AS '33', 0 AS '34', 0 AS '35', 0 AS '36', 0 AS '37', 0 AS '38', 0 AS '39', 0 AS '40', 0 AS '41', 0 AS '42', 0 AS '43', 0 AS '44', 0 AS '45', 1 AS totalcajas, 0 AS totalpares ";
+    }
+  if($opcion == "10" || $opcion == "11"|| $opcion == "12")
+    {
+      //  $where .= " AND pc.no_planilla ='$planilla' ";
+        $select .= " ,0 AS '1', 0 AS '1m', 0 AS '2', 0 AS '2m', 0 AS '3', 0 AS '3m', 0 AS '4', 0 AS '4m', 0 AS '5', 0 AS '5m', 0 AS '6', 0 AS '6m', 0 AS '7',0 AS '7m',0 AS '8',0 AS '8m',0 AS '9',0 AS '9m',0 AS '10',0 AS '10m',0 AS '11',0 AS '11m',0 AS '12', 1 AS totalcajas, 0 AS totalpares ";
+    }
+    //    echo $sql;
+ if($star == 0 && $limit == 0)
+    {
+        $sql = "SELECT ".$select." FROM ".$from. " WHERE ".$where." ".$order;
+    }
+    else
+    {
+        $sql = "SELECT DISTINCT ".$select." FROM ".$from. " WHERE ".$where." ".$order." LIMIT $start,$limit ";
+    }
+          // echo $sql;
+    $devT = getTablaToArrayOfSQL($sql);
+    $dev['error'] = $devT['error'];
+    $dev['mensaje'] = $devT['mensaje'];
+    $dev['resultado'] = $devT['resultado'];
+    $dev['totalCount'] = $devT['totalCount'];
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+    }
+}
+function buscarlistamodelo($idmarca,$idmodelo,$start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = "true")
+{
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+//           $sql = "
+//SELECT mo.idmodelo, mo.idmarca, mo.codigo, mo.numero, mo.precio, mo.stylename, mo.idcoleccion, mo.idlinea, mo.detalle, mo.imagen, li.codigo AS linea, 0 AS '33', 0 AS '34', 0 AS '35', 0 AS '36', 0 AS '37', 0 AS '38', 0 AS '39', 0 AS '40', 0 AS '41', 0 AS '42', 0 AS '43', 0 AS '44', 0 AS '45', 1 AS totalcajas, 0 AS totalpares
+//FROM `modelos` mo, `lineas` li
+//WHERE mo.idlinea = li.idlinea
+//AND mo.idmarca = '$idmarca' AND mo.codigo LIKE '%".$idmodelo."%'";
+ $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+  $sqlmarca = "
+SELECT
+  mad.opcion
+FROM
+  `marcas` mad
+WHERE
+  mad.idmarca = '$idmarca'
+";
+
+    $opcionA = findBySqlReturnCampoUnique($sqlmarca, true, true, "opcion");
+   $opcion = $opcionA['resultado'];
+//        $sql = "
+//SELECT mo.idmodelo, mo.idmarca, mo.codigo, mo.numero, mo.precio, mo.stylename, mo.idcoleccion, mo.idlinea, mo.detalle, mo.imagen, li.codigo AS linea, 0 AS '33', 0 AS '34', 0 AS '35', 0 AS '36', 0 AS '37', 0 AS '38', 0 AS '39', 0 AS '40', 0 AS '41', 0 AS '42', 0 AS '43', 0 AS '44', 0 AS '45', 1 AS totalcajas, 0 AS totalpares
+//FROM `modelos` mo, `lineas` li
+//WHERE mo.idlinea = li.idlinea
+//AND mo.idmarca = '$idmarca' AND mo.codigo LIKE '%".$idmodelo."%';
+//";
+ $select ="mo.idmodelo, mo.idmarca, mo.codigo, mo.numero, mo.precio,co.codigo AS coleccion, mo.stylename, mo.idcoleccion, mo.idlinea, mo.detalle, mo.imagen, li.codigo AS linea";
+    $from = "`modelos` mo, `lineas` li,`coleccion` co";
+    $where = "mo.idlinea = li.idlinea AND mo.idcoleccion = co.idcoleccion AND mo.idmarca = '$idmarca' AND mo.codigo LIKE '%".$idmodelo."%'";
+        if($opcion == "1" || $opcion == "2"|| $opcion == "3"|| $opcion == "4")
+    {
+        $select .= ",0 AS '14',0 AS '15',0 AS '16',0 AS '17',0 AS '18',0 AS '19',0 AS '20',0 AS '21',0 AS '22',0 AS '23',0 AS '24',0 AS '25',0 AS '26',0 AS '27',0 AS '28',0 AS '29',0 AS '30',0 AS '31',0 AS '32', 0 AS '33', 0 AS '34', 0 AS '35', 0 AS '36', 0 AS '37', 0 AS '38', 1 AS totalcajas, 0 AS totalpares";
+
+    }
+if($opcion == "5" || $opcion == "6"|| $opcion == "7"|| $opcion == "8")
+    {
+      //  $where .= " AND pc.no_planilla ='$planilla' ";
+        $select .= " ,0 AS '33', 0 AS '34', 0 AS '35', 0 AS '36', 0 AS '37', 0 AS '38', 0 AS '39', 0 AS '40', 0 AS '41', 0 AS '42', 0 AS '43', 0 AS '44', 0 AS '45', 1 AS totalcajas, 0 AS totalpares ";
+    }
+  if($opcion == "10" || $opcion == "11"|| $opcion == "12")
+    {
+      //  $where .= " AND pc.no_planilla ='$planilla' ";
+        $select .= " ,0 AS '1', 0 AS '1m', 0 AS '2', 0 AS '2m', 0 AS '3', 0 AS '3m', 0 AS '4', 0 AS '4m', 0 AS '5', 0 AS '5m', 0 AS '6', 0 AS '6m', 0 AS '7',0 AS '7m',0 AS '8',0 AS '8m',0 AS '9',0 AS '9m',0 AS '10',0 AS '10m',0 AS '11',0 AS '11m',0 AS '12', 1 AS totalcajas, 0 AS totalpares ";
+    }
+    //    echo $sql;
+ if($star == 0 && $limit == 0)
+    {
+        $sql = "SELECT ".$select." FROM ".$from. " WHERE ".$where." ".$order;
+    }
+    else
+    {
+        $sql = "SELECT DISTINCT ".$select." FROM ".$from. " WHERE ".$where." ".$order." LIMIT $start,$limit ";
+    }
+          // echo $sql;
+    $devT = getTablaToArrayOfSQL($sql);
+    $dev['error'] = $devT['error'];
+    $dev['mensaje'] = $devT['mensaje'];
+    $dev['resultado'] = $devT['resultado'];
+    $dev['totalCount'] = $devT['totalCount'];
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+    }
+}
+function buscarlistaestilo($idmarca,$idestilo,$start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = "true")
+{
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+//           $sql = "
+//SELECT mo.idmodelo, mo.idmarca, mo.codigo, mo.numero, mo.precio, mo.stylename, mo.idcoleccion, mo.idlinea, mo.detalle, mo.imagen, li.codigo AS linea, 0 AS '33', 0 AS '34', 0 AS '35', 0 AS '36', 0 AS '37', 0 AS '38', 0 AS '39', 0 AS '40', 0 AS '41', 0 AS '42', 0 AS '43', 0 AS '44', 0 AS '45', 1 AS totalcajas, 0 AS totalpares
+//FROM `modelos` mo, `lineas` li
+//WHERE mo.idlinea = li.idlinea
+//AND mo.idmarca = '$idmarca' AND mo.codigo LIKE '%".$idmodelo."%'";
+ $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+  $sqlmarca = "
+SELECT
+  mad.opcion
+FROM
+  `marcas` mad
+WHERE
+  mad.idmarca = '$idmarca'
+";
+
+    $opcionA = findBySqlReturnCampoUnique($sqlmarca, true, true, "opcion");
+   $opcion = $opcionA['resultado'];
+//        $sql = "
+//SELECT mo.idmodelo, mo.idmarca, mo.codigo, mo.numero, mo.precio, mo.stylename, mo.idcoleccion, mo.idlinea, mo.detalle, mo.imagen, li.codigo AS linea, 0 AS '33', 0 AS '34', 0 AS '35', 0 AS '36', 0 AS '37', 0 AS '38', 0 AS '39', 0 AS '40', 0 AS '41', 0 AS '42', 0 AS '43', 0 AS '44', 0 AS '45', 1 AS totalcajas, 0 AS totalpares
+//FROM `modelos` mo, `lineas` li
+//WHERE mo.idlinea = li.idlinea
+//AND mo.idmarca = '$idmarca' AND mo.codigo LIKE '%".$idmodelo."%';
+//";
+ $select ="mo.idmodelo, mo.idmarca, mo.codigo, mo.numero, mo.precio, co.codigo AS coleccion,mo.stylename, mo.idcoleccion, mo.idlinea, mo.detalle, mo.imagen, li.codigo AS linea, 0 AS precio";
+    $from = "`modelos` mo, `lineas` li,`coleccion` co";
+    $where = "mo.idlinea = li.idlinea AND mo.idcoleccion = co.idcoleccion AND mo.idmarca = '$idmarca' AND li.idestilo = '$idestilo'";
+        if($opcion == "1" || $opcion == "2"|| $opcion == "3"|| $opcion == "4")
+    {
+        $select .= ",0 AS '14',0 AS '15',0 AS '16',0 AS '17',0 AS '18',0 AS '19',0 AS '20',0 AS '21',0 AS '22',0 AS '23',0 AS '24',0 AS '25',0 AS '26',0 AS '27',0 AS '28',0 AS '29',0 AS '30',0 AS '31',0 AS '32', 0 AS '33', 0 AS '34', 0 AS '35', 0 AS '36', 0 AS '37', 0 AS '38', 1 AS totalcajas, 0 AS totalpares";
+
+    }
+if($opcion == "5" || $opcion == "6"|| $opcion == "7"|| $opcion == "8")
+    {
+      //  $where .= " AND pc.no_planilla ='$planilla' ";
+        $select .= " ,0 AS '33', 0 AS '34', 0 AS '35', 0 AS '36', 0 AS '37', 0 AS '38', 0 AS '39', 0 AS '40', 0 AS '41', 0 AS '42', 0 AS '43', 0 AS '44', 0 AS '45', 1 AS totalcajas, 0 AS totalpares ";
+    }
+  if($opcion == "10" || $opcion == "11"|| $opcion == "12")
+    {
+      //  $where .= " AND pc.no_planilla ='$planilla' ";
+        $select .= " ,0 AS '1', 0 AS '1m', 0 AS '2', 0 AS '2m', 0 AS '3', 0 AS '3m', 0 AS '4', 0 AS '4m', 0 AS '5', 0 AS '5m', 0 AS '6', 0 AS '6m', 0 AS '7',0 AS '7m',0 AS '8',0 AS '8m',0 AS '9',0 AS '9m',0 AS '10',0 AS '10m',0 AS '11',0 AS '11m',0 AS '12', 1 AS totalcajas, 0 AS totalpares ";
+    }
+    //    echo $sql;
+ if($star == 0 && $limit == 0)
+    {
+        $sql = "SELECT ".$select." FROM ".$from. " WHERE ".$where." ".$order;
+    }
+    else
+    {
+        $sql = "SELECT DISTINCT ".$select." FROM ".$from. " WHERE ".$where." ".$order." LIMIT $start,$limit ";
+    }
+      //    echo $sql;
+    $devT = getTablaToArrayOfSQL($sql);
+    $dev['error'] = $devT['error'];
+    $dev['mensaje'] = $devT['mensaje'];
+    $dev['resultado'] = $devT['resultado'];
+    $dev['totalCount'] = $devT['totalCount'];
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+    }
+}
+function AnularIngreso($idingreso, $return)
+{
+
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+  // $proforma = $resultado->venta;
+$emitida="1";
+$fecha = date("Y-m-d");
+ $hora = date("H:i:s");
+
+//echo $idingreso;
+    //$sql[] = "UPDATE planillaemitida SET emitido='$emitida' ,fechaemitida='$fecha' WHERE idempresa = '$idempresa' AND no_planilla='$planilla' AND emitido='0'";
+
+$nuevoes = "INACTIVO";
+    $sql[] = "UPDATE adicioningresotienda SET  estado= '$nuevoes'WHERE idingreso='$idingreso' AND estado='ACTIVO'";
+
+$respuesta=$idingreso;
+
+
+    //       MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+
+       $dev['mensaje'] = "Se anulo correctamente";
+        $dev['error'] = "true";
+        $dev['resultado'] ="";
+        //$dev['resultado'] = $planilla;
+
+    }
+    else
+    {
+        $dev['mensaje'] = "La planilla puede haber sido ya emitida, intente la reimpresion";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+
+
+}
+
+function ListarIngresosAlmacenExtra($start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = "true")
+{
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+    if($where == null || $where == "")
+    {
+        $sql = "
+SELECT
+  ing.idingreso,
+  ing.codigo,
+  ing.numero,
+  ing.estado,
+  ing.fecha,
+  ing.hora,
+  ing.totalpares,
+  ing.totalbs,
+  ing.responsable,
+  ing.observacion,
+  ing.idmarca,
+  ing.idtienda,
+  tie.codigo AS tienda,
+  usu.nombre AS responsable,
+  mad.nombre AS marca
+FROM
+  adicioningresotienda ing,
+  tiendas tie,
+  usuario usu,
+  marcas mad
+WHERE
+  ing.idtienda = tie.idtienda AND
+  ing.responsable = usu.idusuario AND ing.estado='ACTIVO' AND
+  ing.idmarca = mad.idmarca $order LIMIT $start,$limit;";
+        //        MostrarConsulta($sql);
+    }
+    else
+    {
+        $sql = "
+    SELECT
+  ing.idingreso,
+  ing.codigo,
+  ing.numero,
+  ing.estado,
+  ing.fecha,
+  ing.hora,
+  ing.totalpares,
+  ing.totalbs,
+  ing.responsable,
+  ing.observacion,
+  ing.idmarca,
+  ing.idtienda,
+  tie.codigo AS tienda,
+  usu.nombre AS responsable,
+  mad.nombre AS marca
+FROM
+  adicioningresotienda ing,
+  tiendas tie,
+  usuario usu,
+  marcas mad
+WHERE
+  ing.idtienda = tie.idtienda AND
+  ing.responsable = usu.idusuario AND ing.estado='ACTIVO' AND
+  ing.idmarca = mad.idmarca AND $where $order LIMIT $start,$limit
+         ";
+        //        MostrarConsulta($sql);
+    }
+    //    echo $sql;
+
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    $dev['totalCount'] = allBySql($sql);
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+    }
+}
+function GuardarNuevoIngresoExtra($resultado,$return)
+{
+
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+
+
+    $numeroA = findUltimoID("adicioningresotienda", "numero", true);
+    $numero = $numeroA['resultado'] +1;
+    $idingreso="ing-".$numero;
+
+    $ingreso = $resultado->ingreso;
+    $codigo = $ingreso->numeropedido;
+    $estado = "ACTIVO";
+    $hora = date("H:i:s");
+    $fecha = date("Y-m-d");
+    $totalpares = $ingreso->totalpares;
+    
+    $totalcajas = $ingreso->totalcaja;
+    $responsable = $_SESSION['idusuario'];
+    $idmarca = $ingreso->idmarca;
+    $observacion = $ingreso->descripcion;
+    $idtienda = $_SESSION['idtienda'];
+    $sql[]=getSqlNewAdicionIngresotienda($idingreso, $codigo, $numero, $estado, $fecha, $hora, $totalpares, $totalbs, $responsable, $observacion, $idmarca, $idtienda, false);
+
+    //$sql[]=getSqlNewPedidos($idpedido, $idmarca, $fecha, $observacion, $totalpares, $totalcajas, $numeropedido, $responsable, $estado, $numero, $hora, $np, $return);
+    //    $sql[]=getSqlNewIngresotienda($idingreso, $codigo, $numero, $estado, $fecha, $hora, $totalpares, $totalbs, $responsable, $observacion, $idmarca, $idtienda, false);
+    //    echo $idventa;
+
+    $sqlmarca = "
+SELECT
+  mar.opcion
+FROM
+  marcas mar
+WHERE
+  mar.idmarca = '$idmarca'
+";
+    $calzados = $resultado->calzados;
+    $numeropedidoA = findUltimoNumeroPedidoMarca($idmarca, true);
+    $numero1 = $numeropedidoA['resultado']+1;
+    $sql[] =getSqlNewNumeropedido($idnumero, $idmarca, $numero1, $return);
+    $opcionA = findBySqlReturnCampoUnique($sqlmarca, true, true, "opcion");
+    $opcion = $opcionA['resultado'];
+    $numeroD = findUltimoID("adiciondetalleingreso", "numero", true);
+    $numerodetalle = $numeroD['resultado'] +1;
+    $numerokardexA = findUltimoID("adicionkardextienda", "numero", true);
+    $numerokardex = $numerokardexA['resultado']+1;
+    $numeromovimientokardexA = findUltimoID("adicionmovimientokardextienda", "numero", true);
+    $numeromovimientokardex = $numeromovimientokardexA['resultado']+1;
+
+
+    for($j=0;$j<count($calzados);$j++){
+        $calzado = $calzados[$j];
+        $codigocalzado = $calzado->codigo;
+        $idmodelo = $calzado->idmodelo;
+        $color = $calzado->color;
+        $material = $calzado->material;
+        $precio = $calzado->precio;
+
+//        $material = $calzado->material;
+//        $cliente = $calzado->cliente;
+//        $vendedor = $calzado->vendedor;
+        $linea = $calzado->linea;
+        $numeropares = $calzado->totalpares;
+        $numerocajas = $calzado->totalcajas;
+        $stylename = $calzado->stylename;
+        //        $precio = $calzado->precio;
+        $precio = $calzado->precio;
+        $iddetalleingreso = "din-".$numerodetalle;
+    //   function getSqlNewAdiciondetalleingreso($idmodelo, $totalpares, $totalbs, $idingreso, $iddetalleingreso, $color, $material, $numero, $return){
+       $sql[] =getSqlNewAdicionDetalleingreso($idmodelo, $numeropares, $precio, $idingreso, $iddetalleingreso,  $color, $material,$numerodetalle, false);
+        $numerodetalle++;
+        $codigobarraA = ObtenerCodigoBarraMarcaDetalleAdicion($idmarca , true);
+       // $codigobarraA = ObtenerCodigoBarraMarcaDetalle($idmarca , true);
+
+       $codigobarramcn = $codigobarraA['resultado'];
+        //        $codigobarraA = ObtenerCodigoBarraMarcaDetalle($idmarca , true);
+        //        $codigobarramcn = $codigobarraA['resultado'];
+        //        echo $codigobarramcn;
+        $americano = $calzado->opcion;
+        if($americano == 'americano'){
+            for($i=1;$i<=12;$i++){
+                $cantidad1 = $calzado->$i;
+                $im = $i."m";
+                $cantidadm = $calzado->$im;
+
+                if($cantidad1 !=0){
+
+                    $talla = $i;
+                //    $sql[]= getSqlNewDetallepedidotalla($iddetallepedidotalla, $idmodelo, $talla, $cantidad1, $iddetallepedido, $return);
+                  $sql[]= getSqlNewAdicionDetalleingresotalla($iddetalleingresotalla, $talla, $idmodelo, $iddetalleingreso, $cantidad1, false);
+                $idkardextienda = "kar-".$numerokardex;
+                $codigobarraean13 = $codigobarramcn.$talla;
+                $codigobarra1 = ean($codigobarraean13);
+                $codigobarra = $codigobarraean13.$codigobarra1;
+                //                $codigobarra = $codigobarra1['restulado'];
+                $sql[] = getSqlNewAdicionKardextienda($idkardextienda, $idmodelo, $idtienda, $codigobarra, $cantidad1, $cantidad1, $numerokardex, $talla, $precio1bs, $precio2bs, $precio3bs, $precio1sus, $precio2sus, $precio3sus, $idcalzado, $idingreso, $codigobarraean13,false);
+                $numerokardex++;
+                $idmovimientokardextienda = "mkt-".$numeromovimientokardex;
+                //                $sql[] = getSqlNewMovimientokardextienda($idmovimientokardextienda, $idkardextienda, $idtienda, $entrada, $salida, $saldo, $costounitario, $ingreso, $egreso, $saldobs, $fecha, $hora, $descripcion, $numero, $saldocantidad, false);
+                $sql[] = getSqlNewAdicionMovimientokardextienda($idmovimientokardextienda, $idkardextienda, $idtienda, $cantidad1, 0, $cantidad1, $precio, $precio*$cantidad1, 0, $precio*$cantidad1, $fecha, $hora, $idingreso, $numeromovimientokardex, $cantidad1, false);
+                $numeromovimientokardex++;
+
+
+                }
+                if($cantidadm !=0){
+
+                    $talla = $i."m";
+                  //  $sql[]= getSqlNewDetallepedidotalla($iddetallepedidotalla, $idmodelo, $talla, $cantidadm, $iddetallepedido, $return);
+                  $sql[]= getSqlNewAdicionDetalleingresotalla($iddetalleingresotalla, $talla, $idmodelo, $iddetalleingreso, $cantidad1, false);
+                $idkardextienda = "kar-".$numerokardex;
+                $codigobarraean13 = $codigobarramcn.$talla;
+                $codigobarra1 = ean($codigobarraean13);
+                $codigobarra = $codigobarraean13.$codigobarra1;
+                //                $codigobarra = $codigobarra1['restulado'];
+                $sql[] = getSqlNewAdicionKardextienda($idkardextienda, $idmodelo, $idtienda, $codigobarra, $cantidad1, $cantidad1, $numerokardex, $talla, $precio1bs, $precio2bs, $precio3bs, $precio1sus, $precio2sus, $precio3sus, $idcalzado, $idingreso, $codigobarraean13,false);
+                $numerokardex++;
+                $idmovimientokardextienda = "mkt-".$numeromovimientokardex;
+                //                $sql[] = getSqlNewMovimientokardextienda($idmovimientokardextienda, $idkardextienda, $idtienda, $entrada, $salida, $saldo, $costounitario, $ingreso, $egreso, $saldobs, $fecha, $hora, $descripcion, $numero, $saldocantidad, false);
+                $sql[] = getSqlNewAdicionMovimientokardextienda($idmovimientokardextienda, $idkardextienda, $idtienda, $cantidad1, 0, $cantidad1, $precio, $precio*$cantidad1, 0, $precio*$cantidad1, $fecha, $hora, $idingreso, $numeromovimientokardex, $cantidad1, false);
+                $numeromovimientokardex++;
+                }
+            }
+
+        }
+        else{
+
+
+            for($i=14;$i<=45;$i++){
+                $cantidad1 = $calzado->$i;
+                if($cantidad1 !=0){
+
+                    $talla = $i;
+                  //  $sql[]= getSqlNewDetallepedidotalla($iddetallepedidotalla, $idmodelo, $talla, $cantidad1, $iddetallepedido, $return);
+                  $sql[]= getSqlNewAdicionDetalleingresotalla($iddetalleingresotalla, $talla, $idmodelo, $iddetalleingreso, $cantidad1, false);
+
+              $idkardextienda = "kar-".$numerokardex;
+                $codigobarraean13 = $codigobarramcn.$talla;
+                $codigobarra1 = ean($codigobarraean13);
+                $codigobarra = $codigobarraean13.$codigobarra1;
+                //                $codigobarra = $codigobarra1['restulado'];
+                $sql[] = getSqlNewAdicionKardextienda($idkardextienda, $idmodelo, $idtienda, $codigobarra, $cantidad1, $cantidad1, $numerokardex, $talla, $precio1bs, $precio2bs, $precio3bs, $precio1sus, $precio2sus, $precio3sus, $idcalzado, $idingreso, $codigobarraean13,false);
+                $numerokardex++;
+                $idmovimientokardextienda = "mkt-".$numeromovimientokardex;
+                //                $sql[] = getSqlNewMovimientokardextienda($idmovimientokardextienda, $idkardextienda, $idtienda, $entrada, $salida, $saldo, $costounitario, $ingreso, $egreso, $saldobs, $fecha, $hora, $descripcion, $numero, $saldocantidad, false);
+                $sql[] = getSqlNewAdicionMovimientokardextienda($idmovimientokardextienda, $idkardextienda, $idtienda, $cantidad1, 0, $cantidad1, $precio, $precio*$cantidad1, 0, $precio*$cantidad1, $fecha, $hora, $idingreso, $numeromovimientokardex, $cantidad1, false);
+                $numeromovimientokardex++;
+                }
+            }
+        }
+
+    }
+
+        //    MostrarConsulta($sql);
+
+    if(ejecutarConsultaSQLBeginCommit($sql)){
+
+        $dev['mensaje'] = "Se guardaron y actualizaron correctamente los datos";
+        $dev['error'] = "true";
+        $dev['resultado'] = $idingreso;
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al actualizar o guardar datos";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+
+
+}
+
+function GuardarNuevoIngreso($resultado,$return)
+{
+
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+
+
+    $numeroA = findUltimoID("ingresotienda", "numero", true);
+    $numero = $numeroA['resultado'] +1;
+    $idingreso="ing-".$numero;
+    $ingreso = $resultado->ingreso;
+    $codigo = $ingreso->numeropedido;
+    $estado = "Activo";
+    $hora = date("H:i:s");
+    $fecha = date("Y-m-d");
+    $totalpares = $ingreso->totalpares;
+    $totalbs = $ingreso->totalcaja;
+    $responsable = $_SESSION['idusuario'];
+    $idmarca = $ingreso->idmarca;
+    $observacion = $ingreso->descripcion;
+    $idtienda = $_SESSION['idtienda'];
+    $sql[]=getSqlNewIngresotienda($idingreso, $codigo, $numero, $estado, $fecha, $hora, $totalpares, $totalbs, $responsable, $observacion, $idmarca, $idtienda, false);
+    //    echo $idventa;
+
+    $sqlmarca = "
+SELECT
+  mad.opcion
+FROM
+  `marcadetalle` mad
+WHERE
+  mad.idmarcadetalle = '$idmarca'
+";
+    $calzados = $resultado->calzados;
+    $numeropedidoA = findUltimoNumeroPedidoMarca($idmarca, true);
+    $numero1 = $numeropedidoA['resultado']+1;
+    $sql[] =getSqlNewNumeropedido($idnumero, $idmarca, $numero1, $return);
+
+    $opcionA = findBySqlReturnCampoUnique($sqlmarca, true, true, "opcion");
+    $opcion = $opcionA['resultado'];
+    $numeroD = findUltimoID("detalleingreso", "numero", true);
+    $numerodetalle = $numeroD['resultado'] +1;
+    $numerokardexA = findUltimoID("kardextienda", "numero", true);
+    $numerokardex = $numerokardexA['resultado']+1;
+    $numeromovimientokardexA = findUltimoID("movimientokardextienda", "numero", true);
+    $numeromovimientokardex = $numeromovimientokardexA['resultado']+1;
+
+    for($j=0;$j<count($calzados);$j++){
+        $calzado = $calzados[$j];
+        $codigocalzado = $calzado->codigo;
+        $idmodelo = $calzado->idmodelo;
+        $totalpar = $calzado->totalpares;
+        $totalbs1 = $calzado->totalbs;
+        $precio = $calzado->precio;
+        $iddetalleingreso = "din-".$numerodetalle;
+        $sql[] =getSqlNewDetalleingreso($idmodelo, $totalpar, $totalbs1, $idingreso, $iddetalleingreso, $numerodetalle, false);
+        $numerodetalle++;
+        $codigobarraA = ObtenerCodigoBarraMarcaDetalle($idmarca , true);
+        $codigobarramcn = $codigobarraA['resultado'];
+        //        echo $codigobarramcn;
+
+        for($i=14;$i<=45;$i++){
+            $cantidad1 = $calzado->$i;
+            if($cantidad1 !=0){
+
+                $talla = $i;
+
+                $sql[]= getSqlNewDetalleingresotalla($iddetalleingresotalla, $talla, $idmodelo, $iddetalleingreso, $cantidad1, false);
+                $idkardextienda = "kar-".$numerokardex;
+                $codigobarraean13 = $codigobarramcn.$talla;
+                $codigobarra1 = ean($codigobarraean13);
+                $codigobarra = $codigobarraean13.$codigobarra1;
+                //                $codigobarra = $codigobarra1['restulado'];
+                $sql[] = getSqlNewKardextienda($idkardextienda, $idmodelo, $idtienda, $codigobarra, $cantidad1, $cantidad1, $numerokardex, $talla, $precio1bs, $precio2bs, $precio3bs, $precio1sus, $precio2sus, $precio3sus, $idcalzado, $idingreso, $codigobarraean13,false);
+                $numerokardex++;
+                $idmovimientokardextienda = "mkt-".$numeromovimientokardex;
+                //                $sql[] = getSqlNewMovimientokardextienda($idmovimientokardextienda, $idkardextienda, $idtienda, $entrada, $salida, $saldo, $costounitario, $ingreso, $egreso, $saldobs, $fecha, $hora, $descripcion, $numero, $saldocantidad, false);
+                $sql[] = getSqlNewMovimientokardextienda($idmovimientokardextienda, $idkardextienda, $idtienda, $cantidad1, 0, $cantidad1, $precio, $precio*$cantidad1, 0, $precio*$cantidad1, $fecha, $hora, $idingreso, $numeromovimientokardex, $cantidad1, false);
+                $numeromovimientokardex++;
+            }
+        }
+
+    }
+
+    //    MostrarConsulta($sql);
+
+    if(ejecutarConsultaSQLBeginCommit($sql)){
+
+        $dev['mensaje'] = "Se guardaron y actualizaron correctamente los datos";
+        $dev['error'] = "true";
+        $dev['resultado'] = $idingreso;
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al actualizar o guardar datos";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+
+
+}
+
+function ListarIngresosAlmacen($start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = "true")
+{
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+    if($where == null || $where == "")
+    {
+        $sql = "
+SELECT
+  ing.idingreso,
+  ing.codigo,
+  ing.numero,
+  ing.estado,
+  ing.fecha,
+  ing.hora,
+  ing.totalpares,
+  ing.totalbs,
+  ing.responsable,
+  ing.observacion,
+  ing.idmarca,
+  ing.idtienda,
+  tie.codigo AS tienda,
+  usu.nombre AS responsable,
+  mad.nombre AS marca
+FROM
+  ingresotienda ing,
+  tiendas tie,
+  usuario usu,
+  marcadetalle mad
+WHERE
+  ing.idtienda = tie.idtienda AND
+  ing.responsable = usu.idusuario AND
+  ing.idmarca = mad.idmarcadetalle $order LIMIT $start,$limit;";
+        //        MostrarConsulta($sql);
+    }
+    else
+    {
+        $sql = "
+    SELECT
+  ing.idingreso,
+  ing.codigo,
+  ing.numero,
+  ing.estado,
+  ing.fecha,
+  ing.hora,
+  ing.totalpares,
+  ing.totalbs,
+  ing.responsable,
+  ing.observacion,
+  ing.idmarca,
+  ing.idtienda,
+  tie.codigo AS tienda,
+  usu.nombre AS responsable,
+  mad.nombre AS marca
+FROM
+  ingresotienda ing,
+  tiendas tie,
+  usuario usu,
+  marcadetalle mad
+WHERE
+  ing.idtienda = tie.idtienda AND
+  ing.responsable = usu.idusuario AND
+  ing.idmarca = mad.idmarcadetalle AND $where $order LIMIT $start,$limit
+         ";
+        //        MostrarConsulta($sql);
+    }
+    //    echo $sql;
+
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    $dev['totalCount'] = allBySql($sql);
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+    }
+}
+function BuscarTiendaMarca($callback, $_dc, $where = '', $return = false){
+
+
+
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+
+    $proveedores =  ListarTienda('', '', '', '', '', '',"",true);
+    if($proveedores['error'] == true)
+    {
+        $value['tiendas'] = "true";
+        $value['tiendaM'] = $proveedores['resultado'];
+    }
+    $categorias = ListarMarca('', '', '', '', '', '',"",true);
+    if($categorias['error'] == true)
+    {
+        $value['marcas'] = "true";
+        $value['marcaM'] = $categorias['resultado'];
+    }
+
+    $dev['mensaje'] = "Se cargo el formulario de Marca";
+    $dev['error']   = "true";
+    $dev['resultado'] = $value;
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function BuscarModeloDetallePorMarca($idmarca , $idtienda,$callback, $_dc, $where = '', $return = false){
+
+
+
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+    $_SESSION['idtienda'] = $idtienda;
+
+
+    $proveedores =  ListarModeloDetalle('', '', '', '', '', '',$idmarca,true);
+    if($proveedores['error'] == true)
+    {
+        $value['modelos'] = "true";
+        $value['modeloM'] = $proveedores['resultado'];
+    }
+    $numeropa= findUltimoNumeroPedidoMarca($idmarca, true);
+    $numero = $numeropa['resultado']+1;
+    $anio = date("Y");
+    $value['numerodoc'] = $numero."/".$anio;
+   
+
+    $sql ="
+SELECT
+  mad.idmarcadetalle AS idmarca,
+  mad.codigo,
+  mad.nombre AS marca,
+  mad.codigobarra,
+  mad.imagen,
+  mad.talla,
+  mad.idciudad,
+  mad.numero,
+  mad.opcion
+FROM
+  marcadetalle mad
+WHERE
+  mad.idmarcadetalle = '$idmarca';
+
+";
+    //    echo $sql;
+    if($idmarca != null)
+    {
+        if($link=new BD)
+        {
+            if($link->conectar())
+            {
+                if($re = $link->consulta($sql))
+                {
+                    if($fi = mysql_fetch_array($re))
+                    {
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            if(mysql_field_type($re, $i) == "real")
+                            {
+                                $value{mysql_field_name($re, $i)}= redondear($fi[$i]);
+                            }
+                            else
+                            {
+                                $value{mysql_field_name($re, $i)}= $fi[$i];
+                            }
+                        }
+                        $dev['mensaje'] = "Existen resultados";
+                        $dev['error']   = "true";
+                        $dev['resultado'] = $value;
+                    }
+                    else
+                    {
+                        $dev['mensaje'] = "No se encontro datos en la consulta";
+                        $dev['error']   = "false";
+                        $dev['resultado'] = "";
+                    }
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No se pudo conectar a la BD";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "El codigo de producto es nulo";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function getSqlNewIngresotienda($idingreso, $codigo, $numero, $estado, $fecha, $hora, $totalpares, $totalbs, $responsable, $observacion, $idmarca, $idtienda, $return){
+    $setC[0]['campo'] = 'idingreso';
+    $setC[0]['dato'] = $idingreso;
+    $setC[1]['campo'] = 'codigo';
+    $setC[1]['dato'] = $codigo;
+    $setC[2]['campo'] = 'numero';
+    $setC[2]['dato'] = $numero;
+    $setC[3]['campo'] = 'estado';
+    $setC[3]['dato'] = $estado;
+    $setC[4]['campo'] = 'fecha';
+    $setC[4]['dato'] = $fecha;
+    $setC[5]['campo'] = 'hora';
+    $setC[5]['dato'] = $hora;
+    $setC[6]['campo'] = 'totalpares';
+    $setC[6]['dato'] = $totalpares;
+    $setC[7]['campo'] = 'totalbs';
+    $setC[7]['dato'] = $totalbs;
+    $setC[8]['campo'] = 'responsable';
+    $setC[8]['dato'] = $responsable;
+    $setC[9]['campo'] = 'observacion';
+    $setC[9]['dato'] = $observacion;
+    $setC[10]['campo'] = 'idmarca';
+    $setC[10]['dato'] = $idmarca;
+    $setC[11]['campo'] = 'idtienda';
+    $setC[11]['dato'] = $idtienda;
+    $sql2 = generarInsertValues($setC);
+    return "INSERT INTO ingresotienda ".$sql2;
+}
+function getSqlNewDetalleingreso($idmodelo, $totalpares, $totalbs, $idingreso, $iddetalleingreso, $numero, $return){
+    $setC[0]['campo'] = 'idmodelo';
+    $setC[0]['dato'] = $idmodelo;
+    $setC[1]['campo'] = 'totalpares';
+    $setC[1]['dato'] = $totalpares;
+    $setC[2]['campo'] = 'totalbs';
+    $setC[2]['dato'] = $totalbs;
+    $setC[3]['campo'] = 'idingreso';
+    $setC[3]['dato'] = $idingreso;
+    $setC[4]['campo'] = 'iddetalleingreso';
+    $setC[4]['dato'] = $iddetalleingreso;
+    $setC[5]['campo'] = 'numero';
+    $setC[5]['dato'] = $numero;
+    $sql2 = generarInsertValues($setC);
+    return "INSERT INTO detalleingreso ".$sql2;
+}
+function getSqlNewDetalleingresotalla($iddetalleingresotalla, $talla, $idmodelo, $iddetalleingreso, $cantidad, $return){
+    $setC[0]['campo'] = 'iddetalleingresotalla';
+    $setC[0]['dato'] = $iddetalleingresotalla;
+    $setC[1]['campo'] = 'talla';
+    $setC[1]['dato'] = $talla;
+    $setC[2]['campo'] = 'idmodelo';
+    $setC[2]['dato'] = $idmodelo;
+    $setC[3]['campo'] = 'iddetalleingreso';
+    $setC[3]['dato'] = $iddetalleingreso;
+    $setC[4]['campo'] = 'cantidad';
+    $setC[4]['dato'] = $cantidad;
+    $sql2 = generarInsertValues($setC);
+    return "INSERT INTO detalleingresotalla ".$sql2;
+}
+
+function getSqlNewAdicionIngresotienda($idingreso, $codigo, $numero, $estado, $fecha, $hora, $totalpares, $totalbs, $responsable, $observacion, $idmarca, $idtienda, $return){
+    $setC[0]['campo'] = 'idingreso';
+    $setC[0]['dato'] = $idingreso;
+    $setC[1]['campo'] = 'codigo';
+    $setC[1]['dato'] = $codigo;
+    $setC[2]['campo'] = 'numero';
+    $setC[2]['dato'] = $numero;
+    $setC[3]['campo'] = 'estado';
+    $setC[3]['dato'] = $estado;
+    $setC[4]['campo'] = 'fecha';
+    $setC[4]['dato'] = $fecha;
+    $setC[5]['campo'] = 'hora';
+    $setC[5]['dato'] = $hora;
+    $setC[6]['campo'] = 'totalpares';
+    $setC[6]['dato'] = $totalpares;
+    $setC[7]['campo'] = 'totalbs';
+    $setC[7]['dato'] = $totalbs;
+    $setC[8]['campo'] = 'responsable';
+    $setC[8]['dato'] = $responsable;
+    $setC[9]['campo'] = 'observacion';
+    $setC[9]['dato'] = $observacion;
+    $setC[10]['campo'] = 'idmarca';
+    $setC[10]['dato'] = $idmarca;
+    $setC[11]['campo'] = 'idtienda';
+    $setC[11]['dato'] = $idtienda;
+    $sql2 = generarInsertValues($setC);
+    return "INSERT INTO adicioningresotienda ".$sql2;
+}
+function getSqlNewAdiciondetalleingreso($idmodelo, $totalpares, $totalbs, $idingreso, $iddetalleingreso, $color, $material, $numero, $return){
+$setC[0]['campo'] = 'idmodelo';
+$setC[0]['dato'] = $idmodelo;
+$setC[1]['campo'] = 'totalpares';
+$setC[1]['dato'] = $totalpares;
+$setC[2]['campo'] = 'totalbs';
+$setC[2]['dato'] = $totalbs;
+$setC[3]['campo'] = 'idingreso';
+$setC[3]['dato'] = $idingreso;
+$setC[4]['campo'] = 'iddetalleingreso';
+$setC[4]['dato'] = $iddetalleingreso;
+$setC[5]['campo'] = 'color';
+$setC[5]['dato'] = $color;
+$setC[6]['campo'] = 'material';
+$setC[6]['dato'] = $material;
+$setC[7]['campo'] = 'numero';
+$setC[7]['dato'] = $numero;
+$sql2 = generarInsertValues($setC);
+return "INSERT INTO adiciondetalleingreso ".$sql2;
+}
+function getSqlNewAdicionDetalleingresotalla($iddetalleingresotalla, $talla, $idmodelo, $iddetalleingreso, $cantidad, $return){
+    $setC[0]['campo'] = 'iddetalleingresotalla';
+    $setC[0]['dato'] = $iddetalleingresotalla;
+    $setC[1]['campo'] = 'talla';
+    $setC[1]['dato'] = $talla;
+    $setC[2]['campo'] = 'idmodelo';
+    $setC[2]['dato'] = $idmodelo;
+    $setC[3]['campo'] = 'iddetalleingreso';
+    $setC[3]['dato'] = $iddetalleingreso;
+    $setC[4]['campo'] = 'cantidad';
+    $setC[4]['dato'] = $cantidad;
+    $sql2 = generarInsertValues($setC);
+    return "INSERT INTO adiciondetalleingresotalla ".$sql2;
+}
+
+
+
+
+?>

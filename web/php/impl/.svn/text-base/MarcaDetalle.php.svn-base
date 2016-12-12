@@ -1,0 +1,461 @@
+<?php
+function ListarMarca($start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    //    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+    if($where == null || $where == "")
+    {
+        $sql ="
+SELECT
+  mad.idmarcadetalle AS idmarca,
+  mad.codigo,
+  mad.nombre,
+  mad.codigobarra,
+  mad.imagen,
+  mad.talla,
+  mad.idciudad,
+  mad.numero,
+  ciu.nombre AS ciudad
+FROM
+  `marcadetalle` mad,
+  `ciudades` ciu
+WHERE
+  mad.idciudad = ciu.idciudad $order LIMIT $start,$limit
+
+";
+    }else{
+        $sql ="
+SELECT
+  mad.idmarcadetalle,
+  mad.codigo,
+  mad.nombre,
+  mad.codigobarra,
+  mad.imagen,
+  mad.talla,
+  mad.idciudad,
+  mad.numero,
+  ciu.nombre AS ciudad
+FROM
+  `marcadetalle` mad,
+  `ciudades` ciu
+WHERE
+  mad.idciudad = ciu.idciudad AND $where $order LIMIT $start,$limit
+
+";
+    }
+    //            echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $dev['totalCount'] = mysql_num_rows($re);
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function BuscarCiudad($callback, $_dc, $return = false){
+
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+    $ciudad = ListarCiudad("", "", "", "", "", "", "", true);
+    if($ciudad["error"]==false){
+        $dev['mensaje'] = "No se pudo encontrar Ciudades";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+
+    }
+    $value["ciudadM"] = $ciudad['resultado'];
+
+
+
+    $dev['mensaje'] = "Todo Ok";
+    $dev['error']   = "true";
+    $dev['resultado'] = $value;
+
+
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function getSqlNewMarcadetalle($idmarcadetalle, $codigo, $nombre, $codigobarra, $imagen, $talla, $idciudad, $numero, $return){
+    $setC[0]['campo'] = 'idmarcadetalle';
+    $setC[0]['dato'] = $idmarcadetalle;
+    $setC[1]['campo'] = 'codigo';
+    $setC[1]['dato'] = $codigo;
+    $setC[2]['campo'] = 'nombre';
+    $setC[2]['dato'] = $nombre;
+    $setC[3]['campo'] = 'codigobarra';
+    $setC[3]['dato'] = $codigobarra;
+    $setC[4]['campo'] = 'imagen';
+    $setC[4]['dato'] = $imagen;
+    $setC[5]['campo'] = 'talla';
+    $setC[5]['dato'] = $talla;
+    $setC[6]['campo'] = 'idciudad';
+    $setC[6]['dato'] = $idciudad;
+    $setC[7]['campo'] = 'numero';
+    $setC[7]['dato'] = $numero;
+    $sql2 = generarInsertValues($setC);
+    return "INSERT INTO marcadetalle ".$sql2;
+}
+function InsertarNuevaMarca(){
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+    $codigo = $_GET['codigo'];
+    $codigoA = validarText($codigo, true);
+    if($codigoA['error']==false){
+        $dev['mensaje'] = "Error en el codigo de almacen: ".$codigoA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $nombre = $_GET['nombre'];
+    $idciudad =$_GET['ciudad'];
+    $codigobarra =$_GET['codigobarra'];
+    $imagen=$_GET['imagen'];
+    $talla=$_GET['talla'];
+    //    $estado=$_GET['estado'];
+    //    $email=$_GET['email'];
+    $numeroA = findUltimoID("marcadetalle", "numero", true);
+    $numero = $numeroA['resultado']+1;
+
+
+    $idmarcadetalle = 'mad-'.$numero;
+    $sql[] = getSqlNewMarcadetalle($idmarcadetalle, $codigo, $nombre, $codigobarra, $imagen, $talla, $idciudad, $numero, $return);
+    //        MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se guardaron correctamente los datos";
+        $dev['error'] = "true";
+        $dev['resultado'] = "";
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al  guardar los datos";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+function getSqlUpdateMarcadetalle($idmarcadetalle,$codigo, $nombre, $codigobarra, $imagen, $talla, $idciudad, $numero, $return){
+    $setC[0]['campo'] = 'codigo';
+    $setC[0]['dato'] = $codigo;
+    $setC[1]['campo'] = 'nombre';
+    $setC[1]['dato'] = $nombre;
+    $setC[2]['campo'] = 'codigobarra';
+    $setC[2]['dato'] = $codigobarra;
+    $setC[3]['campo'] = 'imagen';
+    $setC[3]['dato'] = $imagen;
+    $setC[4]['campo'] = 'talla';
+    $setC[4]['dato'] = $talla;
+    $setC[5]['campo'] = 'numero';
+    $setC[5]['dato'] = $numero;
+    $setC[6]['campo'] = 'idciudad';
+    $setC[6]['dato'] = $idciudad;
+
+    $set = generarSetsUpdate($setC);
+    $wher[0]['campo'] = 'idmarcadetalle';
+    $wher[0]['dato'] = $idmarcadetalle;
+
+
+    $where = generarWhereUpdate($wher);
+    return "UPDATE marcadetalle SET ".$set." WHERE ".$where;
+}
+
+
+function GuardarEditarMarca($idmarca){
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+    $codigo = $_GET['codigo'];
+    $codigoA = validarText($codigo, true);
+    if($codigoA['error']==false){
+        $dev['mensaje'] = "Error en el codigo de almacen: ".$codigoA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $nombre = $_GET['nombre'];
+    $idciudad =$_GET['ciudad'];
+    $codigobarra =$_GET['codigobarra'];
+    $imagen=$_GET['imagen'];
+    $talla=$_GET['talla'];
+    //    $estado=$_GET['estado'];
+    //    $email=$_GET['email'];
+   
+
+
+    $idmarcadetalle = $idmarca;
+    $sql[] = getSqlUpdateMarcadetalle($idmarcadetalle,$codigo, $nombre, $codigobarra, $imagen, $talla, $idciudad, $numero, $return);
+    //        MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se guardaron correctamente los datos";
+        $dev['error'] = "true";
+        $dev['resultado'] = "";
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al  guardar los datos";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+
+function BuscarCiudadPorMarca($idmarca,$callback, $_dc, $return = false){
+
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+
+    $ciudad = ListarCiudad("", "", "", "", "", "", "", true);
+    if($ciudad['error']==false){
+        $dev['mensaje'] = "No se pudo encontrar Ciudades";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+
+
+
+    $value["ciudadM"] = $ciudad['resultado'];
+
+
+    $sql ="
+SELECT 
+  mad.idmarcadetalle,
+  mad.codigo,
+  mad.nombre,
+  mad.codigobarra,
+  mad.imagen,
+  mad.talla,
+  mad.idciudad,
+  mad.numero
+FROM
+  marcadetalle mad
+WHERE
+  mad.idmarcadetalle = '$idmarca';
+
+";
+    if($idmarca != null)
+    {
+        if($link=new BD)
+        {
+            if($link->conectar())
+            {
+                if($re = $link->consulta($sql))
+                {
+                    if($fi = mysql_fetch_array($re))
+                    {
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            if(mysql_field_type($re, $i) == "real")
+                            {
+                                $value{mysql_field_name($re, $i)}= redondear($fi[$i]);
+                            }
+                            else
+                            {
+                                $value{mysql_field_name($re, $i)}= $fi[$i];
+                            }
+                        }
+                        $dev['mensaje'] = "Existen resultados";
+                        $dev['error']   = "true";
+                        $dev['resultado'] = $value;
+                    }
+                    else
+                    {
+                        $dev['mensaje'] = "No se encontro datos en la consulta";
+                        $dev['error']   = "false";
+                        $dev['resultado'] = "";
+                    }
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No se pudo conectar a la BD";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "El codigo de producto es nulo";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+
+?>

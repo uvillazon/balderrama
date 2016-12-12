@@ -1,0 +1,2 @@
+Ok	admin	Haydee	12:39:49	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='no',fallado='0' where idalmacen='alm-3' and saldocantidad='1' ; -- 
+

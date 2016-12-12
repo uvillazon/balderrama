@@ -1,0 +1,188 @@
+<?php 
+session_name("balderrama");
+session_start();
+include("bd/bd.php");
+//require_once("impl/MarcaDetalle.php");
+require_once("impl/ModeloDetalle.php");
+require_once("impl/KardexTienda.php");
+require_once("impl/Estilo.php");
+require_once("impl/Marca.php");
+require_once("impl/Tienda.php");
+require_once("impl/Pedidos.php");
+require_once("impl/IngresoAlmacen.php");
+require_once("impl/JSON.php");
+include("impl/Utils.php");
+if(permitido("fun1001", $_SESSION['codigo'])==true)
+{
+    $funcion = $_GET['funcion'];
+
+    if($funcion == "ListarIngresosAlmacen")
+    {
+        $band = false;
+        if($_GET['buscarcodigo'] != null)
+        {
+            if($band == false) {
+                $extras .= " ing.codigo LIKE '%".$_GET['buscarcodigo']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND ing.codigo LIKE '%".$_GET['buscarcodigo']."%'";
+            }
+        }
+        if($_GET['buscarfecha'] != null)
+        {
+            if($band == false) {
+                $extras .= " ing.fecha LIKE '%".$_GET['buscarfecha']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND ing.fecha LIKE '%".$_GET['buscarfecha']."%'";
+            }
+        }
+        if($_GET['buscartienda'] != null)
+        {
+            if($band == false) {
+                $extras .= " tie.codigo LIKE '%".$_GET['buscartienda']."%' ";
+                $band = true;
+            }
+            else {
+                $extras .= " AND tie.codigo LIKE '%".$_GET['buscartienda']."%'";
+            }
+        }
+        if($_GET['buscarmarca'] != null)
+        {
+            if($band == false) {
+                $extras .= " mad.nombre LIKE '%".$_GET['buscarmarca']."%' ";
+                $band = true;
+            }
+            else {
+                $extras .= " AND mad.nombre LIKE '%".$_GET['buscarmarca']."%'";
+            }
+        }
+       
+        ListarIngresosAlmacen($_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], $extras, false);
+    }
+    else
+      if($funcion == "ListarIngresosAlmacenExtra")
+    {
+        $band = false;
+        if($_GET['buscarcodigo'] != null)
+        {
+            if($band == false) {
+                $extras .= " ing.codigo LIKE '%".$_GET['buscarcodigo']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND ing.codigo LIKE '%".$_GET['buscarcodigo']."%'";
+            }
+        }
+        if($_GET['buscarfecha'] != null)
+        {
+            if($band == false) {
+                $extras .= " ing.fecha LIKE '%".$_GET['buscarfecha']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND ing.fecha LIKE '%".$_GET['buscarfecha']."%'";
+            }
+        }
+        if($_GET['buscartienda'] != null)
+        {
+            if($band == false) {
+                $extras .= " tie.codigo LIKE '%".$_GET['buscartienda']."%' ";
+                $band = true;
+            }
+            else {
+                $extras .= " AND tie.codigo LIKE '%".$_GET['buscartienda']."%'";
+            }
+        }
+        if($_GET['buscarmarca'] != null)
+        {
+            if($band == false) {
+                $extras .= " mad.nombre LIKE '%".$_GET['buscarmarca']."%' ";
+                $band = true;
+            }
+            else {
+                $extras .= " AND mad.nombre LIKE '%".$_GET['buscarmarca']."%'";
+            }
+        }
+
+        ListarIngresosAlmacenExtra($_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], $extras, false);
+    }
+    else if($funcion == "BuscarTiendaMarca"){
+        BuscarTiendaMarca($_GET['callback'], $_GET['_dc'], "",false);
+    }
+    else if($funcion =="BuscarModeloDetallePorMarca"){
+        $idmarca = $_GET['idmarca'];
+        $idtienda = $_GET['idtienda'];
+        BuscarModeloDetallePorMarca($idmarca,$idtienda,$_GET['callback'], $_GET['_dc'], "",false);
+
+    }
+    else if($funcion =="BuscarModeloDetallePorId"){
+
+        BuscarModeloDetalleporId($_GET['idmodelo'], $_GET['callback'], $_GET['_dc'],false);
+    }
+    else
+    if($funcion == "AnularIngreso"){
+
+
+    //$idempresa = $_GET['idempresa'];
+    $idingreso = $_GET['idingreso'];
+    AnularIngreso($idingreso,false);
+}else if($funcion =="buscarlistamodelos"){
+
+      //  buscarlistamodelo($_GET['idmarca'],$_GET['idmodelo'], $_GET['callback'], $_GET['_dc'],false);
+        buscarlistamodelos($_GET['idmarca'],$_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], $extras, false);
+
+
+ }
+  else if($funcion =="BuscarMarcaEstilo"){
+//        $idmarca = $_GET['idmarca'];
+        BuscarMarcaEstilo();
+    }
+ else if($funcion =="buscarlistamodelo"){
+
+      //  buscarlistamodelo($_GET['idmarca'],$_GET['idmodelo'], $_GET['callback'], $_GET['_dc'],false);
+        buscarlistamodelo($_GET['idmarca'],$_GET['idmodelo'],$_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], $extras, false);
+
+
+ }
+ else if($funcion =="buscarlistaestilo"){
+
+      //  buscarlistamodelo($_GET['idmarca'],$_GET['idmodelo'], $_GET['callback'], $_GET['_dc'],false);
+        buscarlistaestilo($_GET['idmarca'],$_GET['idestilo'],$_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], $extras, false);
+
+
+ }
+    else if($funcion =="GuardarNuevoIngreso"){
+
+        $resultado = $_GET['resultado'];
+        $json = new Services_JSON();
+        $datos = $json->decode($resultado);
+        //insertarventa($datos,false);
+        GuardarNuevoIngreso($datos,false);
+    }
+else if($funcion =="GuardarNuevoIngresoExtra"){
+
+        $resultado = $_GET['resultado'];
+        $json = new Services_JSON();
+        $datos = $json->decode($resultado);
+        //insertarventa($datos,false);
+        GuardarNuevoIngresoExtra($datos,false);
+    }
+
+    else{
+        echo "else";
+    }
+
+
+}
+else
+{
+    $dev['mensaje'] = "Ud no tiene privilegios para esta funcion";
+    $dev['error'] = "false";
+    $json = new Services_JSON();
+    $output = $json->encode($dev);
+    print($output);
+}
+?>

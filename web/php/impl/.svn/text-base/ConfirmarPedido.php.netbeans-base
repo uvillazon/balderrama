@@ -1,0 +1,1916 @@
+<?php
+function ListarIngresosAlmacen($idmarca,$codigo,$start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    else{
+        $sort = "fecha";
+        $dir = "DESC";
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+if($codigo=="KARDEX"){
+   $generado='1';
+}
+if($codigo=="SIN CODIGO"){
+   $generado='0';
+}
+    if($where == null || $where == "")
+    {
+if($idmarca == null || $idmarca == "")
+    {
+        $sql = "
+     SELECT pe.idingreso, mo.codigo,pe.numerofactura, pe.fecha, pe.observacion, pe.totalpares, pe.totalcajas, pe.montototal, pe.estado, ma.opcion, ma.nombre AS marca, u.nombre AS responsable
+FROM `ingresoalmacen` pe, `pedidos` ped, `marcas` ma, `usuario` u,modelos mo
+WHERE pe.idpedido = ped.idpedido
+AND ped.idmarca = ma.idmarca AND ma.idmarca=mo.idmarca
+AND pe.responsable = u.idusuario AND generado='$generado' GROUP BY pe.idingreso $order LIMIT $start,$limit ";
+    }else{
+      $sql = "
+     SELECT pe.idingreso, mo.codigo,pe.numerofactura, pe.fecha, pe.observacion, pe.totalpares, pe.totalcajas, pe.montototal, pe.estado, ma.opcion, ma.nombre AS marca, u.nombre AS responsable
+FROM `ingresoalmacen` pe, `pedidos` ped, `marcas` ma, `usuario` u,modelos mo
+WHERE pe.idpedido = ped.idpedido
+AND ped.idmarca = ma.idmarca AND ma.idmarca=mo.idmarca
+AND pe.responsable = u.idusuario AND generado='$generado' AND pe.idmarca='$idmarca' GROUP BY pe.idingreso $order LIMIT $start,$limit ";
+
+    }
+
+
+    }
+    else
+    {
+       if($idmarca == null || $idmarca == "")
+    {
+        $sql = "
+     SELECT pe.idingreso, mo.codigo,pe.numerofactura, pe.fecha, pe.observacion, pe.totalpares, pe.totalcajas, pe.montototal, pe.estado, ma.opcion, ma.nombre AS marca, u.nombre AS responsable
+FROM `ingresoalmacen` pe, `pedidos` ped, `marcas` ma, `usuario` u,modelos mo
+WHERE pe.idpedido = ped.idpedido
+AND ped.idmarca = ma.idmarca AND ma.idmarca=mo.idmarca
+AND pe.responsable = u.idusuario AND generado='$generado' AND $where GROUP BY pe.idingreso $order LIMIT $start,$limit ";
+    }else{
+      $sql = "
+     SELECT pe.idingreso, mo.codigo,pe.numerofactura, pe.fecha, pe.observacion, pe.totalpares, pe.totalcajas, pe.montototal, pe.estado, ma.opcion, ma.nombre AS marca, u.nombre AS responsable
+FROM `ingresoalmacen` pe, `pedidos` ped, `marcas` ma, `usuario` u,modelos mo
+WHERE pe.idpedido = ped.idpedido
+AND ped.idmarca = ma.idmarca AND ma.idmarca=mo.idmarca
+AND pe.responsable = u.idusuario AND generado='$generado' AND pe.idmarca='$idmarca' AND $where GROUP BY pe.idingreso $order LIMIT $start,$limit ";
+
+    }
+    }
+           // echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    $dev1 = NumeroTuplas($sql);
+    $dev['totalCount'] = $dev1['resultado'];
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+    }
+}
+
+function GuardarPedidoAlmacen($callback, $_dc, $resultado, $return = false){
+
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+    $numeroA = findUltimoID("ingresoalmacen", "numero", true);
+    $numero = $numeroA['resultado'] +1;
+    $idingreso="ing-".$numero;
+    $pedido = $resultado->pedido;
+    $numeroproforma = $pedido->numeroproforma;
+    $estado = "EN ALMACEN";
+    $hora = date("H:i:s");
+    if($pedido->fecha == ""){
+        $fecha = date("Y-m-d");
+    }
+    else{
+        $fecha = $pedido->fecha;
+    }
+    if($pedido->fechasalida == ""){
+        $fecha = date("Y-m-d");
+    }
+    else{
+        $fechasalida = $pedido->fechasalida;
+    }
+    $totalpares = $pedido->totalpares;
+    $totalcajas = $pedido->totalcajas;
+    $responsable = $_SESSION['idusuario'];
+     $idtienda = $_SESSION['idtienda'];
+
+    $idmarca = $pedido->idmarca;
+    $observacion = $pedido->descripcion;
+    $numerofactura = $pedido->numerofactura;
+    $montototal = $pedido->preciototal;
+    $observacion = $pedido->observacion;
+    $idpedido = $pedido->idpedido;
+    $montosus = $pedido->preciototal;
+    $marca = $pedido->marca;
+   // echo $;
+    $sql1= "SELECT idmarca  FROM marcas WHERE
+               nombre = '$marca'";
+$result1 = findBySqlReturnCampoUnique($sql1, true, true, "idmarca");
+  $idmarca = $result1['resultado'];
+
+$sql[]=getSqlNewIngresoalmacen($idingreso, $numerofactura, $numero, $idpedido, $idconfirmarpedido, $estado, $fecha, $hora, $totalcajas, $totalpares, $montototal, $totalsus, $montototal, $responsable, $observacion, $idmarca, $responsable, $idtienda,$generado, false);
+
+    $estado1='EN PROCESO';
+    $estado2='COMPLETADO';
+    $sql1= "SELECT totalpares,totalcajas
+            FROM
+              facturapedido
+            WHERE
+              idpedido = '$idpedido'";
+$result1 = findBySqlReturnCampoUnique($sql1, true, true, "totalpares");
+  $totalparespedido = $result1['resultado'];
+    $totalparesconfirmados =$pedido->totalpares;
+    if($totalparesconfirmados < $totalparespedido){
+    $sql[] = "UPDATE facturapedido SET  estado='$estado1'";
+    }
+    if($totalparesconfirmados == $totalparespedido)
+    {
+    $sql[] = "UPDATE facturapedido SET  estado='$estado2'";
+    }
+  $numeropedidoA = findUltimoNumeroPedidoMarca($idmarca, true);
+    $numero1 = $numeropedidoA['resultado']+1;
+    $sql[] =getSqlNewNumeropedido($idnumero, $idmarca, $numero1, $return);
+
+
+    $numeroD = findUltimoID("detalleingresoalmacen", "numero", true);
+    $numerodetalle = $numeroD['resultado'] +1;
+    $numerokardexA = findUltimoID("kardexalmacen", "numero", true);
+    $numerokardex = $numerokardexA['resultado']+1;
+    $numeromovimientokardexA = findUltimoID("movimientokardexalmacen", "numero", true);
+    $numeromovimientokardex = $numeromovimientokardexA['resultado']+1;
+
+    $detalles = $resultado->detalle;
+    for($j=0;$j<count($detalles);$j++){
+        $detalle = $detalles[$j];
+        $iddetallepedido = $detalle->iddetallepedido;
+        $numerocajas = $detalle->numerocajas;
+ $costounitario = $detalle->preciounitario;
+  $preciototal = $detalle->preciototal;
+
+if($numerocajas != '1'){
+            $dev['mensaje'] = "Para el ingreso a almacen debe ser por caja,por favor realize el proceso de desgloce ";
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+            exit;
+        }
+        else{
+$sql1= "SELECT iddetallepedido,numerocajas,numeropares,cliente,vendedor,idmodelo,totalSus,costounitario,idfacturapedido
+             FROM
+              detallepedido
+            WHERE
+              iddetallepedido = '$iddetallepedido'";
+$result1 = findBySqlReturnCampoUnique($sql1, true, true, "iddetallepedido");
+  $iddetallepedido = $result1['resultado'];
+  $result2 = findBySqlReturnCampoUnique($sql1, true, true, "numerocajas");
+  $totalcajas = $result2['resultado'];
+  $result3 = findBySqlReturnCampoUnique($sql1, true, true, "numeropares");
+  $totalpares = $result3['resultado'];
+  $result4 = findBySqlReturnCampoUnique($sql1, true, true, "cliente");
+  $cliente = $result4['resultado'];
+  $result5 = findBySqlReturnCampoUnique($sql1, true, true, "vendedor");
+  $vendedor = $result5['resultado'];
+  $result6 = findBySqlReturnCampoUnique($sql1, true, true, "idmodelo");
+  $idmodelo = $result6['resultado'];
+  $result7 = findBySqlReturnCampoUnique($sql1, true, true, "totalSus");
+  $totalsus = $result7['resultado'];
+  $result8 = findBySqlReturnCampoUnique($sql1, true, true, "costounitario");
+  $totalbs = $result8['resultado'];
+  $result9 = findBySqlReturnCampoUnique($sql1, true, true, "idfacturapedido");
+  $idfacturapedido = $result9['resultado'];
+
+
+      
+
+
+        $codigobarraA = ObtenerCodigoBarraMarcaDetalle($idmarca , true);
+        $codigobarramcn = $codigobarraA['resultado'];
+          $idkardexalmacen = "kara-".$numerokardex;
+                $codigobarraean13 = $codigobarramcn.$totalpares;
+                $codigobarra1 = ean($codigobarraean13);
+                $codigobarra = $codigobarraean13.$codigobarra1;
+                //                $codigobarra = $codigobarra1['restulado'];
+                $sql[] = getSqlNewKardexalmacen($idkardexalmacen, $idmodelo, $idmarca, $codigobarra, $numerocajas, $totalcajas, $totalpares, $numerokardex, $costounitario, $preciototal, $precio3bs, $precio1sus, $precio2sus, $precio3sus, $idingreso, $codigobarraean13,$generado, false);
+   $numerokardex++;
+
+          //     $sql[] = getSqlNewKardextienda($idkardextienda, $idmodelo, $idtienda, $codigobarra, $cantidad1, $cantidad1, $numerokardex, $talla, $precio1bs, $precio2bs, $precio3bs, $precio1sus, $precio2sus, $precio3sus, $idcalzado, $idingreso, $codigobarraean13,false);
+$iddetalleingresoalmacen = "din-".$numerodetalle;
+       // $sql[] =getSqlNewDetalleingresoalmacen($iddetalleingresoalmacen, $idmodelo, $totalpares, $totalcajas, $preciototal, $costounitario, $precio2sus, $cliente, $vendedor, $idingreso, $numerodetalle, false);
+        $sql[] =getSqlNewDetalleingresoalmacen($iddetalleingresoalmacen, $idmodelo, $totalpares, $totalcajas, $preciototal, $costounitario, $precio2sus, $precio3sus, $cliente, $vendedor, $idingreso, $numerodetalle, $idkardexalmacen, $observacion,  false);
+
+
+        $numerodetalle++;
+                $idmovimientokardexalmacen = "mkt-".$numeromovimientokardex;
+                //                $sql[] = getSqlNewMovimientokardextienda($idmovimientokardextienda, $idkardextienda, $idtienda, $entrada, $salida, $saldo, $costounitario, $ingreso, $egreso, $saldobs, $fecha, $hora, $descripcion, $numero, $saldocantidad, false);
+          //      $sql[] = getSqlNewMovimientokardextienda($idmovimientokardextienda, $idkardextienda, $idtienda, $cantidad1, 0, $cantidad1, $precio, $precio*$cantidad1, 0, $precio*$cantidad1, $fecha, $hora, $idingreso, $numeromovimientokardex, $cantidad1, false);
+                $sql[] = getSqlNewMovimientokardexalmacen($idmovimientokardexalmacen, $idkardexalmacen, $idtienda, $totalcajas, 0, $numerocajas, $preciototal, $preciototal*$saldo , 0, $preciototal*$saldo, $fecha, $hora, $descripcion, $idingreso, $numeromovimientokardex, $saldocantidad,false);
+
+           $numeromovimientokardex++;
+
+$sql[] = getSqlUpdateDetallepedido($iddetallepedido,$numerocajas,$numeropares,$cliente,$vendedor,$idmodelo,$numero,$color,$material,$totalSus,$costounitario,$stylename,$linea,$idpedido,$codigo,$idconfirmarpedido,$idfacturapedido,$idkardexalmacen, $return);
+
+  }
+
+ }
+      //  MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se registro correctamente";
+        $dev['error'] = "true";
+        $dev['resultado'] = "";
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error ";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function ListarDetallePedidoRegistrado($start, $limit, $sort, $dir, $callback, $_dc, $idfacturapedido, $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    //    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+
+    $sql ="
+SELECT
+  dtp.idpedido,
+  dtp.codigo,
+  dtp.color,
+  dtp.material,
+  dtp.costounitario AS preciounitario,
+  dtp.totalSus AS preciototal,
+  dtp.stylename,
+  dtp.linea,
+  dtp.cliente,
+  dtp.vendedor,
+  dtp.numerocajas,
+  dtp.numeropares,
+ dtp.iddetallepedido
+FROM
+  `detallepedido` dtp
+WHERE
+
+  dtp.idfacturapedido = '$idfacturapedido'
+    $order
+";
+
+
+    //            echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $dev['totalCount'] = mysql_num_rows($re);
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                            if(mysql_field_name($re, $i) == "iddetallepedido"){
+                                $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                                $iddetallepedido = $fi[$i];
+                                $sqld = "SELECT
+                                dtpt.talla,
+                                dtpt.cantidad
+                                FROM
+                               `detallepedidotalla` dtpt
+                                WHERE
+                                dtpt.iddetallepedido = '$iddetallepedido'
+                                ";
+
+                                //                                 $value{$ii}{mysql_field_name($re, $i)}= '222';
+
+                                //                              echo   $sqld;
+                                if($re1 = $link->consulta($sqld))
+                                {
+
+                                    if($fi1 = mysql_fetch_array($re1))
+                                    {
+                                        //                                         echo "jla";
+                                        //                                        $tallas = mysql_num_rows($re1)."ll";
+                                        //                                        echo $tallas;
+                                        do{
+
+                                            for($j = 0; $j< mysql_num_fields($re1); $j++)
+                                            {
+                                                //                                                echo ".".$j;
+                                                $value{$ii}{$fi1[0]}= $fi1[1];
+                                                //                                               $value{$ii}{mysql_field_name($re1, $j)}= '222';
+                                            }
+                                        }while($fi1 = mysql_fetch_array($re1));
+
+
+
+                                    }
+                                    //                            $id
+                                    //                            $value{$ii}{mysql_field_name($re, $i)}= '222';
+
+                                }
+                            }
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function CargarRegistrarPedido($callback, $_dc, $idfacturapedido, $return = false){
+
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+ $sql1= "SELECT estado
+            FROM
+              facturapedido
+            WHERE
+              idfacturapedido = '$idfacturapedido'";
+$result2 = findBySqlReturnCampoUnique($sql1, true, true, "estado");
+  $estadopedido = $result2['resultado'];
+  $est='COMPLETADO';
+if($estadopedido == $est){
+            $dev['mensaje'] = "El pedido ya fue confirmado en su totalidad ,NO SE PUEDE VOLVER A CONFIRMAR";
+                        $dev['error']   = "false";
+     //                   $dev['resultado'] = $value;
+
+     $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+            exit;
+        }
+        else{
+    $sql ="
+  SELECT ped.idfacturapedido, ped.marca, ped.fecha,ped.idpedido, ped.totalpares, ped.totalcajas, mar.opcion, ped.numeroproforma, ped.numerofactura, ped.observacion, ped.montotal AS montototal
+FROM `facturapedido` ped, `marcas` mar, `pedidos` pe
+WHERE pe.idmarca = mar.idmarca
+AND ped.idfacturapedido = '$idfacturapedido' AND
+  ped.idpedido = pe.idpedido 
+        ";
+        }
+    if($idfacturapedido != null)
+    {
+        if($link=new BD)
+        {
+            if($link->conectar())
+            {
+                if($re = $link->consulta($sql))
+                {
+                    if($fi = mysql_fetch_array($re))
+                    {
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            if(mysql_field_type($re, $i) == "real")
+                            {
+                                $value{mysql_field_name($re, $i)}= redondear($fi[$i]);
+                            }
+                            else
+                            {
+                                $value{mysql_field_name($re, $i)}= $fi[$i];
+                            }
+                        }
+                        $dev['mensaje'] = "Existen resultados";
+                        $dev['error']   = "true";
+                        $dev['resultado'] = $value;
+                    }
+                    else
+                    {
+                        $dev['mensaje'] = "No se encontro datos en la consulta";
+                        $dev['error']   = "false";
+                        $dev['resultado'] = "";
+                    }
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No se pudo conectar a la BD";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "El codigo de producto es nulo";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+
+function CargarFacturarPedido($callback, $_dc, $idconfirmarpedido, $return = false){
+
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+$sql1= "SELECT estado
+            FROM
+              confirmarpedidos
+            WHERE
+              idconfirmarpedido = '$idconfirmarpedido'";
+$result2 = findBySqlReturnCampoUnique($sql1, true, true, "estado");
+  $estadopedido = $result2['resultado'];
+  $est='COMPLETADO';
+if($estadopedido == $est){
+            $dev['mensaje'] = "El pedido ya fue confirmado en su totalidad ,NO SE PUEDE VOLVER A CONFIRMAR";
+                        $dev['error']   = "false";
+     //                   $dev['resultado'] = $value;
+
+     $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+            exit;
+        }
+        else{
+    $sql ="
+  SELECT
+ped.idconfirmarpedido,
+  ped.marca,
+  ped.totalpares,
+  ped.totalcajas,
+  mar.opcion,
+  ped.numeroproforma,
+pe.numeropedido,
+  ped.observacion,
+ped.montototal,
+ped.idpedido
+FROM
+  `confirmarpedidos` ped,
+`pedidos` pe,
+`marcas` mar
+WHERE
+  ped.idconfirmarpedido = '$idconfirmarpedido' AND
+  ped.idpedido = pe.idpedido AND
+  pe.idmarca = mar.idmarca
+        ";
+        }
+    if($idconfirmarpedido != null)
+    {
+        if($link=new BD)
+        {
+            if($link->conectar())
+            {
+                if($re = $link->consulta($sql))
+                {
+                    if($fi = mysql_fetch_array($re))
+                    {
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            if(mysql_field_type($re, $i) == "real")
+                            {
+                                $value{mysql_field_name($re, $i)}= redondear($fi[$i]);
+                            }
+                            else
+                            {
+                                $value{mysql_field_name($re, $i)}= $fi[$i];
+                            }
+                        }
+                        $dev['mensaje'] = "Existen resultados";
+                        $dev['error']   = "true";
+                        $dev['resultado'] = $value;
+                    }
+                    else
+                    {
+                        $dev['mensaje'] = "No se encontro datos en la consulta";
+                        $dev['error']   = "false";
+                        $dev['resultado'] = "";
+                    }
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No se pudo conectar a la BD";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "El codigo de producto es nulo";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+
+function ListarDetallePedidoConfirmado($start, $limit, $sort, $dir, $callback, $_dc, $idconfirmarpedido, $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    //    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+
+    $sql ="
+SELECT
+  dtp.idpedido,
+  dtp.codigo,
+  dtp.color,
+  dtp.material,
+  dtp.costounitario AS preciounitario,
+  dtp.totalSus AS preciototal,
+  dtp.stylename,
+  dtp.linea,
+  dtp.cliente,
+  dtp.vendedor,
+  dtp.numerocajas,
+  dtp.numeropares,
+ dtp.iddetallepedido
+FROM
+  `detallepedido` dtp
+WHERE
+
+  dtp.idfacturapedido IS NULL AND
+  dtp.idconfirmarpedido = '$idconfirmarpedido'
+    $order
+";
+
+
+    //            echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $dev['totalCount'] = mysql_num_rows($re);
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                            if(mysql_field_name($re, $i) == "iddetallepedido"){
+                                $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                                $iddetallepedido = $fi[$i];
+                                $sqld = "SELECT
+                                dtpt.talla,
+                                dtpt.cantidad
+                                FROM
+                               `detallepedidotalla` dtpt
+                                WHERE
+                                dtpt.iddetallepedido = '$iddetallepedido'
+                                ";
+
+                                //                                 $value{$ii}{mysql_field_name($re, $i)}= '222';
+
+                                //                              echo   $sqld;
+                                if($re1 = $link->consulta($sqld))
+                                {
+
+                                    if($fi1 = mysql_fetch_array($re1))
+                                    {
+                                        //                                         echo "jla";
+                                        //                                        $tallas = mysql_num_rows($re1)."ll";
+                                        //                                        echo $tallas;
+                                        do{
+
+                                            for($j = 0; $j< mysql_num_fields($re1); $j++)
+                                            {
+                                                //                                                echo ".".$j;
+                                                $value{$ii}{$fi1[0]}= $fi1[1];
+                                                //                                               $value{$ii}{mysql_field_name($re1, $j)}= '222';
+                                            }
+                                        }while($fi1 = mysql_fetch_array($re1));
+
+
+
+                                    }
+                                    //                            $id
+                                    //                            $value{$ii}{mysql_field_name($re, $i)}= '222';
+
+                                }
+                            }
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function CargarConfirmarPedido($callback, $_dc, $idpedido, $return = false){
+
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+     $sql1= "SELECT totalpares,totalcajas,estado
+            FROM
+              pedidos
+            WHERE
+              idpedido = '$idpedido'";
+$result2 = findBySqlReturnCampoUnique($sql1, true, true, "estado");
+  $estadopedido = $result2['resultado'];
+  $est='COMPLETADO';
+if($estadopedido == $est){
+            $dev['mensaje'] = "El pedido ya fue confirmado en su totalidad ,NO SE PUEDE VOLVER A CONFIRMAR";
+                        $dev['error']   = "false";
+     //                   $dev['resultado'] = $value;
+
+     $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+            exit;
+        }
+        else{
+
+    $sql ="
+  SELECT
+ped.idpedido,
+  mar.nombre AS marca,
+  ped.totalpares,
+  ped.totalcajas,
+  mar.opcion,
+  ped.numeropedido AS numeropedido,
+  ped.observacion
+FROM
+  `pedidos` ped,
+  `marcas` mar
+WHERE
+  ped.idpedido = '$idpedido' AND
+  ped.idmarca = mar.idmarca
+        ";
+
+        }
+  if($idpedido != null)
+    {
+        if($link=new BD)
+        {
+            if($link->conectar())
+            {
+                if($re = $link->consulta($sql))
+                {
+                    if($fi = mysql_fetch_array($re))
+                    {
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            if(mysql_field_type($re, $i) == "real")
+                            {
+                                $value{mysql_field_name($re, $i)}= redondear($fi[$i]);
+                            }
+                            else
+                            {
+                                $value{mysql_field_name($re, $i)}= $fi[$i];
+                            }
+                        }
+                        $dev['mensaje'] = "Existen resultados";
+                        $dev['error']   = "true";
+                        $dev['resultado'] = $value;
+                    }
+                    else
+                    {
+                        $dev['mensaje'] = "No se encontro datos en la consulta";
+                        $dev['error']   = "false";
+                        $dev['resultado'] = "";
+                    }
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No se pudo conectar a la BD";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "El codigo de producto es nulo";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function ListarDetallePedido($start, $limit, $sort, $dir, $callback, $_dc, $idpedido, $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    //    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+
+    $sql ="
+SELECT 
+  dtp.idpedido,
+  dtp.codigo,
+  dtp.color,
+  dtp.material,
+  dtp.costounitario AS preciounitario,
+  dtp.totalSus AS preciototal,
+  dtp.stylename,
+  dtp.linea,
+  dtp.cliente,
+  dtp.vendedor,
+  dtp.numerocajas,
+  dtp.numeropares,
+ dtp.iddetallepedido
+FROM
+  `detallepedido` dtp
+WHERE
+
+  dtp.idconfirmarpedido IS NULL AND
+  dtp.idpedido = '$idpedido'
+    $order
+";
+
+
+    //            echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $dev['totalCount'] = mysql_num_rows($re);
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                            if(mysql_field_name($re, $i) == "iddetallepedido"){
+                                $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                                $iddetallepedido = $fi[$i];
+                                $sqld = "SELECT
+                                dtpt.talla,
+                                dtpt.cantidad
+                                FROM
+                               `detallepedidotalla` dtpt
+                                WHERE
+                                dtpt.iddetallepedido = '$iddetallepedido'
+                                ";
+
+                                //                                 $value{$ii}{mysql_field_name($re, $i)}= '222';
+
+                                //                              echo   $sqld;
+                                if($re1 = $link->consulta($sqld))
+                                {
+
+                                    if($fi1 = mysql_fetch_array($re1))
+                                    {
+                                        //                                         echo "jla";
+                                        //                                        $tallas = mysql_num_rows($re1)."ll";
+                                        //                                        echo $tallas;
+                                        do{
+
+                                            for($j = 0; $j< mysql_num_fields($re1); $j++)
+                                            {
+                                                //                                                echo ".".$j;
+                                                $value{$ii}{$fi1[0]}= $fi1[1];
+                                                //                                               $value{$ii}{mysql_field_name($re1, $j)}= '222';
+                                            }
+                                        }while($fi1 = mysql_fetch_array($re1));
+
+
+
+                                    }
+                                    //                            $id
+                                    //                            $value{$ii}{mysql_field_name($re, $i)}= '222';
+
+                                }
+                            }
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function getSqlNewFacturapedido($idfacturapedido, $numerofactura, $numeroproforma, $estado, $numero, $idpedido, $observacion, $responsable, $totalsus, $totalcajas, $totalpares, $montotal, $hora, $marca, $fecha, $return){
+$setC[0]['campo'] = 'idfacturapedido';
+$setC[0]['dato'] = $idfacturapedido;
+$setC[1]['campo'] = 'numerofactura';
+$setC[1]['dato'] = $numerofactura;
+$setC[2]['campo'] = 'numeroproforma';
+$setC[2]['dato'] = $numeroproforma;
+$setC[3]['campo'] = 'estado';
+$setC[3]['dato'] = $estado;
+$setC[4]['campo'] = 'numero';
+$setC[4]['dato'] = $numero;
+$setC[5]['campo'] = 'idpedido';
+$setC[5]['dato'] = $idpedido;
+$setC[6]['campo'] = 'observacion';
+$setC[6]['dato'] = $observacion;
+$setC[7]['campo'] = 'responsable';
+$setC[7]['dato'] = $responsable;
+$setC[8]['campo'] = 'totalsus';
+$setC[8]['dato'] = $totalsus;
+$setC[9]['campo'] = 'totalcajas';
+$setC[9]['dato'] = $totalcajas;
+$setC[10]['campo'] = 'totalpares';
+$setC[10]['dato'] = $totalpares;
+$setC[11]['campo'] = 'montotal';
+$setC[11]['dato'] = $montotal;
+$setC[12]['campo'] = 'hora';
+$setC[12]['dato'] = $hora;
+$setC[13]['campo'] = 'marca';
+$setC[13]['dato'] = $marca;
+$setC[14]['campo'] = 'fecha';
+$setC[14]['dato'] = $fecha;
+$sql2 = generarInsertValues($setC);
+return "INSERT INTO facturapedido ".$sql2;
+}
+
+function GuardarPedidoFacturado($callback, $_dc, $resultado, $return = false){
+
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+    $numeroA = findUltimoID("facturapedido", "numero", true);
+    $numero = $numeroA['resultado'] +1;
+    $idfacturapedido="fac-".$numero;
+    $pedido = $resultado->pedido;
+    //echo $pedido;
+    $numeroproforma = $pedido->numeroproforma;
+
+ //   echo $numeropedido;
+    $estado = "ACTIVO";
+    $hora = date("H:i:s");
+    if($pedido->fecha == ""){
+        $fecha = date("Y-m-d");
+    }
+    else{
+        $fecha = $pedido->fecha;
+    }
+    if($pedido->fechasalida == ""){
+        $fecha = date("Y-m-d");
+    }
+    else{
+        $fechasalida = $pedido->fechasalida;
+    }
+    $totalpares = $pedido->totalpares;
+    $totalcajas = $pedido->totalcajas;
+    $responsable = $_SESSION['idusuario'];
+    $idmarca = $pedido->idmarca;
+    $observacion = $pedido->descripcion;
+    $numerofactura = $pedido->numerofactura;
+    $montototal = $pedido->preciototal;
+    $observacion = $pedido->observacion;
+    $idpedido = $pedido->idpedido;
+    $montosus = $pedido->preciototal;
+    $marca = $pedido->marca;
+     $sql1= "SELECT idmarca  FROM marcas WHERE
+                nombre LIKE '$marca'";
+$result1 = findBySqlReturnCampoUnique($sql1, true, true, "idmarca");
+  $idmarca = $result1['resultado'];
+
+    $sql[] = getSqlNewFacturapedido($idfacturapedido, $numerofactura, $numeroproforma, $estado, $numero,$idpedido, $observacion, $responsable, $montosus, $totalcajas, $totalpares, $montosus, $hora, $marca, $fechasalida, $return);
+
+    $detalles = $resultado->detalle;
+    for($j=0;$j<count($detalles);$j++){
+        $detalle = $detalles[$j];
+        $iddetallepedido = $detalle->iddetallepedido;
+        $sql[] = getSqlUpdateDetallepedido($iddetallepedido,$numerocajas,$numeropares,$cliente,$vendedor,$idmodelo,$numero,$color,$material,$totalSus,$costounitario,$stylename,$linea,$idpedido,$codigo,$idconfirmarpedido,$idfacturapedido,$idkardexalmacen, $return);
+    }
+
+    $estado1='EN PROCESO';
+    $estado2='COMPLETADO';
+    $sql1= "SELECT totalpares,totalcajas
+            FROM
+              confirmarpedidos
+            WHERE
+              idpedido = '$idpedido'";
+$result1 = findBySqlReturnCampoUnique($sql1, true, true, "totalpares");
+  $totalparespedido = $result1['resultado'];
+    $totalparesconfirmados =$pedido->totalpares;
+    if($totalparesconfirmados < $totalparespedido){
+    $sql[] = "UPDATE  confirmarpedidos SET  estado='$estado1'";
+    }
+    if($totalparesconfirmados == $totalparespedido)
+    {
+    $sql[] = "UPDATE  confirmarpedidos SET  estado='$estado2'";
+    }
+       // MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se registro correctamente";
+        $dev['error'] = "true";
+        $dev['resultado'] = "";
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error ";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function getSqlNewConfirmarpedidos($idconfirmarpedido, $numerofactura, $numeroproforma, $responsable, $estado, $numero, $idpedido, $observacion, $montosus, $fecha, $hora, $totalcajas, $totalpares, $montototal, $marca, $return){
+    $setC[0]['campo'] = 'idconfirmarpedido';
+    $setC[0]['dato'] = $idconfirmarpedido;
+    $setC[1]['campo'] = 'numerofactura';
+    $setC[1]['dato'] = $numerofactura;
+    $setC[2]['campo'] = 'numeroproforma';
+    $setC[2]['dato'] = $numeroproforma;
+    $setC[3]['campo'] = 'responsable';
+    $setC[3]['dato'] = $responsable;
+    $setC[4]['campo'] = 'estado';
+    $setC[4]['dato'] = $estado;
+    $setC[5]['campo'] = 'numero';
+    $setC[5]['dato'] = $numero;
+    $setC[6]['campo'] = 'idpedido';
+    $setC[6]['dato'] = $idpedido;
+    $setC[7]['campo'] = 'observacion';
+    $setC[7]['dato'] = $observacion;
+    $setC[8]['campo'] = 'montosus';
+    $setC[8]['dato'] = $montosus;
+    $setC[9]['campo'] = 'fecha';
+    $setC[9]['dato'] = $fecha;
+    $setC[10]['campo'] = 'hora';
+    $setC[10]['dato'] = $hora;
+    $setC[11]['campo'] = 'totalcajas';
+    $setC[11]['dato'] = $totalcajas;
+    $setC[12]['campo'] = 'totalpares';
+    $setC[12]['dato'] = $totalpares;
+    $setC[13]['campo'] = 'montototal';
+    $setC[13]['dato'] = $montototal;
+    $setC[14]['campo'] = 'marca';
+    $setC[14]['dato'] = $marca;
+    $sql2 = generarInsertValues($setC);
+    return "INSERT INTO confirmarpedidos ".$sql2;
+}
+
+function GuardarPedidoConfirmado($callback, $_dc, $resultado, $return = false){
+//MOD1
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+
+
+
+    $numeroA = findUltimoID("confirmarpedidos", "numero", true);
+    $numero = $numeroA['resultado'] +1;
+    $idconfirmarpedido="conf-".$numero;
+    $pedido = $resultado->pedido;
+    //echo $pedido;
+    $numeropedido = $pedido->numeropedido;
+
+ //   echo $numeropedido;
+    $estado = "ACTIVO";
+    $hora = date("H:i:s");
+    if($pedido->fecha == ""){
+        $fecha = date("Y-m-d");
+    }
+    else{
+        $fecha = $pedido->fecha;
+    }
+    $totalpares = $pedido->totalpares;
+    $totalcajas = $pedido->totalcajas;
+    $responsable = $_SESSION['idusuario'];
+    $idmarca = $pedido->idmarca;
+    $observacion = $pedido->descripcion;
+    $numeroproforma = $pedido->numeroproforma;
+    $montototal = $pedido->preciototal;
+    $observacion = $pedido->observacion;
+    $idpedido = $pedido->idpedido;
+    $montosus = $pedido->preciototal;
+    $marca = $pedido->marca;
+    $sql1= "SELECT totalpares,totalcajas
+            FROM
+              pedidos
+            WHERE
+              idpedido = '$idpedido'";
+$result1 = findBySqlReturnCampoUnique($sql1, true, true, "totalpares");
+  $totalparespedido = $result1['resultado'];
+   $sql[] = getSqlNewConfirmarpedidos($idconfirmarpedido, $numerofactura, $numeroproforma, $responsable, $estado, $numero, $idpedido, $observacion, $montosus, $fecha, $hora, $totalcajas, $totalpares, $montototal, $marca, $return);
+
+    $detalles = $resultado->detalle;
+    for($j=0;$j<count($detalles);$j++){
+        $detalle = $detalles[$j];
+        $iddetallepedido = $detalle->iddetallepedido;
+        $totalpares = $detalle->totalpares;
+        $totalcajas = $detalle->totalcajas;
+
+        $sql[] = getSqlUpdateDetallepedido($iddetallepedido,$totalpares,$totalcajas,$cliente,$vendedor,$idmodelo,$numero,$color,$material,$totalSus,$costounitario,$stylename,$linea,$idpedido,$codigo,$idconfirmarpedido,$idfacturapedido,$idkardexalmacen, $return);
+    }
+    $estado1='EN PROCESO';
+    $estado2='COMPLETADO';
+    
+    $totalparesconfirmados =$pedido->totalpares;
+    if($totalparesconfirmados < $totalparespedido){
+    $sql[] = "UPDATE  pedidos SET  estado='$estado1'";
+    }
+    if($totalparesconfirmados == $totalparespedido)
+    {
+    $sql[] = "UPDATE  pedidos SET  estado='$estado2'";
+    }
+         // MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se registro correctamente";
+        $dev['error'] = "true";
+        $dev['resultado'] = "";
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error ";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function GuardarPedidoDesglozado($callback, $_dc, $resultado, $return = false){
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+    $detalles = $resultado->detalles;
+    $idpedidodetalle1 = $detalles[0]->iddetallepedido;
+    $sqldetalle = "
+SELECT
+  det.numerocajas,
+  det.numeropares,
+  det.cliente,
+  det.vendedor,
+  det.idmodelo,
+  det.color,
+  det.material,
+  det.totalSus,
+  det.costounitario,
+  det.stylename,
+  det.linea,
+  det.idpedido,
+  det.codigo,
+
+FROM
+  `detallepedido` det
+WHERE
+  det.iddetallepedido = '$idpedidodetalle1'
+";
+    $clienteA = findBySqlReturnCampoUnique($sqldetalle, true, true, "cliente");
+    $cliente = $clienteA['resultado'];
+    $vendedorA = findBySqlReturnCampoUnique($sqldetalle, true, true, "vendedor");
+    $vendedor = $vendedorA['resultado'];
+    $colorA = findBySqlReturnCampoUnique($sqldetalle, true, true, "color");
+    $color = $colorA['resultado'];
+    $materialA = findBySqlReturnCampoUnique($sqldetalle, true, true, "material");
+    $material = $materialA['resultado'];
+    $stylenameA = findBySqlReturnCampoUnique($sqldetalle, true, true, "stylename");
+    $stylename = $stylenameA['resultado'];
+    $lineaA = findBySqlReturnCampoUnique($sqldetalle, true, true, "linea");
+    $linea = $lineaA['resultado'];
+    $idpedidoA = findBySqlReturnCampoUnique($sqldetalle, true, true, "idpedido");
+    $idpedido = $idpedidoA['resultado'];
+    $codigoA = findBySqlReturnCampoUnique($sqldetalle, true, true, "codigo");
+    $codigo = $codigoA['resultado'];
+    $idmodeloA = findBySqlReturnCampoUnique($sqldetalle, true, true, "idmodelo");
+    $idmodelo = $idmodeloA['resultado'];
+    $numeroD = findUltimoID("detallepedido", "numero", true);
+    $numerodetalle = $numeroD['resultado'] +1;
+    for($j=0;$j<count($detalles);$j++){
+        $detalle = $detalles[$j];
+        $opcion = $detalle->opcion;
+        $iddetallepedido = "dpe-".$numerodetalle;
+        $numerocajas = $detalle->numerocajas;
+        $numeropares = $detalle->numeropares;
+        $sql[] = getSqlNewDetallepedido($iddetallepedido, $numerocajas, $numeropares, $cliente, $vendedor, $idmodelo, $numerodetalle, $color, $material, 0, 0, $stylename, $linea,$idpedido,$codigo,"","", $return);
+        $numerodetalle++;
+
+        if($opcion == 'americano'){
+            for($i=1;$i<=12;$i++){
+                $cantidad1 = $detalle->$i;
+                $im = $i."m";
+                $cantidadm = $detalle->$im;
+
+                if($cantidad1 !=0){
+
+                    $talla = $i;
+                    $sql[]= getSqlNewDetallepedidotalla($iddetallepedidotalla, $idmodelo, $talla, $cantidad1, $iddetallepedido, $return);
+                    //
+                    //               $sql[]= getSqlNewDetalleingresotalla($iddetalleingresotalla, $talla, $idmodelo, $iddetalleingreso, $cantidad1, false);
+
+                }
+                if($cantidadm !=0){
+
+                    $talla = $i."m";
+                    $sql[]= getSqlNewDetallepedidotalla($iddetallepedidotalla, $idmodelo, $talla, $cantidadm, $iddetallepedido, $return);
+                    //
+                    //               $sql[]= getSqlNewDetalleingresotalla($iddetalleingresotalla, $talla, $idmodelo, $iddetalleingreso, $cantidad1, false);
+
+                }
+            }
+
+        }
+        else{
+
+
+            for($i=14;$i<=45;$i++){
+                $cantidad1 = $detalle->$i;
+                if($cantidad1 !=0){
+
+                    $talla = $i;
+                    $sql[]= getSqlNewDetallepedidotalla($iddetallepedidotalla, $idmodelo, $talla, $cantidad1, $iddetallepedido, $return);
+                    //                $sql[]= getSqlNewDetalleingresotalla($iddetalleingresotalla, $talla, $idmodelo, $iddetalleingreso, $cantidad1, false);
+
+                }
+            }
+        }
+
+    }
+    $sql[] = getSqlDeleteDetallepedidotallaByDetallePedido($iddetallepedido);
+    $sql[] = getSqlDeleteDetallepedido($iddetallepedido);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se actualizo correctamente";
+        $dev['error'] = "true";
+        $dev['resultado'] = "";
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al actulizar";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+
+function ListarPedidosConfirmados($start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    else{
+        $sort = "fecha";
+        $dir = "DESC";
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+    if($where == null || $where == "")
+    {
+
+        $sql = "
+     SELECT pe.idconfirmarpedido, pe.numerofactura, pe.numeroproforma, pe.fecha,pe.observacion,SUM( dp.numerocajas ) AS totalcajas, SUM( dp.numeropares ) AS totalpares,
+pe.responsable, pe.montototal, pe.estado, pe.marca, ma.opcion
+FROM `confirmarpedidos` pe, `pedidos` ped, `marcas` ma,detallepedido dp
+WHERE pe.idconfirmarpedido = dp.idconfirmarpedido AND pe.idpedido = ped.idpedido
+AND ped.idmarca = ma.idmarca AND pe.estado != 'COMPLETADO' AND dp.idfacturapedido IS NULL GROUP BY pe.idconfirmarpedido $order LIMIT $start,$limit ";
+
+
+
+    }
+    else
+    {
+        $sql = "
+SELECT pe.idconfirmarpedido, pe.numerofactura, pe.numeroproforma, pe.fecha,pe.observacion,SUM( dp.numerocajas ) AS totalcajas, SUM( dp.numeropares ) AS totalpares,
+pe.responsable, pe.montototal, pe.estado, pe.marca, ma.opcion
+FROM `confirmarpedidos` pe, `pedidos` ped, `marcas` ma,detallepedido dp
+WHERE pe.idconfirmarpedido = dp.idconfirmarpedido AND pe.idpedido = ped.idpedido
+AND ped.idmarca = ma.idmarca AND $where GROUP BY pe.idconfirmarpedido
+        $order LIMIT $start,$limit";
+
+    }
+           // echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    $dev1 = NumeroTuplas($sql);
+    $dev['totalCount'] = $dev1['resultado'];
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+    }
+}
+function ListarPedidosFacturados($start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    else{
+        $sort = "fecha";
+        $dir = "DESC";
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+    if($where == null || $where == "")
+    {
+
+
+        $sql = "
+SELECT pe.idfacturapedido, pe.numerofactura, pe.numeroproforma, pe.fecha, pe.observacion,  SUM( dp.numerocajas ) AS totalcajas, SUM( dp.numeropares ) AS totalpares, pe.responsable, pe.montotal AS montototal, pe.estado, pe.marca, ma.opcion
+FROM `facturapedido` pe, `pedidos` ped, `marcas` ma,detallepedido dp
+WHERE pe.idfacturapedido = dp.idfacturapedido
+AND pe.idpedido = ped.idpedido
+AND ped.idmarca = ma.idmarca AND pe.estado != 'COMPLETADO' AND dp.idkardexalmacen IS NULL GROUP BY pe.idfacturapedido $order LIMIT $start,$limit ";
+
+
+
+    }
+    else
+    {
+        $sql = "
+SELECT pe.idfacturapedido, pe.numerofactura, pe.numeroproforma, pe.fecha, pe.observacion,  SUM( dp.numerocajas ) AS totalcajas, SUM( dp.numeropares ) AS totalpares, pe.responsable, pe.montotal AS montototal, pe.estado, pe.marca, ma.opcion
+FROM `facturapedido` pe, `pedidos` ped, `marcas` ma,detallepedido dp
+WHERE pe.idfacturapedido = dp.idfacturapedido
+AND pe.idpedido = ped.idpedido
+AND ped.idmarca = ma.idmarca AND $where
+        GROUP BY pe.idfacturapedido $order LIMIT $start,$limit";
+
+    }
+      //     echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    $dev1 = NumeroTuplas($sql);
+    $dev['totalCount'] = $dev1['resultado'];
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+    }
+}
+?>

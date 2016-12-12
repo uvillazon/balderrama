@@ -1,0 +1,449 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.system;
+
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Position;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.DateField;
+import com.gwtext.client.widgets.form.Field;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.form.event.TextFieldListenerAdapter;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import org.balderrama.client.util.Conector;
+import org.balderrama.client.util.Utils;
+
+/**
+ *
+ * @author buggy
+ */
+public class EditarEmpleadoForm extends Window {
+
+    private final int ANCHO = 500;
+    private final int ALTO = 250;
+    private final AnchorLayoutData ANCHO_LAYOUT_DATA = new AnchorLayoutData("90%");
+    private final int WINDOW_PADDING = 5;
+    private FormPanel formPanel;
+    private TextField tex_codigoE;
+    private TextField tex_nombreE;
+    private TextField tex_apellidoE;
+    private TextField tex_telefonoE;
+    private TextField tex_celularE;
+    private TextField tex_direccionE;
+    private TextField tex_email;
+    private DateField dat_fechaini;
+    private ComboBox com_ciudadE;
+ //     private ComboBox com_tienda;
+    private ComboBox com_estadoE;
+    private ComboBox com_tipoEmpleado;
+//    private Panel formpanel;
+    private Button but_aceptarP;
+    private Button but_cancelarP;
+    private String idEmpleado;
+    private String codigoE;
+    private String nombreE;
+    private String ApellidoE;
+    private String idciudadE;
+    private String telefonoE;
+    private String celularE;
+    private String emailE;
+    private String direccionE;
+    private String tipoEmpleado;
+     private String nombretienda;
+    private String estadoE;
+    private String fechainicio;
+//    private String estadoC;
+    private Object[][] ciudadM;
+    private Object[][] cargoM;
+     //   private Object[][] tiendaM;
+    private String[] tipoempleadoM;
+    private String[] estadoM;
+    private boolean nuevo;
+    private Empleado padre;
+
+    public EditarEmpleadoForm(String idempleado, String codigo, String nombre, String apellido, String ciudad, String telefono, String celular, String direccion, String tipoempleado, String email, String fechaini,String nomtienda, Object[][] Cargos, Object[][] ciudades, Empleado padre) {
+        //com.google.gwt.user.client.Window.alert("Cuantas veces");
+        this.idEmpleado = idempleado;
+        this.codigoE = codigo;
+        this.nombreE = nombre;
+        this.ApellidoE = apellido;
+        this.celularE = celular;
+        this.telefonoE = telefono;
+        this.tipoEmpleado = tipoempleado;
+        this.idciudadE = ciudad;
+        this.direccionE = direccion;
+        this.fechainicio = fechaini;
+            this.nombretienda = nomtienda;
+
+        this.emailE = email;
+        this.tipoempleadoM = new String[]{"V", "M", "P"};
+
+        this.ciudadM = ciudades;
+        this.cargoM = Cargos;
+       //  this.tiendaM = tiendas;
+        this.estadoM = new String[]{"Activo", "Inactivo"};
+
+
+        this.padre = padre;
+
+        String nombreBoton1 = "Guardar";
+        String nombreBoton2 = "Cancelar";
+        String tituloTabla = "Registrar nuevo Empleado";
+
+        if (idEmpleado != null) {
+            nombreBoton1 = "Modificar";
+            tituloTabla = "Editar Empleado";
+            nuevo = false;
+        } else {
+            this.idEmpleado = "nuevo";
+            nuevo = true;
+
+        }
+
+        setId("win-Empleados");
+        but_aceptarP = new Button(nombreBoton1, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                if (nuevo == false) {
+                    GuardarEditarEmpleado();
+                } else {
+                    GuardarNuevoEmpleado();
+                }
+            }
+        });
+        but_cancelarP = new Button(nombreBoton2, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                EditarEmpleadoForm.this.close();
+                EditarEmpleadoForm.this.setModal(false);
+            //formulario = null;
+            }
+        });
+
+        setTitle(tituloTabla);
+        setAutoHeight(true);
+        setAutoWidth(true);
+        setLayout(new FitLayout());
+        setPaddings(WINDOW_PADDING);
+        setButtonAlign(Position.CENTER);
+        addButton(but_aceptarP);
+        addButton(but_cancelarP);
+
+        setCloseAction(Window.CLOSE);
+        setPlain(true);
+        formPanel = new FormPanel();
+        formPanel.setBaseCls("x-plain");
+
+        tex_codigoE = new TextField("Codigo", "codigo", 100);
+        tex_codigoE.setMaxLength(6);
+        tex_nombreE = new TextField("Nombres", "nombre", 200);
+        tex_apellidoE = new TextField("Apellidos", "apellido", 200);
+        tex_telefonoE = new TextField("Telefono", "telefono", 200);
+//        tex_telefonoE.
+        tex_direccionE = new TextField("Direccion", "direccion", 200);
+
+        tex_email = new TextField("E-mail", "email", 200);
+        tex_celularE = new TextField("Celular", "celular", 200);
+        dat_fechaini = new DateField("Fecha Inicio", "fechainicio", 200);
+        dat_fechaini.setFormat("Y-m-d");
+        dat_fechaini.setReadOnly(true);
+
+
+
+        com_ciudadE = new ComboBox("Ciudad", "idciudad");
+        com_ciudadE.setReadOnly(true);
+//        com_estadoE = new ComboBox("Estado", "estado");
+        com_tipoEmpleado = new ComboBox("Tipo Personal", "tipo");
+        com_tipoEmpleado.setReadOnly(true);
+     //    com_tienda = new ComboBox("Tienda", "tienda");
+       // com_tipoEmpleado.setReadOnly(true);
+//        com_estadoC = new ComboBox("Estado", "estado");
+
+
+
+
+
+
+
+        formPanel.add(tex_codigoE);
+        formPanel.add(com_ciudadE);
+        formPanel.add(com_tipoEmpleado);
+   //     formPanel.add(com_tienda);
+        formPanel.add(tex_nombreE);
+        formPanel.add(tex_apellidoE);
+        formPanel.add(tex_telefonoE);
+        formPanel.add(tex_celularE);
+        formPanel.add(tex_direccionE);
+      //  formPanel.add(tex_email);
+        formPanel.add(dat_fechaini);
+
+//        formPanel.add(com_estadoC, ANCHO_LAYOUT_DATA);
+
+
+
+        add(formPanel);
+        initCombos();
+        initValues();
+        addListenerskey();
+    }
+
+    
+private void addListenerskey() {
+
+    tex_codigoE.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                  com_ciudadE.focus();
+
+                }
+            }
+
+        });
+           com_ciudadE.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                  com_tipoEmpleado.focus();
+
+                }
+            }
+
+        });
+com_tipoEmpleado.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                    tex_nombreE.focus();
+                //  GuardarEditarCliente(e);
+                }
+            }
+        });
+ 
+  tex_nombreE.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                //     tex_montoPapeleta.focus();
+                  tex_apellidoE.focus();
+                }
+            }
+        });
+        tex_apellidoE.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                //     tex_montoPapeleta.focus();
+                  tex_telefonoE.focus();
+                }
+            }
+        });
+         tex_telefonoE.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                //     tex_montoPapeleta.focus();
+                  tex_celularE.focus();
+                }
+            }
+        });
+         tex_celularE.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                //     tex_montoPapeleta.focus();
+                  tex_direccionE.focus();
+                }
+            }
+        });
+         tex_direccionE.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                //     tex_montoPapeleta.focus();
+                 GuardarNuevoEmpleado();
+                }
+            }
+        });
+
+
+}
+
+    private void initCombos() {
+
+
+        SimpleStore proveedorStore = new SimpleStore(new String[]{"idciudad", "nombre"}, ciudadM);
+        proveedorStore.load();
+
+
+        com_ciudadE.setMinChars(1);
+        com_ciudadE.setFieldLabel("Ciudad");
+        com_ciudadE.setStore(proveedorStore);
+        com_ciudadE.setValueField("idciudad");
+        com_ciudadE.setDisplayField("nombre");
+        com_ciudadE.setForceSelection(true);
+        com_ciudadE.setMode(ComboBox.LOCAL);
+        com_ciudadE.setEmptyText("Buscar Ciudad");
+        com_ciudadE.setLoadingText("buscando...");
+        com_ciudadE.setTypeAhead(true);
+        com_ciudadE.setSelectOnFocus(true);
+        com_ciudadE.setWidth(200);
+
+        com_ciudadE.setHideTrigger(true);
+
+
+
+        SimpleStore proveedorStore1 = new SimpleStore(new String[]{"idtipoempleado", "nombre", "codigo"}, cargoM);
+        proveedorStore1.load();
+
+        com_tipoEmpleado.setMinChars(1);
+        com_tipoEmpleado.setFieldLabel("Cargo");
+        com_tipoEmpleado.setStore(proveedorStore1);
+        com_tipoEmpleado.setValueField("idtipoempleado");
+
+        com_tipoEmpleado.setDisplayField("nombre");
+
+        com_tipoEmpleado.setForceSelection(true);
+        com_tipoEmpleado.setMode(ComboBox.LOCAL);
+        com_tipoEmpleado.setEmptyText("Buscar Cargo");
+        com_tipoEmpleado.setLoadingText("buscando...");
+        com_tipoEmpleado.setTypeAhead(true);
+        com_tipoEmpleado.setSelectOnFocus(true);
+        com_tipoEmpleado.setWidth(200);
+
+        com_tipoEmpleado.setHideTrigger(true);
+
+
+//        SimpleStore estadosStore = new SimpleStore("estados", estadoM);
+//        estadosStore.load();
+//        com_estadoE.setDisplayField("estados");
+//        com_estadoE.setStore(estadosStore);
+//
+//        SimpleStore tiposStore = new SimpleStore("tipos", tipoempleadoM);
+//        tiposStore.load();
+//        com_tipoEmpleado.setDisplayField("tipos");
+//        com_tipoEmpleado.setStore(tiposStore);
+
+    }
+
+    private void initValues() {
+        tex_codigoE.setValue(codigoE);
+        tex_nombreE.setValue(nombreE);
+        tex_apellidoE.setValue(ApellidoE);
+        tex_telefonoE.setValue(telefonoE);
+        tex_celularE.setValue(celularE);
+        tex_direccionE.setValue(direccionE);
+        tex_email.setValue(emailE);
+        com_ciudadE.setValue(idciudadE);
+        com_tipoEmpleado.setValue(tipoEmpleado);
+        dat_fechaini.setValue(fechainicio);
+    //     com_tienda.setValue(nombretienda);
+
+    }
+
+    public Button getBut_aceptar() {
+        return but_aceptarP;
+    }
+
+    public Button getBut_cancelar() {
+        return but_cancelarP;
+    }
+
+    public void GuardarNuevoEmpleado() {
+        String cadena = "php/Empleado.php?funcion=GuardarNuevoEmpleado";
+        cadena =
+                cadena + "&" + formPanel.getForm().getValues();
+        final Conector conec = new Conector(cadena, false);
+        Utils.setErrorPrincipal("Guardando...", "guardar");
+        try {
+            conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                public void onResponseReceived(Request request, Response response) {
+                    String data = response.getText();
+                    JSONValue jsonValue = JSONParser.parse(data);
+                    JSONObject jsonObject;
+
+                    if ((jsonObject = jsonValue.isObject()) != null) {
+                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                        if (errorR.equalsIgnoreCase("true")) {
+                            Utils.setErrorPrincipal(mensajeR, "mensaje");
+                            close();
+
+                            padre.reload();
+                        } else {
+                            Utils.setErrorPrincipal(mensajeR, "error");
+                        }
+
+                    }
+
+                }
+
+                public void onError(Request request, Throwable exception) {
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            });
+
+        } catch (RequestException ex) {
+            ex.getMessage();
+            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+        }
+
+    }
+
+    public void GuardarEditarEmpleado() {
+        String cadena = "php/Empleado.php?funcion=GuardarEditarEmpleado&idempleado=" + idEmpleado;
+        cadena = cadena + "&" + formPanel.getForm().getValues();
+        final Conector conec = new Conector(cadena, false);
+        Utils.setErrorPrincipal("Actualizando...", "guardar");
+        try {
+            conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                public void onResponseReceived(Request request, Response response) {
+                    String data = response.getText();
+                    JSONValue jsonValue = JSONParser.parse(data);
+                    JSONObject jsonObject;
+
+                    if ((jsonObject = jsonValue.isObject()) != null) {
+                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                        if (errorR.equalsIgnoreCase("true")) {
+                            Utils.setErrorPrincipal(mensajeR, "mensaje");
+                            close();
+                            padre.reload();
+                        } else {
+                            Utils.setErrorPrincipal(mensajeR, "error");
+                        }
+
+                    }
+                }
+
+                public void onError(Request request, Throwable exception) {
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            });
+
+        } catch (RequestException ex) {
+            ex.getMessage();
+            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+        }
+    }
+}

@@ -1,0 +1,302 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package org.balderrama.client.sistemadetalle;
+
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Position;
+import com.gwtext.client.data.Record;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.form.Checkbox;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.Field;
+import com.gwtext.client.widgets.form.FieldSet;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.form.TextArea;
+import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import com.gwtext.client.widgets.layout.HorizontalLayout;
+import com.gwtext.client.widgets.layout.VerticalLayout;
+import com.gwtext.client.widgets.form.event.ComboBoxListenerAdapter;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import org.balderrama.client.util.Conector;
+import org.balderrama.client.util.Utils;
+
+/**
+ *
+ * @author buggy
+ */
+public class EditarMarcaDetalle extends Window {
+
+    private final int ANCHO = 600;
+    private final int ALTO = 300;
+    private final AnchorLayoutData ANCHO_LAYOUT_DATA = new AnchorLayoutData("90%");
+    private final int WINDOW_PADDING = 5;
+    private FormPanel formPanel;
+//    private FormPanel formPanelEtapas;
+    private TextField tex_codigoM;
+    private TextField tex_stylenameM;
+    private TextField tex_marcaM;
+    private TextField tex_colorM;
+    private TextField tex_materialM;
+    private TextField tex_detalleM;
+    private TextField tex_imagenM;
+//    private TextField tex_
+   
+    private Button but_aceptarP;
+    private Button but_cancelarP;
+    private String stylenameM;
+    private String colorM;
+    private String materialM;
+    private String codigoM;
+    private String imagenM;
+//    private String idcategoriaM;
+    private String detalleM;
+  
+    private String marca;
+//    private Object[][] categoriasM;
+    private Object[][] ciudadesM;
+//    private Object[][] almancenesM;
+//    private Object[][] etapasM;
+//    private String[] mostrarM;
+//    private String[] origenM;
+    private String[] tallaM;
+    private boolean nuevo;
+    private MarcaDetalle padre;
+
+    public EditarMarcaDetalle(String codigoM,String stylenameM,String marca,   String colorM, String materialM, String detalle,String imagenM, MarcaDetalle padre) {
+        //com.google.gwt.user.client.Window.alert("Cuantas veces");
+        this.stylenameM = stylenameM;
+        this.codigoM = codigoM;
+        this.colorM = colorM;
+        this.detalleM = detalle;
+        this.materialM = materialM;
+      
+
+       
+        this.imagenM = imagenM;
+        this.marca = marca;
+
+        this.tallaM = new String[]{"14-38", "33-45"};
+
+       // this.almancenesM = almacenes;
+
+
+        this.padre = padre;
+
+        String nombreBoton1 = "Guardar";
+        String nombreBoton2 = "Cancelar";
+        String tituloTabla = "Registar nueva Marca";
+
+        if (stylenameM != null) {
+            nombreBoton1 = "Modificar";
+            tituloTabla = "Editar Modelo";
+            nuevo = false;
+        } else {
+            this.stylenameM = "nuevo";
+            nuevo = true;
+
+        }
+
+        setId("win-Marcas");
+        but_aceptarP = new Button(nombreBoton1, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                if (nuevo == false) {
+                    GuardarEditarMarca();
+                } else {
+                    GuardarNuevaMarca();
+                }
+            }
+        });
+        but_cancelarP = new Button(nombreBoton2, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                EditarMarcaDetalle.this.close();
+                EditarMarcaDetalle.this.setModal(false);
+            //formulario = null;
+            }
+        });
+
+        setTitle(tituloTabla);
+        setWidth(ANCHO);
+        setMinWidth(ANCHO);
+        setLayout(new FitLayout());
+        setPaddings(WINDOW_PADDING);
+        setButtonAlign(Position.CENTER);
+        addButton(but_aceptarP);
+        addButton(but_cancelarP);
+
+        setCloseAction(Window.CLOSE);
+        setPlain(true);
+        formPanel = new FormPanel();
+        formPanel.setBaseCls("x-plain");
+        formPanel.setLabelWidth(ANCHO - 400);
+        formPanel.setWidth(ANCHO);
+        formPanel.setHeight(ALTO);
+
+        tex_codigoM = new TextField("Codigo", "codigo");
+        tex_stylenameM = new TextField("Stylename", "stylename");
+
+//        tex_codigobarraM = new TextField(tituloTabla, nombreM, ANCHO, talla)
+        tex_marcaM = new TextField("Marca", "marca");
+        tex_marcaM.setReadOnly(true);
+//        tex_marcaM.setMaxLength(2);
+//        tex_marcaM.setMaxLengthText("El tamano permitido para codigos de barra es de tamano 2");
+
+        tex_colorM = new TextField("Color", "color");
+        tex_materialM = new TextField("Material", "matrial");
+        tex_detalleM = new TextField("Detalle", "detalle");
+        tex_imagenM = new TextField("Imagen", "imagen");
+
+      
+
+
+
+        formPanel.setLabelWidth(ANCHO - 400 - 5);
+        formPanel.add(tex_codigoM, ANCHO_LAYOUT_DATA);
+        formPanel.add(tex_stylenameM, ANCHO_LAYOUT_DATA);
+        formPanel.add(tex_marcaM, ANCHO_LAYOUT_DATA);
+        formPanel.add(tex_colorM, ANCHO_LAYOUT_DATA);
+        formPanel.add(tex_materialM, ANCHO_LAYOUT_DATA);
+        formPanel.add(tex_detalleM, ANCHO_LAYOUT_DATA);
+        formPanel.add(tex_imagenM,ANCHO_LAYOUT_DATA);
+
+        add(formPanel);
+       // initCombos();
+        initValues();
+    }
+
+
+
+    
+
+    private void initValues() {
+        tex_codigoM.setValue(codigoM);
+        tex_stylenameM.setValue(stylenameM);
+        tex_marcaM.setValue(marca);
+        tex_colorM.setValue(colorM);
+        tex_materialM.setValue(materialM);
+        tex_detalleM.setValue(detalleM);
+        tex_imagenM.setValue(imagenM);
+//        com_categoriaM.setValue(idcategoriaM);
+      
+
+    }
+
+    public Button getBut_aceptar() {
+        return but_aceptarP;
+    }
+
+    public Button getBut_cancelar() {
+        return but_cancelarP;
+    }
+
+    public void GuardarNuevaMarca() {
+        String cadena = "php/MarcaDetalle.php?funcion=GuardarNuevaMarca";
+        cadena =
+                cadena + "&" + formPanel.getForm().getValues();
+        final Conector conec = new Conector(cadena, false);
+        Utils.setErrorPrincipal("Guardando el nuevo proveedor", "guardar");
+        try {
+            conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                public void onResponseReceived(Request request, Response response) {
+                    String data = response.getText();
+                    JSONValue jsonValue = JSONParser.parse(data);
+                    JSONObject jsonObject;
+
+                    if ((jsonObject = jsonValue.isObject()) != null) {
+                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                        if (errorR.equalsIgnoreCase("true")) {
+                            Utils.setErrorPrincipal(mensajeR, "mensaje");
+                            close();
+
+                            padre.reload();
+                        } else {
+                            Utils.setErrorPrincipal(mensajeR, "error");
+                        }
+
+                    }
+
+                }
+
+                public void onError(Request request, Throwable exception) {
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            });
+
+        } catch (RequestException ex) {
+            ex.getMessage();
+            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+        }
+
+    }
+
+    public void GuardarEditarMarca() {
+        String cadena = "php/ModeloDetalle.php?funcion=GuardarEditarModelo";
+        cadena =
+                cadena + "&" + formPanel.getForm().getValues();
+        final Conector conec = new Conector(cadena, false);
+        Utils.setErrorPrincipal("Actualizando los cambios en Proveedor", "guardar");
+        try {
+            conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                public void onResponseReceived(Request request, Response response) {
+                    String data = response.getText();
+                    JSONValue jsonValue = JSONParser.parse(data);
+                    JSONObject jsonObject;
+
+                    if ((jsonObject = jsonValue.isObject()) != null) {
+                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                        if (errorR.equalsIgnoreCase("true")) {
+                            Utils.setErrorPrincipal(mensajeR, "mensaje");
+                            close();
+
+                            padre.reload();
+                        } else {
+                            Utils.setErrorPrincipal(mensajeR, "error");
+                        }
+
+                    }
+                }
+
+                public void onError(Request request, Throwable exception) {
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            });
+
+        } catch (RequestException ex) {
+            ex.getMessage();
+            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+        }
+    }
+
+    public int redondedo(float f) {
+        int aux = (int) f;
+        if (aux < f) {
+            aux = aux + 1;
+        }
+        return aux;
+    }
+}

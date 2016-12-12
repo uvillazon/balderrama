@@ -1,0 +1,785 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.modelo;
+
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Window;
+import com.gwtext.client.data.DataProxy;
+import com.gwtext.client.data.FieldDef;
+import com.gwtext.client.data.JsonReader;
+import com.gwtext.client.data.Record;
+import com.gwtext.client.data.RecordDef;
+import com.gwtext.client.data.ScriptTagProxy;
+import com.gwtext.client.data.Store;
+import com.gwtext.client.data.StringFieldDef;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Component;
+import com.gwtext.client.widgets.MessageBox;
+import com.gwtext.client.widgets.PagingToolbar;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.QuickTipsConfig;
+import com.gwtext.client.widgets.ToolbarButton;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.event.PanelListenerAdapter;
+import com.gwtext.client.widgets.grid.ColumnConfig;
+import com.gwtext.client.widgets.grid.ColumnModel;
+import com.gwtext.client.widgets.grid.EditorGridPanel;
+import com.gwtext.client.widgets.grid.GridPanel;
+import com.gwtext.client.widgets.grid.event.GridCellListenerAdapter;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.ExtElement;
+import com.gwtext.client.core.UrlParam;
+import com.gwtext.client.util.Format;
+import com.gwtext.client.data.Record;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.data.Store;
+import com.gwtext.client.util.Format;
+import com.gwtext.client.widgets.QuickTips;
+import com.gwtext.client.widgets.grid.BaseColumnConfig;
+import com.gwtext.client.widgets.grid.CheckboxColumnConfig;
+import com.gwtext.client.widgets.grid.CheckboxSelectionModel;
+import com.gwtext.client.widgets.grid.RowNumberingColumnConfig;
+import org.balderrama.client.util.Conector;
+import com.gwtext.client.widgets.form.Checkbox;
+import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.grid.CellMetadata;
+import com.gwtext.client.widgets.grid.Renderer;
+import com.gwtext.client.widgets.grid.event.GridRowListenerAdapter;
+import org.balderrama.client.util.ReporteMediaCartaChorroWindow;
+import org.balderrama.client.util.Utils;
+import com.gwtext.client.widgets.Toolbar;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.event.TextFieldListenerAdapter;
+import com.gwtext.client.widgets.form.Field;
+import org.balderrama.client.util.BuscadorToolBar;
+
+/**
+ *
+ * @author buggy
+ */
+public class Modelo extends Panel {
+
+    private GridPanel grid;
+    private ColumnConfig idColumn;
+    private ColumnConfig codigoColumn;
+    private ColumnConfig marcaColumn;
+    private ColumnConfig coleccionColumn;
+    private ColumnConfig estiloColumn;
+    private ColumnConfig imagenColumn;
+    private ColumnConfig lineaColumn;
+    private ColumnConfig styleColumn;
+    private final int ANCHO = Utils.getScreenWidth() - 24;
+    private final int ALTO = Utils.getScreenHeight() - 270;
+    private ToolbarButton nuevoModelo;
+    private ToolbarButton editarModelo;
+    private ToolbarButton eliminarModelo;
+//    private ToolbarButton nuevoLinea;
+//    private Toolbar too_busquedaPBW;
+    private ToolbarButton buscar;
+//    private TextField tex_modeloPBU;
+//    private TextField tex_colorPBU;
+//    private TextField tex_materialPBU;
+//    private TextField tex_marcaPBU;
+    private BuscadorToolBar buscadorToolBar;
+    protected String buscarModelo;
+    protected String buscarMarca;
+    protected String buscarColeccion;
+    protected String buscarLinea;
+ private String idmarca;
+    private String nombrem;
+    private TextField tex_codigo;
+    private TextField tex_marca;
+    private TextField tex_anio;
+    private Toolbar too_busquedaCBWW;
+    private ToolbarButton too_buscarCBWW;
+    private ComboBox com_marca;
+   private ComboBox com_coleccion;
+   private ComboBox com_estilo;
+   private ComboBox com_linea;
+
+    private ModeloNuevoMarcaColeccion formulario1;
+    private ToolbarButton reporteModelo;
+    private ToolbarButton codlineaMarca;
+    private ToolbarButton codcolorMarca;
+    private ToolbarButton codmaterialMarca;
+    private ToolbarButton configurarMarca;
+    private ToolbarButton cargarimagenMarca;
+    // private EditarMarcaForm formulario;
+    protected ExtElement ext_element;
+    CheckboxSelectionModel cbSelectionModel;
+    Store store;
+    private String selecionado;
+    private BaseColumnConfig[] columns;
+    ColumnModel columnModel;
+   Object[][] coleccionM;
+      Object[][] marcaM;
+         Object[][] lineaM;
+
+    public Modelo(Object[][] marca,Object[][] linea,Object[][] coleccion) {
+        this.setClosable(true);
+        this.setId("TPfun1502");
+        this.coleccionM = coleccion;
+        this.lineaM = linea;
+         this.marcaM = marca;
+        setIconCls("tab-icon");
+        setAutoScroll(false);
+        setTitle("Modelos");
+        onModuleLoad();
+    }
+
+    public void onModuleLoad() {
+  //DataProxy dataProxy = new ScriptTagProxy("php/Coleccion.php?funcion=ListarColecciones&buscarmarca=" + idmarca + "&sort=estado&dir=DESC");
+        DataProxy dataProxy = new ScriptTagProxy("php/Modelo.php?funcion=ListaModelo&sort=coleccion&dir=DESC");
+        final RecordDef recordDef = new RecordDef(new FieldDef[]{
+                    new StringFieldDef("idmodelo"),
+                    new StringFieldDef("modelo"),
+                    new StringFieldDef("marca"),
+                    new StringFieldDef("coleccion"),
+                    new StringFieldDef("linea"),
+                    new StringFieldDef("stylename"),
+                    new StringFieldDef("detalle"),
+                    new StringFieldDef("imagen")
+                });
+        JsonReader reader = new JsonReader(recordDef);
+        reader.setRoot("resultado");
+        reader.setTotalProperty("totalCount");
+
+        store = new Store(dataProxy, reader, true);
+
+        /* columnade idusuario  */
+        idColumn = new ColumnConfig("IdModelo", "idmodelo", 300, true);
+
+        /* columnade nombre  */
+        codigoColumn = new ColumnConfig("Modelo", "modelo", (ANCHO / 7), true);
+        codigoColumn.setId("expandible");
+        marcaColumn = new ColumnConfig("Marca", "marca", (ANCHO / 7), true);
+        coleccionColumn = new ColumnConfig("Coleccion", "coleccion", (ANCHO / 7), true);
+        lineaColumn = new ColumnConfig("Linea", "linea", (ANCHO / 7), true);
+        estiloColumn = new ColumnConfig("Detalle", "detalle", (ANCHO / 7), true);
+        styleColumn = new ColumnConfig("Stylename", "stylename", (ANCHO / 7), true);
+
+        imagenColumn = new ColumnConfig("Imagen", "imagen", (ANCHO / 7), true, new Renderer() {
+
+            public String render(Object value, CellMetadata cellMetadata,
+                    Record record, int rowIndex, int colNum, Store store) {
+                return Format.format("<img src=\"images/jpg.php?name={0}&size=100\">",
+                        new String[]{record.getAsString("imagen")});
+            }
+        }, "imagen");
+        cbSelectionModel = new CheckboxSelectionModel();
+        columns = new BaseColumnConfig[]{
+                    new RowNumberingColumnConfig(),
+                    new CheckboxColumnConfig(cbSelectionModel),
+                    //column ID is company which is later used in setAutoExpandColumn
+                    //                    idColumn,
+                    codigoColumn,
+                    marcaColumn,
+                    coleccionColumn, //                    cateoriaColumn,
+                    estiloColumn,
+                    lineaColumn,
+                    //
+                    styleColumn,
+                    //        descripcionColumn, //                    proveedorColumn,
+                    imagenColumn
+                };
+        columnModel = new ColumnModel(columns);
+        grid = new EditorGridPanel();
+
+
+        grid.setId("grid-lista-Modelos");
+
+        grid.setWidth(ANCHO);
+
+        grid.setHeight(ALTO);
+
+        grid.setTitle("Lista de Modelos");
+
+
+
+        grid.setStore(store);
+
+        grid.setColumnModel(columnModel);
+
+        grid.setTrackMouseOver(true);
+
+        grid.setAutoExpandColumn("expandible");
+
+        grid.setLoadMask(true);
+
+        grid.setSelectionModel(cbSelectionModel);
+
+        grid.setFrame(true);
+
+        grid.setStripeRows(true);
+
+        grid.setIconCls("grid-icon");
+
+        grid.addGridRowListener(new GridRowListenerAdapter() {
+
+            @Override
+            public void onRowDblClick(GridPanel grid, int rowIndex, EventObject e) {
+//                Window.alert("En contruccion: aqui saldra la informacion del rol en detalle");
+                Record[] records = cbSelectionModel.getSelections();
+
+
+                selecionado = records[0].getAsString("idlinea");
+                String enlTemp = "funcion=reportelineaHTML&idlinea=" + selecionado;
+                verReporte(enlTemp);
+//                    Window.alert(enlTemp);
+            }
+        });
+
+//        grid.a
+
+
+        nuevoModelo = new ToolbarButton("Nuevo");
+
+        nuevoModelo.setEnableToggle(true);
+        QuickTipsConfig tipsConfig1 = new QuickTipsConfig();
+
+        tipsConfig1.setText("Nuevo Modelo");
+
+        nuevoModelo.setTooltip(tipsConfig1);
+
+
+        editarModelo = new ToolbarButton("Editar");
+
+        editarModelo.setEnableToggle(true);
+        QuickTipsConfig tipsConfig = new QuickTipsConfig();
+
+        tipsConfig.setText("Editar Modelo");
+
+        editarModelo.setTooltip(tipsConfig);
+
+        eliminarModelo = new ToolbarButton("Eliminar");
+
+        eliminarModelo.setEnableToggle(true);
+        QuickTipsConfig tipsConfig2 = new QuickTipsConfig();
+
+        tipsConfig2.setText("Eliminar Modelo(s)");
+
+        eliminarModelo.setTooltip(tipsConfig2);
+
+        reporteModelo = new ToolbarButton("Eliminar");
+
+        reporteModelo = new ToolbarButton("Reporte");
+        reporteModelo.setEnableToggle(true);
+        QuickTipsConfig tipsConfig3 = new QuickTipsConfig();
+
+        tipsConfig3.setText("Reporte)");
+
+        reporteModelo.setTooltip(tipsConfig3);
+
+
+        PagingToolbar pagingToolbar = new PagingToolbar(store);
+
+        pagingToolbar.setPageSize(100);
+
+        pagingToolbar.setDisplayInfo(true);
+
+        pagingToolbar.setDisplayMsg("Mostrando {0} - {1} de {2}");
+
+        pagingToolbar.setEmptyMsg("No topics to display");
+
+//        pagingToolbar.addSeparator();
+//
+//        pagingToolbar.addButton(nuevoLinea);
+
+        pagingToolbar.addSeparator();
+
+        pagingToolbar.addButton(nuevoModelo);
+
+        pagingToolbar.addSeparator();
+
+        pagingToolbar.addButton(editarModelo);
+
+        pagingToolbar.addSeparator();
+
+        pagingToolbar.addButton(eliminarModelo);
+
+        pagingToolbar.addSeparator();
+
+        pagingToolbar.addButton(reporteModelo);
+
+      too_busquedaCBWW = new Toolbar();
+
+       // tex_codigo = new TextField("Codigo", "codigo");
+        tex_marca = new TextField("Modelo", "modelo");
+       // com_cliente = new TextField("Anio", "anio");
+        com_coleccion = new ComboBox("Coleccion", "coleccion");
+        com_linea = new ComboBox("Linea", "linea");
+com_marca = new ComboBox("Marca", "marca");
+
+        too_buscarCBWW = new ToolbarButton("Buscar");
+        too_buscarCBWW.setPressed(true);
+
+        too_busquedaCBWW.addText("Modelo:");
+       too_busquedaCBWW.addField(tex_marca);
+  too_busquedaCBWW.addText("Marca:");
+ too_busquedaCBWW.addField(com_marca);
+        too_busquedaCBWW.addText("Coleccion:");
+ too_busquedaCBWW.addField(com_coleccion);
+  too_busquedaCBWW.addText("Linea:");
+too_busquedaCBWW.addField(com_linea);
+
+
+        too_busquedaCBWW.addButton(too_buscarCBWW);
+        grid.setTopToolbar(too_busquedaCBWW);
+
+
+        grid.setBottomToolbar(pagingToolbar);
+        add(grid);
+        //panel.add(grid);
+
+        aniadirListenersMarcas();
+ recuperarAlmacenes();
+          aniadirListenersBuscador();
+        aniadirListenersBuscadoresText();
+    //RootPanel.get().add(panel);
+    }
+
+    public GridPanel getGrid() {
+        return grid;
+    }
+
+    public void setGrid(GridPanel grid) {
+        this.grid = grid;
+    }
+
+    public void aniadirListenersBuscador() {
+
+                too_buscarCBWW.addListener(new ButtonListenerAdapter() {
+
+                    @Override
+                    public void onClick(Button button, EventObject e) {
+                        Utils.setErrorPrincipal("Se realizo la busqueda", "mensaje");
+                        buscarSegunParametros();
+                    }
+                });
+            }
+
+         public void aniadirListenersBuscadoresText() {
+ tex_marca.addListener(new TextFieldListenerAdapter() {
+
+                    @Override
+                    public void onSpecialKey(Field field, EventObject e) {
+                        if (e.getKey() == EventObject.ENTER) {
+                            buscarSegunParametros();
+                        //com.google.gwt.user.client.Window.alert("apreto el enter en el campo 2");
+                        }
+                    }
+                });
+                com_coleccion.addListener(new TextFieldListenerAdapter() {
+
+                    @Override
+                    public void onSpecialKey(Field field, EventObject e) {
+                        if (e.getKey() == EventObject.ENTER) {
+                            buscarSegunParametros();
+                        //com.google.gwt.user.client.Window.alert("apreto el enter en el campo 2");
+                        }
+                    }
+                });
+ com_linea.addListener(new TextFieldListenerAdapter() {
+
+                    @Override
+                    public void onSpecialKey(Field field, EventObject e) {
+                        if (e.getKey() == EventObject.ENTER) {
+                            buscarSegunParametros();
+                        //com.google.gwt.user.client.Window.alert("apreto el enter en el campo 2");
+                        }
+                    }
+                });
+com_marca.addListener(new TextFieldListenerAdapter() {
+
+                    @Override
+                    public void onSpecialKey(Field field, EventObject e) {
+                        if (e.getKey() == EventObject.ENTER) {
+                            buscarSegunParametros();
+                        //com.google.gwt.user.client.Window.alert("apreto el enter en el campo 2");
+                        }
+                    }
+                });
+            }
+  public void buscarSegunParametros() {
+                store.reload(new UrlParam[]{new UrlParam("start", 0), new UrlParam("limit", 100),
+                            new UrlParam("buscarmodelo", tex_marca.getText()),
+                             new UrlParam("buscarcoleccion", com_coleccion.getText()),
+                              new UrlParam("buscarlinea", com_linea.getText()),
+                            new UrlParam("buscarmarca", com_marca.getText())}, false);
+            }
+    public void reload() {
+        store.reload();
+        grid.reconfigure(store, columnModel);
+        grid.getView().refresh();
+    }
+
+  
+
+//    public void buscarSegunParametros() {
+//        buscarModelo = buscadorToolBar.getItemsText1().getText();
+//        buscarColeccion = buscadorToolBar.getItemsText2().getText();
+//        buscarLinea = buscadorToolBar.getItemsText3().getText();
+//        buscarMarca = buscadorToolBar.getItemsText4().getText();
+//        store.reload(new UrlParam[]{
+//                    new UrlParam("start", 0), new UrlParam("limit", 100),
+//                    new UrlParam("buscarmodelo", buscarModelo),
+//                    new UrlParam("buscarmarca", buscarMarca),
+//                    new UrlParam("buscarcoleccion", buscarColeccion),
+//                    new UrlParam("buscarlinea", buscarLinea),}, false);
+//    }
+
+    private void cargarDatosEditarMarca(String idmodelo) {
+        String enlace = "php/Modelo.php?funcion=BuscarLineaColeccionMarcaPorId&idmodelo=" + idmodelo;
+        Utils.setErrorPrincipal("Cargando parametros del modelo", "cargar");
+        final Conector conec = new Conector(enlace, false);
+        {
+
+            try {
+                conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                    public void onResponseReceived(Request request, Response response) {
+                        String data = response.getText();
+                        JSONValue jsonValue = JSONParser.parse(data);
+                        JSONObject jsonObject;
+
+                        if ((jsonObject = jsonValue.isObject()) != null) {
+                            String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                            String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                            if (errorR.equalsIgnoreCase("true")) {
+                                Utils.setErrorPrincipal(mensajeR, "mensaje");
+
+                                JSONValue marcaV = jsonObject.get("resultado");
+                                JSONObject marcaO;
+
+                                if ((marcaO = marcaV.isObject()) != null) {
+                                    Object[][] marcas = Utils.getArrayOfJSONObject(marcaO, "marcaM", new String[]{"idmarca", "nombre"});
+                                    Object[][] lineas = Utils.getArrayOfJSONObject(marcaO, "lineaM", new String[]{"idlinea", "idcoleccion", "codigo"});
+                                    Object[][] colecciones = Utils.getArrayOfJSONObject(marcaO, "coleccionM", new String[]{"idcoleccion", "codigo", "idmarca"});
+
+                                    String codigo = Utils.getStringOfJSONObject(marcaO, "codigo");
+                                    String idmarca = Utils.getStringOfJSONObject(marcaO, "idmarca");
+                                    String stylename = Utils.getStringOfJSONObject(marcaO, "stylename");
+                                    String idcoleccion = Utils.getStringOfJSONObject(marcaO, "idcoleccion");
+                                    String idlinea = Utils.getStringOfJSONObject(marcaO, "idlinea");
+//                                    String marca = Utils.getStringOfJSONObject(marcaO, "marca");
+                                    String detalle = Utils.getStringOfJSONObject(marcaO, "detalle");
+                                    String idmodelo = Utils.getStringOfJSONObject(marcaO, "idmodelo");
+                                    String imagen = Utils.getStringOfJSONObject(marcaO, "imagen");
+//                                    String codigobarra = Utils.getStringOfJSONObject(marcaO, "codigobarra");
+                                    formulario1 = null;
+//                                                                          (idmodelo,idmarca, idlinea,idcoleccion, codigo,style,detalle,imagen,Object[][] lineas, Object[][] coleccion,Object[][] marcas, Modelo padre)
+                                    formulario1 = new ModeloNuevoMarcaColeccion(idmodelo, idmarca, idlinea, idcoleccion, codigo, stylename, detalle, imagen, marcas, colecciones, lineas, Modelo.this);
+
+//                                    formulario = new EditarModeloForm         (idmodelo, idmarca, marca, idlinea, idcoleccion, stylename, detalle, imagen, lineas, colecciones, Modelo.this);
+                                    formulario1.show();
+                                } else {
+                                    MessageBox.alert("No Hay datos en la consulta");
+                                }
+
+                            }
+                        } else {
+                        }
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+
+                    public void onError(Request request, Throwable exception) {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+                });
+
+            } catch (RequestException e) {
+                e.getMessage();
+                MessageBox.alert("Ocurrio un error al conectarse con el SERVIDOR");
+            }
+
+        }
+    }
+
+    private void CargarDatosModeloNuevo() {
+        String enlace = "php/Modelo.php?funcion=BuscarMarcaColeccionLinea";
+        Utils.setErrorPrincipal("Cargando parametros de Nuevo Modelo", "cargar");
+        final Conector conec = new Conector(enlace, false);
+        {
+            try {
+                conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                    public void onResponseReceived(Request request, Response response) {
+                        String data = response.getText();
+                        JSONValue jsonValue = JSONParser.parse(data);
+                        JSONObject jsonObject;
+                        if ((jsonObject = jsonValue.isObject()) != null) {
+                            String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                            String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                            if (errorR.equalsIgnoreCase("true")) {
+                                Utils.setErrorPrincipal(mensajeR, "mensaje");
+
+                                JSONValue lineaV = jsonObject.get("resultado");
+                                JSONObject lineaO;
+                                if ((lineaO = lineaV.isObject()) != null) {
+                                    Object[][] lineas = Utils.getArrayOfJSONObject(lineaO, "lineaM", new String[]{"idlinea", "idcoleccion", "codigo"});
+                                    Object[][] colecciones = Utils.getArrayOfJSONObject(lineaO, "coleccionM", new String[]{"idcoleccion", "codigo", "idmarca"});
+                                    Object[][] marcas = Utils.getArrayOfJSONObject(lineaO, "marcaM", new String[]{"idmarca", "nombre"});
+
+                                    formulario1 = null;
+//                                                                               (idmodelo,idmarca, idlinea,idcoleccion, codigo,style,detalle,imagen,Object[][] lineas, Object[][] coleccion,Object[][] marcas, Modelo padre)
+                                    formulario1 = new ModeloNuevoMarcaColeccion(null, "", "", "", "", "", "", "", marcas, colecciones, lineas, Modelo.this);
+                                    formulario1.show();
+                                } else {
+                                    MessageBox.alert("No Hay datos en la consulta");
+                                }
+                            }
+                        } else {
+                        }
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+
+                    public void onError(Request request, Throwable exception) {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+                });
+
+            } catch (RequestException e) {
+                e.getMessage();
+                MessageBox.alert("Ocurrio un error al conectarse con el SERVIDOR");
+            }
+
+        }
+    }
+
+    private void aniadirListenersMarcas() {
+        //**************************************************
+        //***********ELIMINAR ROL
+        //**************************************************
+
+        eliminarModelo.addListener(new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                Record[] records = cbSelectionModel.getSelections();
+                if (records.length == 1) {
+                    selecionado = records[0].getAsString("idmodelo");
+                    MessageBox.confirm("Eliminar Modelo", "Realmente desea eliminar este Modelo??", new MessageBox.ConfirmCallback() {
+
+                        public void execute(String btnID) {
+                            if (btnID.equalsIgnoreCase("yes")) {
+                                //eliminar
+                                String enlace = "php/Modelo.php?funcion=EliminarModelo&idmodelo=" + selecionado;
+                                Utils.setErrorPrincipal("Eliminando el modelo", "cargar");
+                                final Conector conec = new Conector(enlace, false);
+                                try {
+                                    conec.getRequestBuilder().sendRequest("asdf", new RequestCallback() {
+
+                                        public void onResponseReceived(Request request, Response response) {
+                                            String data = response.getText();
+                                            JSONValue jsonValue = JSONParser.parse(data);
+                                            JSONObject jsonObject;
+                                            if ((jsonObject = jsonValue.isObject()) != null) {
+                                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                                if (errorR.equalsIgnoreCase("true")) {
+                                                    Utils.setErrorPrincipal(mensajeR, "mensaje");
+                                                    reload();
+                                                } else {
+                                                    //Window.alert(mensajeR);
+                                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                                }
+                                            }
+                                        }
+
+                                        public void onError(Request request, Throwable exception) {
+                                            //Window.alert("Ocurrio un error al conectar con el servidor ");
+                                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                                        }
+                                    });
+                                } catch (RequestException ex) {
+                                    //Window.alert("Ocurrio un error al conectar con el servidor");
+                                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    MessageBox.alert("No hay modelo selecionado para editar y/o selecciono mas de uno.");
+                }
+                eliminarModelo.setPressed(false);
+            }
+        });
+        //**************************************************
+        //***********NUEVA Linea
+        //**
+//        nuevoLinea.addListener(new ButtonListenerAdapter() {
+//
+//            @Override
+//            public void onClick(Button button, EventObject e) {
+//                CargarDatosNuevaMarca();
+//            }
+//        });
+        nuevoModelo.addListener(new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                CargarDatosModeloNuevo();
+            }
+        });
+        //**************************************************
+        //***********EDITAR ROL
+        //**************************************************
+        editarModelo.addListener(
+                new ButtonListenerAdapter() {
+
+                    @Override
+                    public void onClick(Button button, EventObject e) {
+                        Record[] records = cbSelectionModel.getSelections();
+                        if (records.length == 1) {
+                            String idmodelo = records[0].getAsString("idmodelo");
+                            cargarDatosEditarMarca(idmodelo);
+                        } else {
+
+                            Utils.setErrorPrincipal("Por favor seleccione un modelo para editar", "error");
+                        }
+
+                    }
+                });
+        reporteModelo.addListener(
+                new ButtonListenerAdapter() {
+
+                    @Override
+                    public void onClick(Button button, EventObject e) {
+                        Record[] records = cbSelectionModel.getSelections();
+
+                        if (records.length == 1) {
+                            selecionado = records[0].getAsString("idlinea");
+                            String enlTemp = "funcion=reportelineaHTML&idlinea=" + selecionado;
+                            verReporte(enlTemp);
+
+                        } else {
+                            MessageBox.alert("No hay marca selecionado para ver el reporte.");
+                        }
+
+                        reporteModelo.setPressed(false);
+                    }
+                });
+
+
+
+        //**************************************************
+        //*********** LISTENERS DE LA TABLA
+        //**************************************************
+        grid.addListener(
+                new PanelListenerAdapter() {
+
+                    @Override
+                    public void onRender(Component component) {
+                        store.load(0, 100);
+                    }
+                });
+        grid.addGridCellListener(
+                new GridCellListenerAdapter() {
+
+                    @Override
+                    public void onCellClick(GridPanel grid, int rowIndex, int colIndex, EventObject e) {
+                        if (grid.getColumnModel().getDataIndex(colIndex).equals("indoor")) {
+                            Record record = grid.getStore().getAt(rowIndex);
+                            record.set("indoor", !record.getAsBoolean("indoor"));
+                        }
+
+                    }
+                });
+
+    }
+
+    public String getLinksaveUpdate(
+            String idrol, String nombre, String estado, Object[] seleccionados) {
+        String dev = "";
+        if (seleccionados.length >= 1) {
+
+            if (idrol == null) {
+                idrol = "nuevo";
+            }
+
+            JSONObject todos = new JSONObject();
+            todos.put("idrol", new JSONString(idrol));
+            todos.put("nombre", new JSONString(nombre));
+            todos.put("estado", new JSONString(estado));
+            JSONArray funcS = new JSONArray();
+            for (int i = 0; i <
+                    seleccionados.length; i++) {
+                Checkbox che = (Checkbox) seleccionados[i];
+                funcS.set(i, new JSONString(che.getId().substring(1)));
+            }
+            todos.put("funciones", funcS);
+            dev = todos.toString();
+        } else {
+            Utils.setErrorPrincipal("Por favor seleccione por lo menos una funcion", "error");
+        }
+
+        return dev;
+    }
+
+       private void recuperarAlmacenes() {
+       // SimpleStore tiposStore = new SimpleStore("anio", clienteM);
+       // tiposStore.load();
+
+        com_coleccion.setDisplayField("codigo");
+        com_coleccion.setValueField("idcoleccion");
+        com_coleccion.setForceSelection(true);
+        com_coleccion.setMinChars(1);
+        com_coleccion.setMode(ComboBox.LOCAL);
+        com_coleccion.setFieldLabel("codigo");
+        com_coleccion.setEmptyText("Seleccione una Coleccion");
+        com_coleccion.setLoadingText("Buscando");
+        com_coleccion.setTypeAhead(true);
+        com_coleccion.setSelectOnFocus(true);
+        com_coleccion.setHideTrigger(true);
+       // SimpleStore proveedorStore = new SimpleStore("anio", coleccionMO);
+        SimpleStore proveedorStore = new SimpleStore(new String[]{"idcoleccion", "codigo"}, coleccionM);
+        proveedorStore.load();
+        com_coleccion.setStore(proveedorStore);
+
+
+  com_linea.setDisplayField("codigo");
+        com_linea.setValueField("idlinea");
+        com_linea.setForceSelection(true);
+        com_linea.setMinChars(1);
+        com_linea.setMode(ComboBox.LOCAL);
+        com_linea.setFieldLabel("codigo");
+        com_linea.setEmptyText("Seleccione una linea");
+        com_linea.setLoadingText("Buscando");
+        com_linea.setTypeAhead(true);
+        com_linea.setSelectOnFocus(true);
+        com_linea.setHideTrigger(true);
+        SimpleStore proveedorStore1 = new SimpleStore(new String[]{"idlinea", "codigo"}, lineaM);
+        proveedorStore1.load();
+        com_linea.setStore(proveedorStore1);
+
+         com_marca.setDisplayField("nombre");
+        com_marca.setValueField("idmarca");
+        com_marca.setForceSelection(true);
+        com_marca.setMinChars(1);
+        com_marca.setMode(ComboBox.LOCAL);
+        com_marca.setFieldLabel("nombre");
+        com_marca.setEmptyText("Seleccione una marca");
+        com_marca.setLoadingText("Buscando");
+        com_marca.setTypeAhead(true);
+        com_marca.setSelectOnFocus(true);
+        com_marca.setHideTrigger(true);
+        SimpleStore proveedorStore2 = new SimpleStore(new String[]{"idmarca", "nombre"}, marcaM);
+        proveedorStore2.load();
+        com_marca.setStore(proveedorStore2);
+
+    }
+    private void verReporte(String enlace) {
+        ReporteMediaCartaChorroWindow print = new ReporteMediaCartaChorroWindow(enlace);
+        print.show();
+    }
+}

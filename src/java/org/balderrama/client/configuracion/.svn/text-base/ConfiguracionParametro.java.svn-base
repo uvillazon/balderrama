@@ -1,0 +1,242 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.configuracion;
+
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.ExtElement;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.PagingToolbar;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.TabPanel;
+import com.gwtext.client.widgets.ToolbarButton;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.layout.FormLayout;
+import org.balderrama.client.util.Utils;
+
+/**
+ *
+ * @author Edwin
+ */
+public class ConfiguracionParametro extends FormPanel {
+
+    protected ExtElement ext_element1012;
+    private TextField presupuestoVentaD;
+    private TextField intensivoVentaD;
+    private TextField presupuestoVentaS;
+    private TextField intensivoVentaS;
+    private TextField descuentoMaximo;
+    private TextField tipoCambio;
+    private TextField comisionEmpresa;
+    private final int ANCHO = Utils.getScreenWidth() - 34;
+    private final int ALTO = Utils.getScreenHeight() - 270;
+    private ToolbarButton nuevoConfImp;
+    private Button nuevo;
+    protected ExtElement ext_elementUsuario;
+    PagingToolbar pagingToolbarConfImp;
+    String selecionadoConfImp = "";
+    private TabPanel tabPanel;
+//    private ConfImpWindow imprimir;
+    //tercer tab
+
+    public ConfiguracionParametro() {
+
+        this.setClosable(true);
+        this.setId("TPfun1012");
+        setIconCls("tab-icon");
+        setAutoScroll(true);
+        setTitle("Configuracion");
+        onModuleLoad();
+        setLabelWidth(200);
+    }
+
+    public void onModuleLoad() {
+
+        setFrame(true);
+      
+        setBorder(true);
+        
+
+        tabPanel = new TabPanel();
+        tabPanel.setActiveTab(0);
+        tabPanel.setAutoHeight(true);
+        tabPanel.setAutoWidth(true);
+        Panel firstTab = new Panel();
+        firstTab.setTitle("Parametros  Venta a Detalle");
+        firstTab.setLayout(new FormLayout());
+        firstTab.setAutoHeight(true);
+        firstTab.setPaddings(10);
+//        firstTab.setWidth(ANCHO);
+//        firstTab.setHeight(200);
+        presupuestoVentaD = new TextField("Presupuesto Venta Diaria(Bs)", "presupuestovd", 230);
+        presupuestoVentaD.setAllowBlank(false);
+
+        intensivoVentaD = new TextField("Insentivo Venta Diaria(Bs)", "intensivovd", 230);
+        presupuestoVentaS = new TextField("Presupuesto Venta Sabado(Bs) ", "presupuestovs", 230);
+        intensivoVentaS = new TextField("Intensivo Venta Sabado(bs)", "insentivovs", 230);
+        descuentoMaximo = new TextField("Descuento Maximo/Venta ", "descuentomv", 230);
+        tipoCambio = new TextField("Tipo de Cambio($us) ", "tipoc", 230);
+        comisionEmpresa = new TextField("Comision Por Empresa(%)Sobre el Monto ", "comisione", 230);
+
+        firstTab.add(presupuestoVentaD);
+        firstTab.add(intensivoVentaD);
+        firstTab.add(presupuestoVentaS);
+        firstTab.add(intensivoVentaS);
+        firstTab.add(descuentoMaximo);
+        firstTab.add(tipoCambio);
+        firstTab.add(comisionEmpresa);
+
+        initValues();
+        tabPanel.add(firstTab);
+
+        //cantPreciosConf1050.setValue(estado);
+        objetoxSegundoTab();
+        objetoxTercerTab();
+        nuevo = new Button("Guardar Parametros");
+        Button cancel = new Button("Cancelar");
+        add(tabPanel);
+        addButton(nuevo);
+        addButton(cancel);
+        addListeners();
+
+    }
+
+    private void initValues() {
+    }
+
+    private void objetoxSegundoTab() {
+        Panel panel = new Panel();
+        panel.setBorder(false);
+        panel.setPaddings(15);
+
+        FormPanel formPanel = new FormPanel();
+        formPanel.setFrame(true);
+        formPanel.setLabelWidth(75);
+        formPanel.setBorder(false);
+
+
+        Panel firstTab = new Panel();
+        firstTab.setTitle("Perametro Creditos a Detalles");
+        firstTab.setLayout(new FormLayout());
+        firstTab.setAutoHeight(true);
+        firstTab.setPaddings(10);
+
+        TextField credito1 = new TextField("Numero Meses Credito", "mescredito1", 230);
+        credito1.setAllowBlank(false);
+//         credito1.setValue("Steve");
+        firstTab.add(credito1);
+
+        TextField importe1 = new TextField("Importe Bs", "impoort1", 230);
+
+        firstTab.add(importe1);
+
+        TextField credito2 = new TextField("Numero Meses Credito", "mescredito2", 230);
+        firstTab.add(credito2);
+
+        TextField importe2 = new TextField("Importe Bs", "importe2", 230);
+        firstTab.add(importe2);
+
+        TextField credito3 = new TextField("Numero Meses Credito", "mescredito3", 230);
+        firstTab.add(credito3);
+
+        TextField importe3 = new TextField("Importe Bs", "importe3", 230);
+        firstTab.add(importe3);
+
+        TextField credito4 = new TextField("Numero Meses Credito", "mescredito4", 230);
+        firstTab.add(credito4);
+
+        TextField importe4 = new TextField("Importe Bs", "importe4", 230);
+        firstTab.add(importe4);
+
+
+        TextField importe = new TextField("Numero Credito Permitido Por Cliente", "creditopc", 230);
+        firstTab.add(importe);
+        tabPanel.add(firstTab);
+    }
+
+    private void objetoxTercerTab() {
+        Panel panel = new Panel();
+        panel.setBorder(false);
+        panel.setPaddings(15);
+
+        FormPanel formPanel = new FormPanel();
+        formPanel.setFrame(true);
+        formPanel.setLabelWidth(75);
+        formPanel.setBorder(false);
+        formPanel.setAutoWidth(true);
+        formPanel.setAutoHeight(true);
+
+        Panel firstTab = new Panel();
+        firstTab.setTitle("Parametros Moneda");
+        firstTab.setLayout(new FormLayout());
+        firstTab.setAutoHeight(true);
+        firstTab.setPaddings(10);
+
+        TextField firstName = new TextField("Tipo Cambio", "tipocambio", 230);
+        firstName.setAllowBlank(false);
+        firstTab.add(firstName);
+
+
+        tabPanel.add(firstTab);
+    }
+
+    private void addListeners() {
+        nuevo.addListener(new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                cargarDatosNuevoConfiguracion();
+            }
+        });
+    }
+
+    private void cargarDatosNuevoConfiguracion() {
+//        imprimir = null;
+//        imprimir = new ConfImpWindow(null, null, null, null, null, null, null, null, null, null, null, null, null);
+//        imprimir.show();
+
+//        String enlace = "php/dao/ImpresionConfigurar.php?function=findJasperAlmacen";
+//        Utils.setErrorPrincipal("Cargando parametros para nuevo producto", "cargar");
+//        final Conector conec = new Conector(enlace, false);
+//
+//        try {
+//            conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+//
+//                public void onResponseReceived(Request request, Response response) {
+//                    String data = response.getText();
+//                    JSONValue jsonValue = JSONParser.parse(data);
+//                    JSONObject jsonObject;
+//                    if ((jsonObject = jsonValue.isObject()) != null) {
+//                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+//                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+//                        if (errorR.equalsIgnoreCase("true")) {
+//                            Utils.setErrorPrincipal(mensajeR, "mensaje");
+//                            Object[][] unidades = Utils.getArrayOfJSONObject(jsonObject, "unidadM", new String[]{"idunidad", "nombre"});
+//                            Object[][] paises = Utils.getArrayOfJSONObject(jsonObject, "paisM", new String[]{"idpais", "nombre"});
+//                            Object[][] marcas = Utils.getArrayOfJSONObject(jsonObject, "marcaM", new String[]{"idmarca", "nombre"});
+//                            Object[][] categorias = Utils.getArrayOfJSONObject(jsonObject, "categoriaM", new String[]{"idcategoria", "nombre"});
+//                            Object[][] subcategorias = Utils.getArrayOfJSONObject(jsonObject, "subcategoriaM", new String[]{"idsubcategoria", "nombre", "idcategoria"});
+//                            imprimir = null;
+//                            imprimir = new ConfiguracionImpresion(mensajeR);
+//                            imprimir.show();
+//
+//                        } else {
+//                            Utils.setErrorPrincipal(mensajeR, "error");
+//                        }
+//                    }
+//                }
+//
+//                public void onError(Request request, Throwable exception) {
+//                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+//                }
+//            });
+//
+//        } catch (RequestException ex) {
+//            ex.getMessage();
+//            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+//        }
+    }
+}

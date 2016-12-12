@@ -1,0 +1,50 @@
+<?php 
+session_name("balderrama");
+session_start();
+require_once("impl/Cliente.php");
+require_once("impl/Ciudad.php");
+require_once("impl/Almacen.php");
+include("impl/Utils.php");
+include("bd/bd.php");
+require_once("impl/JSON.php");
+//ubadlo
+if(permitido("fun1000", $_SESSION['codigo'])==true)
+{
+    $funcion = $_GET['funcion'];
+    if($funcion == "ListarCliente"){
+
+        ListarCliente($_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], "",false);
+    }
+    else if($funcion == "BuscarCiudadTipo"){
+        BuscarCiudadTipo($_GET['callback'], $_GET['_dc'], "",false);
+    }
+    else if($funcion =="BuscarCiudadTipoPorCliente"){
+        $idcliente = $_GET['idcliente'];
+        BuscarCiudadTipoPorCliente($idcliente,$_GET['callback'], $_GET['_dc'],false);
+    }
+    else if($funcion == "GuardarNuevoCliente"){
+        InsertarNuevoCliente();
+    }
+    else if($funcion =="GuardarEditarCliente"){
+        $idcliente=$_GET['idcliente'];
+        GuardarEditarCliente($idcliente);
+    }
+    else if($funcion =="EliminarCliente"){
+        $idcliente = $_GET['idcliente'];
+        EliminarCliente($idcliente, $_GET['callback'],$_GET['_dc'],false);
+    }
+    else{
+        echo "else";
+    }
+
+
+}
+else
+{
+    $dev['mensaje'] = "Ud no tiene privilegios para esta funcion";
+    $dev['error'] = "false";
+    $json = new Services_JSON();
+    $output = $json->encode($dev);
+    print($output);
+}
+?>

@@ -1,0 +1,12 @@
+Ok	admin	Haydee	18:43:17	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='no',fallado='0' where idalmacen='alm-3' and saldocantidad='1' ; -- 
+
+Ok	admin	Haydee	18:55:46	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='no',fallado='0' where idalmacen='alm-3' and saldocantidad='1' ; -- 
+
+Ok	admin	Haydee	18:59:25	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='no',fallado='0' where idalmacen='alm-3' and saldocantidad='1' ; -- 
+
+Ok	admin	Haydee	18:59:53	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='no',fallado='0' where idalmacen='alm-3' and saldocantidad='1' ; -- 
+
+Ok	admin	Haydee	19:12:39	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='no',fallado='0' where idalmacen='alm-3' and saldocantidad='1' ; -- 
+
+Ok	admin	Haydee	19:21:13	/mayorgeneral/php/VentaMayor.phpUPDATE kardexdetallepar SET idoperacion='no',fallado='0' where idalmacen='alm-3' and saldocantidad='1' ; -- 
+

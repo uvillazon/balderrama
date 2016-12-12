@@ -1,0 +1,298 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.sistemadetalle;
+
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Position;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import org.balderrama.client.util.Conector;
+import org.balderrama.client.util.Utils;
+
+/**
+ *
+ * @author buggy
+ */
+public class EditarNuevoMarcaDetalle extends Window {
+
+   
+    private final int WINDOW_PADDING = 5;
+    private FormPanel formPanel;
+
+    private TextField tex_codigoM;
+    private TextField tex_nombreM;
+    private TextField tex_codigobarraM;
+    private TextField tex_imagenM;
+    private ComboBox com_ciudadesM;
+
+    private ComboBox com_tallaM;
+
+    private Button but_aceptarP;
+    private Button but_cancelarP;
+    private String idmarcaDetalleM;
+    private String nombreM;
+    private String codigobarraM;
+    private String codigoM;
+    private String imagenM;
+
+    private String idciudadM;
+    private String talla;
+
+    private Object[][] ciudadesM;
+
+    private String[] tallaM;
+    private boolean nuevo;
+    private MarcaDetalle padre;
+
+    public EditarNuevoMarcaDetalle(String idmarcaM, String tallas, String codigoM, String nombreM, String codigobarraM, String imagenM, String idciudad, Object[][] ciudades, MarcaDetalle padre) {
+        //com.google.gwt.user.client.Window.alert("Cuantas veces");
+        this.idmarcaDetalleM = idmarcaM;
+        this.codigoM = codigoM;
+        this.nombreM = nombreM;
+        this.idciudadM = idciudad;
+        this.codigobarraM = codigobarraM;
+
+
+        this.ciudadesM = ciudades;
+        this.imagenM = imagenM;
+        this.talla = tallas;
+
+        this.tallaM = new String[]{"14-38", "33-45"};
+
+
+        this.padre = padre;
+
+        String nombreBoton1 = "Guardar";
+        String nombreBoton2 = "Cancelar";
+        String tituloTabla = "Registar nueva Marca";
+
+        if (idmarcaM != null) {
+            nombreBoton1 = "Modificar";
+            tituloTabla = "Editar Marca";
+            nuevo = false;
+        } else {
+            this.idmarcaDetalleM = "nuevo";
+            nuevo = true;
+
+        }
+
+        setId("win-Marcas");
+        but_aceptarP = new Button(nombreBoton1, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                if (nuevo == false) {
+                    GuardarEditarMarca();
+                } else {
+                    GuardarNuevaMarca();
+                }
+            }
+        });
+        but_cancelarP = new Button(nombreBoton2, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                EditarNuevoMarcaDetalle.this.close();
+                EditarNuevoMarcaDetalle.this.setModal(false);
+            //formulario = null;
+            }
+        });
+
+        setTitle(tituloTabla);
+        setAutoWidth(true);
+        setAutoHeight(true);
+        setLayout(new FitLayout());
+        setPaddings(WINDOW_PADDING);
+        setButtonAlign(Position.CENTER);
+        addButton(but_aceptarP);
+        addButton(but_cancelarP);
+
+        setCloseAction(Window.CLOSE);
+        setPlain(true);
+        formPanel = new FormPanel();
+        formPanel.setBaseCls("x-plain");
+
+
+        tex_codigoM = new TextField("Codigo", "codigo", 100);
+        tex_nombreM = new TextField("Nombre Marca", "nombre", 200);
+
+
+        tex_codigobarraM = new TextField("Codigo Barra", "codigobarra", 200);
+        tex_codigobarraM.setMaxLength(2);
+        tex_codigobarraM.setMaxLengthText("El tamano permitido para codigos de barra es de tamano 2");
+
+        tex_imagenM = new TextField("Path Imagen", "imagen", 200);
+
+        com_ciudadesM = new ComboBox("Ciudades", "ciudad");
+
+        com_tallaM = new ComboBox("Tallas Existentes", "talla");
+
+
+
+
+
+        formPanel.add(tex_codigoM);
+        formPanel.add(tex_nombreM);
+        formPanel.add(tex_codigobarraM);
+        formPanel.add(tex_imagenM);
+
+        formPanel.add(com_tallaM);
+        formPanel.add(com_ciudadesM);
+
+        add(formPanel);
+        initCombos();
+        initValues();
+    }
+
+    private void initCombos() {
+
+        com_ciudadesM.setValueField("idciudad");
+        com_ciudadesM.setDisplayField("nombre");
+        com_ciudadesM.setForceSelection(true);
+        com_ciudadesM.setMinChars(1);
+        com_ciudadesM.setMode(ComboBox.LOCAL);
+        com_ciudadesM.setTriggerAction(ComboBox.ALL);
+        com_ciudadesM.setEmptyText("Seleccione una Ciudad");
+        com_ciudadesM.setLoadingText("Buscando");
+        com_ciudadesM.setTypeAhead(true);
+        com_ciudadesM.setSelectOnFocus(true);
+        com_ciudadesM.setHideTrigger(false);
+        com_ciudadesM.setReadOnly(true);
+        SimpleStore proveedorStore = new SimpleStore(new String[]{"idciudad", "nombre"}, ciudadesM);
+        proveedorStore.load();
+        com_ciudadesM.setStore(proveedorStore);
+
+
+        SimpleStore tallaStore = new SimpleStore("talla", tallaM);
+        tallaStore.load();
+        com_tallaM.setDisplayField("talla");
+        com_tallaM.setStore(tallaStore);
+    }
+
+    private void initValues() {
+        tex_codigoM.setValue(codigoM);
+        tex_nombreM.setValue(nombreM);
+        tex_codigobarraM.setValue(codigobarraM);
+        tex_imagenM.setValue(imagenM);
+
+        com_ciudadesM.setValue(idciudadM);
+
+        com_tallaM.setValue(talla);
+
+
+    }
+
+    public Button getBut_aceptar() {
+        return but_aceptarP;
+    }
+
+    public Button getBut_cancelar() {
+        return but_cancelarP;
+    }
+
+    public void GuardarNuevaMarca() {
+        String cadena = "php/MarcaDetalle.php?funcion=GuardarNuevaMarca";
+        cadena =
+                cadena + "&" + formPanel.getForm().getValues();
+        final Conector conec = new Conector(cadena, false);
+        Utils.setErrorPrincipal("Guardando el nuevo proveedor", "guardar");
+        try {
+            conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                public void onResponseReceived(Request request, Response response) {
+                    String data = response.getText();
+                    JSONValue jsonValue = JSONParser.parse(data);
+                    JSONObject jsonObject;
+
+                    if ((jsonObject = jsonValue.isObject()) != null) {
+                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                        if (errorR.equalsIgnoreCase("true")) {
+                            Utils.setErrorPrincipal(mensajeR, "mensaje");
+                            close();
+
+                            padre.reload();
+                        } else {
+                            Utils.setErrorPrincipal(mensajeR, "error");
+                        }
+
+                    }
+
+                }
+
+                public void onError(Request request, Throwable exception) {
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            });
+
+        } catch (RequestException ex) {
+            ex.getMessage();
+            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+        }
+
+    }
+
+    public void GuardarEditarMarca() {
+        String cadena = "php/MarcaDetalle.php?funcion=GuardarEditarMarca&idmarca=" + idmarcaDetalleM;
+        cadena =
+                cadena + "&" + formPanel.getForm().getValues();
+        final Conector conec = new Conector(cadena, false);
+        Utils.setErrorPrincipal("Actualizando cambios", "guardar");
+        try {
+            conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                public void onResponseReceived(Request request, Response response) {
+                    String data = response.getText();
+                    JSONValue jsonValue = JSONParser.parse(data);
+                    JSONObject jsonObject;
+
+                    if ((jsonObject = jsonValue.isObject()) != null) {
+                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                        if (errorR.equalsIgnoreCase("true")) {
+                            Utils.setErrorPrincipal(mensajeR, "mensaje");
+                            close();
+
+                            padre.reload();
+                        } else {
+                            Utils.setErrorPrincipal(mensajeR, "error");
+                        }
+
+                    }
+                }
+
+                public void onError(Request request, Throwable exception) {
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            });
+
+        } catch (RequestException ex) {
+            ex.getMessage();
+            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+        }
+    }
+
+    public int redondedo(float f) {
+        int aux = (int) f;
+        if (aux < f) {
+            aux = aux + 1;
+        }
+        return aux;
+    }
+}

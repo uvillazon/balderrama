@@ -1,0 +1,363 @@
+<?php
+function ListarModeloDetalle($start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    //    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+    if($where == null || $where == "")
+    {
+        $sql ="
+SELECT
+  mad.nombre AS marca,
+  mdt.idmodelodetalle AS idmodelo,
+  mdt.codigo,
+  mdt.stylename,
+  mdt.detalle,
+  mdt.imagen,
+  mdt.precio1,
+  mdt.precio2,
+  mdt.precio3
+
+FROM
+  marcadetalle mad,
+  modelodetalle mdt
+WHERE
+  mad.idmarcadetalle = mdt.idmarcadetalle $order LIMIT $start,$limit
+
+";
+    }else{
+        $sql ="
+SELECT
+  mad.nombre AS marca,
+  mdt.idmodelodetalle AS idmodelo,
+  mdt.codigo,
+  mdt.stylename,
+  mdt.detalle,
+  mdt.imagen,
+  mdt.precio1,
+  mdt.precio2,
+  mdt.precio3
+FROM
+  marcadetalle mad,
+  modelodetalle mdt
+WHERE
+  mad.idmarcadetalle = mdt.idmarcadetalle AND mad.idmarcadetalle ='$where' $order LIMIT $start,$limit
+
+";
+    }
+//                echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $dev['totalCount'] = mysql_num_rows($re);
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function BuscarModeloPorId($idmodelo,$callback, $_dc, $return = false){
+
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+    $sql = "
+SELECT
+  mdt.idmodelodetalle,
+  mdt.idmarcadetalle,
+  mdt.codigo,
+  mdt.stylename,
+  mdt.color,
+  mdt.material,
+  mdt.detalle,
+  mdt.imagen,
+  mdt.numero,
+  mdt.precio1,
+  mdt.precio2,
+  mdt.precio3,
+  mad.nombre AS marca
+FROM
+  modelodetalle mdt,
+  `marcadetalle` mad
+WHERE
+  mdt.idmodelodetalle = '$idmodelo' AND
+  mdt.idmarcadetalle = mad.idmarcadetalle
+";
+      if($idmodelo != null)
+    {
+        if($link=new BD)
+        {
+            if($link->conectar())
+            {
+                if($re = $link->consulta($sql))
+                {
+                    if($fi = mysql_fetch_array($re))
+                    {
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            if(mysql_field_type($re, $i) == "real")
+                            {
+                                $value{mysql_field_name($re, $i)}= redondear($fi[$i]);
+                            }
+                            else
+                            {
+                                $value{mysql_field_name($re, $i)}= $fi[$i];
+                            }
+                        }
+                        $dev['mensaje'] = "Existen resultados";
+                        $dev['error']   = "true";
+                        $dev['resultado'] = $value;
+                    }
+                    else
+                    {
+                        $dev['mensaje'] = "No se encontro datos en la consulta";
+                        $dev['error']   = "false";
+                        $dev['resultado'] = "";
+                    }
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No se pudo conectar a la BD";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "El codigo de producto es nulo";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+
+
+
+    $dev['mensaje'] = "Todo Ok";
+    $dev['error']   = "true";
+    $dev['resultado'] = $value;
+
+
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function BuscarModeloDetalleporId($codigo, $callback, $_dc, $return= 'true'){
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+
+    $sql = "
+SELECT
+  md.idmodelodetalle,
+  md.idmarcadetalle,
+  md.codigo,
+  md.stylename,
+  md.color,
+  md.material,
+  md.detalle,
+  md.imagen,
+  md.numero,
+  md.precio1,
+  md.precio2,
+  md.precio3
+FROM
+  modelodetalle md
+WHERE
+  md.idmodelodetalle = '$codigo';
+";
+
+
+    if($codigo != null)
+    {
+        if($link=new BD)
+        {
+            if($link->conectar())
+            {
+                if($re = $link->consulta($sql))
+                {
+                    if($fi = mysql_fetch_array($re))
+                    {
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{mysql_field_name($re, $i)}= $fi[$i];
+
+                        }
+
+
+                        $dev['mensaje'] = "Existen resultados";
+                        $dev['error']   = "true";
+                        $dev['resultado'] = $value;
+                    }
+                    else
+                    {
+                        $dev['mensaje'] = "Vuelva a ingresar otro dato por que no se encontro datos en la CONSULTA";
+                        $dev['error']   = "false";
+                        $dev['resultado'] = "";
+                    }
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No se pudo conectar a la BD";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "El codigo de producto es nulo";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    $dev['totalCount'] = 1;
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+
+
+?>

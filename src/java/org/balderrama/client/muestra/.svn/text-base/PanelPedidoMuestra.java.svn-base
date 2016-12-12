@@ -1,0 +1,1153 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.muestra;
+
+/**
+ *
+ * @author 
+ */
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.core.RegionPosition;
+import com.gwtext.client.data.Record;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.util.DateUtil;
+import com.gwtext.client.util.JSON;
+import com.gwtext.client.widgets.MessageBox;
+import com.gwtext.client.widgets.PaddedPanel;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.DateField;
+import com.gwtext.client.widgets.form.Field;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.form.TextArea;
+import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.form.event.TextFieldListenerAdapter;
+import com.gwtext.client.widgets.grid.GridPanel;
+import com.gwtext.client.widgets.grid.event.EditorGridListenerAdapter;
+import com.gwtext.client.widgets.layout.BorderLayout;
+import com.gwtext.client.widgets.layout.BorderLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import com.gwtext.client.widgets.layout.HorizontalLayout;
+import com.gwtext.client.widgets.layout.TableLayout;
+import com.gwtext.client.widgets.layout.TableLayoutData;
+
+import java.util.Date;
+import org.balderrama.client.emergentes.SeleccionMarcaOficina;
+import org.balderrama.client.util.Conector;
+import org.balderrama.client.marca.Marca;
+import org.balderrama.client.util.KMenu;
+import org.balderrama.client.util.ReporteMediaCartaChorroWindow;
+import org.balderrama.client.util.Utils;
+//import org.balderrama.client.util.Validacion;
+
+public class PanelPedidoMuestra extends Panel {
+
+    private SeleccionMarcaOficina SM;
+    //private Panel panel;
+    private String COMPRA_DIRECTA_TABBED = "9600_venta-";
+    private TextField tex_marca;
+    private ComboBox com_modeloCV;
+    private TextField tex_numeropedido;
+    private TextField tex_modeloCP;
+    private TextField tex_totalpares;
+    private TextField tex_totalcaja;
+    private DateField dat_fecha;
+    //private ListaPedidoCalzados lista;
+    private ListaCalzadoPedido lista1;
+    boolean respuesta = false;
+    private TextArea tea_descripcion;
+    private Button but_aceptar;
+    private Button but_cancelar;
+    private Button but_limpiar;
+    public KMenu kmenu;
+    String selecionado = "";
+    String marca;
+    String idmarca;
+    String numeropedido;
+    String modelo;
+     String oficinaM;
+     String oficinaM1;
+     String oficinaM2;
+     String oficinaM3;
+     String oficinaM4;
+     String oficinaM5;
+     String oficinaM6;
+     String oficinaM7;
+     String contadorM;
+     String coleccion;
+String idoficinaM;
+     String idoficinaM1;
+     String idoficinaM2;
+     String idoficinaM3;
+     String idoficinaM4;
+     String idoficinaM5;
+     String idoficinaM6;
+     String idoficinaM7;
+
+     Object[][] clienteM;
+    Object[][] vendedorM;
+    Object[][] colorM;
+    Object[][] materialM;
+    Object[][] modeloM;
+    Object[][] lineaM;
+    String opcion;
+
+   
+    public PanelPedidoMuestra(String idmarca, String marca, String numeropedido, String opcion,Object[][] modeloM, String coleccion,String idoficina, String oficina,String idoficina1,  String oficina1,String idoficina2, String oficina2,String idoficina3, String oficina3, String idoficina4, String oficina4, String idoficina5, String oficina5,String idoficina6, String oficina6, String idoficina7, String oficina7, String contador, SeleccionMarcaOficina SM) {
+       this.SM = SM;
+        this.marca = marca;
+        this.idmarca = idmarca;
+        this.numeropedido = numeropedido;
+        this.opcion = opcion;
+        this.coleccion = coleccion;
+ this.modeloM = modeloM;
+       this.idoficinaM = idoficina;
+       this.idoficinaM1 = idoficina1;
+       this.idoficinaM2 = idoficina2;
+       this.idoficinaM3 = idoficina3;
+       this.idoficinaM4 = idoficina4;
+       this.idoficinaM5 = idoficina5;
+       this.idoficinaM6 = idoficina6;
+       this.idoficinaM7 = idoficina7;
+
+        this.oficinaM = oficina;
+        this.oficinaM1 = oficina1;
+        this.oficinaM2 = oficina2;
+        this.oficinaM3 = oficina3;
+        this.oficinaM4 = oficina4;
+        this.oficinaM5 = oficina5;
+        this.oficinaM6 = oficina6;
+        this.oficinaM7 = oficina7;
+        this.contadorM = contador;
+
+        onModuleLoad();
+    }
+
+    public void onModuleLoad() {
+        //panel = new Panel();
+        setId("tab-" + COMPRA_DIRECTA_TABBED);
+        setTitle("Muestras");
+        setLayout(new FitLayout());
+        setBaseCls("x-plain");
+        this.setClosable(true);
+        this.setId("TPfun5002");
+        setIconCls("tab-icon");
+
+        Panel pan_borderLayout = new Panel();
+        pan_borderLayout.setLayout(new BorderLayout());
+        pan_borderLayout.setBaseCls("x-plain");
+
+        Panel pan_norte = new Panel();
+        pan_norte.setLayout(new TableLayout(3));
+        pan_norte.setBaseCls("x-plain");
+        pan_norte.setHeight(90);
+        pan_norte.setPaddings(5);
+
+        Panel pan_sud = new Panel();
+        pan_sud.setLayout(new TableLayout(3));
+        pan_sud.setBaseCls("x-plain");
+        pan_sud.setHeight(120);
+        pan_sud.setPaddings(5);
+
+
+//        lista = new ListaPedidoCalzados();
+//        lista.onModuleLoad();
+        if (contadorM.equalsIgnoreCase("1")) {
+            lista1 = new ListaCalzadoPedido();
+        //    lista1.onModuleLoad1(clienteM, vendedorM);
+            lista1.onModuleLoad1(oficinaM);
+
+            //pan_centro = lista1.getPanel();
+        }
+        if (contadorM.equalsIgnoreCase("2")) {
+            lista1 = new ListaCalzadoPedido();
+         //   lista1.onModuleLoad4(clienteM, vendedorM, colorM, materialM);
+           lista1.onModuleLoad2(oficinaM,oficinaM1);
+
+        //pan_centro = lista1.getPanel();
+        }
+        if (contadorM.equalsIgnoreCase("3")) {
+            lista1 = new ListaCalzadoPedido();
+        //    lista1.onModuleLoad7(lineaM, clienteM, vendedorM, colorM);
+ lista1.onModuleLoad3(oficinaM,oficinaM1,oficinaM2);
+
+        //Panel pan_centro = lista1.getPanel();
+        }
+        if (contadorM.equalsIgnoreCase("4")) {
+            lista1 = new ListaCalzadoPedido();
+           // lista1.onModuleLoad10(colorM, clienteM, vendedorM);
+lista1.onModuleLoad4(oficinaM,oficinaM1,oficinaM2,oficinaM3);
+
+        //Panel pan_centro = lista1.getPanel();
+        }
+        if (contadorM.equalsIgnoreCase("5")) {
+            lista1 = new ListaCalzadoPedido();
+            //lista1.onModuleLoad2(clienteM, vendedorM);
+lista1.onModuleLoad5(oficinaM,oficinaM1,oficinaM2,oficinaM3,oficinaM4);
+
+        //Panel pan_centro = lista1.getPanel();
+        }
+        if (contadorM.equalsIgnoreCase("6")) {
+            lista1 = new ListaCalzadoPedido();
+         //   lista1.onModuleLoad5(clienteM, vendedorM, colorM, materialM);
+lista1.onModuleLoad6(oficinaM,oficinaM1,oficinaM2,oficinaM3,oficinaM4,oficinaM5);
+
+        //Panel pan_centro = lista1.getPanel();
+        }
+        if (contadorM.equalsIgnoreCase("7")) {
+            lista1 = new ListaCalzadoPedido();
+      //      lista1.onModuleLoad8(lineaM, clienteM, vendedorM, colorM);
+lista1.onModuleLoad7(oficinaM,oficinaM1,oficinaM2,oficinaM3,oficinaM4,oficinaM5,oficinaM6);
+
+        //Panel pan_centro = lista1.getPanel();
+        }
+        if (contadorM.equalsIgnoreCase("8")) {
+            lista1 = new ListaCalzadoPedido();
+//            lista1.onModuleLoad11(colorM, clienteM, vendedorM);
+lista1.onModuleLoad8(oficinaM,oficinaM1,oficinaM2,oficinaM3,oficinaM4,oficinaM5,oficinaM6,oficinaM7);
+
+        //Panel pan_centro = lista1.getPanel();
+        }
+       
+       
+
+        Panel pan_centro = lista1.getPanel();
+
+        FormPanel for_panel1 = new FormPanel();
+        for_panel1.setBaseCls("x-plain");
+        for_panel1.setWidth(330);
+        for_panel1.setLabelWidth(100);
+        tex_marca = new TextField("Marca", "marca", 200);
+        tex_marca.setValue(marca);
+        tex_marca.setReadOnly(true);
+        tex_modeloCP = new TextField("Modelo CP", "idmodelo", 200);
+        //tex_modeloCP.setValue("idmodelo");
+
+        for_panel1.add(tex_marca);
+        for_panel1.add(tex_modeloCP);
+
+        FormPanel for_panel2 = new FormPanel();
+        for_panel2.setBaseCls("x-plain");
+        for_panel2.setWidth(330);
+        for_panel2.setLabelWidth(100);
+        tex_numeropedido = new TextField("Coleccion", "numeropedido", 200);
+        tex_numeropedido.setReadOnly(true);
+        tex_numeropedido.setValue(coleccion);
+
+        com_modeloCV = new ComboBox("ModeloCV", "idmodelo");
+        //com_modeloCV.setWidth(20);
+
+
+
+
+        for_panel2.add(tex_numeropedido);
+        for_panel2.add(com_modeloCV);
+
+        FormPanel for_panel3 = new FormPanel();
+        for_panel3.setBaseCls("x-plain");
+        for_panel3.setWidth(300);
+        for_panel3.setLabelWidth(100);
+
+        dat_fecha = new DateField("Fecha", "d-m-Y");
+        Date date = new Date();
+        dat_fecha.setValue(Utils.getStringOfDate(date));
+
+        for_panel3.add(dat_fecha);
+
+
+
+        pan_norte.add(new PaddedPanel(for_panel1, 10));
+        pan_norte.add(new PaddedPanel(for_panel2, 10));
+        pan_norte.add(new PaddedPanel(for_panel3, 10));
+//        pan_norte.add(new PaddedPanel(for_panel12, 0, 0, 13, 10));
+
+        FormPanel for_panel4 = new FormPanel();
+        for_panel4.setBaseCls("x-plain");
+        tex_totalpares = new TextField("Total Unidades", "totalunidad");
+        tex_totalcaja = new TextField("Total Pares", "totalpares");
+
+        for_panel4.add(tex_totalpares);
+        for_panel4.add(tex_totalcaja);
+
+
+//        FormPanel for_panel5 = new FormPanel();
+//        for_panel5.setBaseCls("x-plain");
+//        tex_descuentoPorcentaje = new TextField("Descuento (%)", "desuentoporcentaje");
+//        tex_descuento = new TextField("Descuento", "descuento");
+//        tex_devuelto = new TextField("Cambio", "cambio");
+//        for_panel5.add(tex_descuentoPorcentaje);
+//        for_panel5.add(tex_descuento);
+//        for_panel5.add(tex_devuelto);
+
+        FormPanel for_panel6 = new FormPanel();
+        for_panel6.setBaseCls("x-plain");
+        tea_descripcion = new TextArea("Observacion", "observacion");
+        tea_descripcion.setWidth("100%");
+
+        for_panel6.add(tea_descripcion);
+
+        Panel pan_botones = new Panel();
+        pan_botones.setLayout(new HorizontalLayout(10));
+        pan_botones.setBaseCls("x-plain");
+        //       pan_botones.setHeight(40);
+        but_aceptar = new Button("Guardar");
+        but_cancelar = new Button("Cancelar");
+        but_limpiar = new Button("Limpiar");
+        //but_verproducto = new Button("Ver Producto");
+        pan_botones.add(but_aceptar);
+        pan_botones.add(but_cancelar);
+        pan_botones.add(but_limpiar);
+        //pan_botones.add(but_verproducto);
+
+        pan_sud.add(new PaddedPanel(for_panel4, 0, 0, 13, 10));
+        //pan_sud.add(new PaddedPanel(for_panel5, 0, 0, 13, 10));
+        pan_sud.add(new PaddedPanel(for_panel6, 3, 0, 13, 10));
+        pan_sud.add(new PaddedPanel(pan_botones, 10, 200, 10, 10), new TableLayoutData(3));
+
+
+        pan_borderLayout.add(pan_norte, new BorderLayoutData(RegionPosition.NORTH));
+        pan_borderLayout.add(pan_centro, new BorderLayoutData(RegionPosition.CENTER));
+        pan_borderLayout.add(pan_sud, new BorderLayoutData(RegionPosition.SOUTH));
+        add(pan_borderLayout);
+
+        initCombos();
+        initValues();
+        addListeners();
+
+
+    }
+
+    private void initCombos() {
+
+
+        SimpleStore proveedorStore = new SimpleStore(new String[]{"idmodelo", "codigo"}, modeloM);
+        proveedorStore.load();
+
+
+        com_modeloCV.setMinChars(1);
+        //com_modeloCV.setFieldLabel("Modelo");
+        com_modeloCV.setStore(proveedorStore);
+        com_modeloCV.setValueField("idmodelo");
+        com_modeloCV.setDisplayField("codigo");
+        com_modeloCV.setForceSelection(true);
+        com_modeloCV.setMode(ComboBox.LOCAL);
+        com_modeloCV.setEmptyText("Buscar Modelo");
+        com_modeloCV.setLoadingText("buscando...");
+        com_modeloCV.setTypeAhead(true);
+        com_modeloCV.setSelectOnFocus(true);
+        com_modeloCV.setWidth(130);
+
+        com_modeloCV.setHideTrigger(true);
+
+    }
+
+    private void initValues() {
+        //com.google.gwt.user.client.Window.alert("//" + tipocambio);
+
+        tex_totalpares.setValue("0");
+        tex_totalcaja.setValue("0");
+
+    }
+
+    private void addListeners() {
+
+        //**************************************************
+        //************* BOTON CANCELAR   *******************
+        //**************************************************
+       but_cancelar.addListener(new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+
+                closeTabCompraDirecta();
+            }
+        });
+        //**************************************************
+        //************* BOTON ACEPTAR *******************
+        //**************************************************
+        but_aceptar.addListener(new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+//                if (Multivendedo.equalsIgnoreCase("SI")) {
+//                    procesoValidar();
+//                } else {
+                createPedido(idmarca,coleccion,contadorM);
+//                }
+            }
+        });
+
+
+        but_limpiar.addListener(new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+//                limpiarVentanaVenta();
+            }
+        });
+
+        com_modeloCV.addListener(new TextFieldListenerAdapter() {
+
+            public void onSpecialKey(Field field, EventObject e) {
+
+                if (e.getKey() == EventObject.ENTER) {
+                    //String idmarca = field.getValueAsString().trim();
+                    String idmodelo = com_modeloCV.getValueAsString().trim();
+                    //String codigo = tex_producto.getValueAsString().trim();
+                    if (idmodelo.isEmpty()) {
+
+                        // MessageBox.alert("Por favor ingrese un modelo.");
+                        com_modeloCV.focus();
+                    } else {
+
+//             
+
+
+                        addListenerModelo(idmodelo);
+                        com_modeloCV.focus();
+                    // Utils.setErrorPrincipal("Usted debe introducir un id modelo antes.", "error");
+                    }
+                }
+            //Utils.setErrorPrincipal("Usted debe introducir un id modelo antes.", "error");
+            }
+
+            private void addListenerModelo(String buscando) {
+                String enlace = "php/Pedido.php?funcion=BuscarModeloPorId&idmodelo=" + buscando;
+                Utils.setErrorPrincipal("Cargando parametros del modelo", "cargar");
+                final Conector conec = new Conector(enlace, false);
+                {
+
+                    try {
+                        conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                            public void onResponseReceived(Request request, Response response) {
+                                String data = response.getText();
+                                JSONValue jsonValue = JSONParser.parse(data);
+                                JSONObject jsonObject;
+
+                                if ((jsonObject = jsonValue.isObject()) != null) {
+                                    String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                    String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                    if (errorR.equalsIgnoreCase("true")) {
+                                        Utils.setErrorPrincipal(mensajeR, "mensaje");
+
+                                        JSONValue marcaV = jsonObject.get("resultado");
+                                        JSONObject marcaO;
+
+                                        if ((marcaO = marcaV.isObject()) != null) {
+                                            String idmodelo = Utils.getStringOfJSONObject(marcaO, "idmodelo");
+                                            String codigo = Utils.getStringOfJSONObject(marcaO, "codigo");
+
+                                            //Object[][] lineas = Utils.getArrayOfJSONObject(marcaO, "lineaM", new String[]{"idcliente", "codigo"});
+                                            if (contadorM.equalsIgnoreCase("1")) {
+                                                Record registroCompra = lista1.getRecordDef().createRecord(new Object[]{
+                                                            idmodelo, codigo, "", 0, 0 ,0});
+                                                lista1.getGrid().stopEditing();
+                                                lista1.getGrid().getStore().insert(0, registroCompra);
+                                                lista1.getGrid().startEditing(0, 0);
+                                                com_modeloCV.focus();
+
+                                            }
+                                            if (contadorM.equalsIgnoreCase("2")) {
+                                                //String stylename = Utils.getStringOfJSONObject(marcaO, "stylename");
+
+                                                Record registroCompra = lista1.getRecordDef().createRecord(new Object[]{
+                                                         idmodelo, codigo, "", 0, 0, 0, 0});
+                                                lista1.getGrid().stopEditing();
+                                                lista1.getGrid().getStore().insert(0, registroCompra);
+                                                lista1.getGrid().startEditing(0, 0);
+                                                com_modeloCV.focus();
+                                            }
+                                            if (contadorM.equalsIgnoreCase("3")) {
+
+                                                Record registroCompra = lista1.getRecordDef().createRecord(new Object[]{
+                                                            idmodelo, codigo, "", 0, 0, 0, 0, 0});
+                                                lista1.getGrid().stopEditing();
+                                                lista1.getGrid().getStore().insert(0, registroCompra);
+                                                lista1.getGrid().startEditing(0, 0);
+                                                com_modeloCV.focus();
+                                            }
+                                            if (contadorM.equalsIgnoreCase("4")) {
+
+                                                Record registroCompra = lista1.getRecordDef().createRecord(new Object[]{
+                                         idmodelo, codigo, "", 0, 0, 0, 0, 0, 0});
+                                                lista1.getGrid().stopEditing();
+                                                lista1.getGrid().getStore().insert(0, registroCompra);
+                                                lista1.getGrid().startEditing(0, 0);
+                                                com_modeloCV.focus();
+                                            }
+                                            if (contadorM.equalsIgnoreCase("5")) {
+
+                                                Record registroCompra = lista1.getRecordDef().createRecord(new Object[]{
+                                         idmodelo, codigo, "", 0, 0, 0, 0, 0, 0, 0});
+                                                lista1.getGrid().stopEditing();
+                                                lista1.getGrid().getStore().insert(0, registroCompra);
+                                                lista1.getGrid().startEditing(0, 0);
+                                                com_modeloCV.focus();
+                                            }
+                                            if (contadorM.equalsIgnoreCase("6")) {
+
+                                                Record registroCompra = lista1.getRecordDef().createRecord(new Object[]{
+                                           idmodelo, codigo, "", 0, 0, 0, 0, 0, 0, 0, 0});
+                                              lista1.getGrid().stopEditing();
+                                                lista1.getGrid().getStore().insert(0, registroCompra);
+                                                lista1.getGrid().startEditing(0, 0);
+                                                com_modeloCV.focus();
+                                            }
+                                            if (contadorM.equalsIgnoreCase("7")) {
+                                         //       String stylename = Utils.getStringOfJSONObject(marcaO, "stylename");
+                                                Record registroCompra = lista1.getRecordDef().createRecord(new Object[]{
+                                          idmodelo, codigo, "", 0, 0, 0, 0, 0, 0, 0, 0, 0});
+                                                 lista1.getGrid().stopEditing();
+                                                lista1.getGrid().getStore().insert(0, registroCompra);
+                                                lista1.getGrid().startEditing(0, 0);
+                                                com_modeloCV.focus();
+                                            }
+                                            if (contadorM.equalsIgnoreCase("8")) {
+
+                                                Record registroCompra = lista1.getRecordDef().createRecord(new Object[]{
+                                    idmodelo, codigo, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+                                                      lista1.getGrid().stopEditing();
+                                                lista1.getGrid().getStore().insert(0, registroCompra);
+                                                lista1.getGrid().startEditing(0, 0);
+                                                com_modeloCV.focus();
+                                            }
+                                          
+                                        } else {
+                                            //MessageBox.alert("No Hay datos en la consulta");
+                                        }
+
+                                    }
+                                } else {
+                                }
+                                throw new UnsupportedOperationException("Not supported yet.");
+                            }
+
+                            public void onError(Request request, Throwable exception) {
+                                throw new UnsupportedOperationException("Not supported yet.");
+                            }
+                        });
+
+                    } catch (RequestException e) {
+                        e.getMessage();
+                        MessageBox.alert("Ocurrio un error al conectarse con el SERVIDOR");
+                    }
+
+                }
+
+            }
+        });
+
+
+        //**************************************************
+        //*************BUSCAR PRODUCTO   *******************
+        //**************************************************
+
+        tex_modeloCP.addListener(new TextFieldListenerAdapter() {
+
+            //private FormularioPedidoKardex kardex;
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                    // abrir la lsita de productos for_proveedor
+                    //MessageBox.alert(field.getValueAsString());
+                    String idmarca = field.getValueAsString().trim();
+                    String idmodelo = tex_modeloCP.getValueAsString().trim();
+                    //String idproductos = tex_producto.getValueAsString().trim();
+                    if (idmodelo.isEmpty()) {
+                        MessageBox.alert("Por favor ingrese modelo a buscar.");
+                        tex_modeloCP.focus();
+                    } else {
+                        if (findByCodigoProducto(idmodelo)) {
+                            //addListenerKardex();
+                            tex_modeloCP.focus();
+                        } else {
+                            MessageBox.alert("No existe el modelo.");
+                            tex_modeloCP.focus();
+                        }
+                    }
+                }
+            }
+
+            private boolean findByCodigoProducto(final String codigoBuscado) {
+                respuesta = false;
+                String enlace = "php/Pedido.php?funcion=BuscarModeloPorCodigo&idmodelo=" + codigoBuscado;
+                Utils.setErrorPrincipal("Cargando parametros del modelo", "cargar");
+                final Conector conec = new Conector(enlace, false);
+
+                try {
+                    conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                        private String idmodelo;
+                        private String modelo;
+                        private String linea;
+                        private String codigo;
+                        private String stylename;
+//                        private String idcoleccion;
+//                        private String idlinea;
+//                        private Number precio;
+//                        private Number precio2;
+//                        private Number cantidad;
+//                        private Number total;
+
+                        public void onResponseReceived(Request request, Response response) {
+                            String data = response.getText();
+                            JSONValue jsonValue = JSONParser.parse(data);
+                            JSONObject jsonObject;
+                            if ((jsonObject = jsonValue.isObject()) != null) {
+                                String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                if (errorR.equalsIgnoreCase("true")) {
+                                    Utils.setErrorPrincipal(mensajeR, "mensaje");
+                                    JSONValue productoValue = jsonObject.get("resultado");
+                                    JSONObject productoObject;
+                                    if ((productoObject = productoValue.isObject()) != null) {
+
+                                        idmodelo = Utils.getStringOfJSONObject(productoObject, "idmodelo");
+
+                                        linea = Utils.getStringOfJSONObject(productoObject, "linea");
+                                        codigo = Utils.getStringOfJSONObject(productoObject, "codigo");
+
+//                               
+                                        if (contadorM.equalsIgnoreCase("1")) {
+                                                Record registroCompra = lista1.getRecordDef().createRecord(new Object[]{
+                                                            idmodelo, codigo, "", 0, 0 ,0});
+                                                lista1.getGrid().stopEditing();
+                                                lista1.getGrid().getStore().insert(0, registroCompra);
+                                                lista1.getGrid().startEditing(0, 0);
+                                                tex_modeloCP.focus();
+
+                                            }
+                                            if (contadorM.equalsIgnoreCase("2")) {
+                                                //String stylename = Utils.getStringOfJSONObject(marcaO, "stylename");
+
+                                                Record registroCompra = lista1.getRecordDef().createRecord(new Object[]{
+                                                         idmodelo, codigo, "", 0, 0, 0, 0});
+                                                lista1.getGrid().stopEditing();
+                                                lista1.getGrid().getStore().insert(0, registroCompra);
+                                                lista1.getGrid().startEditing(0, 0);
+                                                tex_modeloCP.focus();
+                                            }
+                                            if (contadorM.equalsIgnoreCase("3")) {
+
+                                                Record registroCompra = lista1.getRecordDef().createRecord(new Object[]{
+                                                            idmodelo, codigo, "", 0, 0, 0, 0, 0});
+                                                lista1.getGrid().stopEditing();
+                                                lista1.getGrid().getStore().insert(0, registroCompra);
+                                                lista1.getGrid().startEditing(0, 0);
+                                                tex_modeloCP.focus();
+                                            }
+                                            if (contadorM.equalsIgnoreCase("4")) {
+
+                                                Record registroCompra = lista1.getRecordDef().createRecord(new Object[]{
+                                         idmodelo, codigo, "", 0, 0, 0, 0, 0, 0});
+                                                lista1.getGrid().stopEditing();
+                                                lista1.getGrid().getStore().insert(0, registroCompra);
+                                                lista1.getGrid().startEditing(0, 0);
+                                                tex_modeloCP.focus();
+                                            }
+                                            if (contadorM.equalsIgnoreCase("5")) {
+
+                                                Record registroCompra = lista1.getRecordDef().createRecord(new Object[]{
+                                         idmodelo, codigo, "", 0, 0, 0, 0, 0, 0, 0});
+                                                lista1.getGrid().stopEditing();
+                                                lista1.getGrid().getStore().insert(0, registroCompra);
+                                                lista1.getGrid().startEditing(0, 0);
+                                                tex_modeloCP.focus();
+                                            }
+                                            if (contadorM.equalsIgnoreCase("6")) {
+
+                                                Record registroCompra = lista1.getRecordDef().createRecord(new Object[]{
+                                           idmodelo, codigo, "", 0, 0, 0, 0, 0, 0, 0, 0});
+                                              lista1.getGrid().stopEditing();
+                                                lista1.getGrid().getStore().insert(0, registroCompra);
+                                                lista1.getGrid().startEditing(0, 0);
+                                                tex_modeloCP.focus();
+                                            }
+                                            if (contadorM.equalsIgnoreCase("7")) {
+                                         //       String stylename = Utils.getStringOfJSONObject(marcaO, "stylename");
+                                                Record registroCompra = lista1.getRecordDef().createRecord(new Object[]{
+                                          idmodelo, codigo, "", 0, 0, 0, 0, 0, 0, 0, 0, 0});
+                                                 lista1.getGrid().stopEditing();
+                                                lista1.getGrid().getStore().insert(0, registroCompra);
+                                                lista1.getGrid().startEditing(0, 0);
+                                                tex_modeloCP.focus();
+                                            }
+                                            if (contadorM.equalsIgnoreCase("8")) {
+
+                                                Record registroCompra = lista1.getRecordDef().createRecord(new Object[]{
+                                    idmodelo, codigo, "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+                                                      lista1.getGrid().stopEditing();
+                                                lista1.getGrid().getStore().insert(0, registroCompra);
+                                                lista1.getGrid().startEditing(0, 0);
+                                                tex_modeloCP.focus();
+                                            }
+
+                                        tex_modeloCP.focus();
+                                        respuesta = true;
+                                    } else {
+                                        respuesta = false;
+                                        Utils.setErrorPrincipal("No se recuperaron correctamente lo valores de proveedor", "error");
+                                    }
+
+                                } else {
+                                    respuesta = false;
+                                    Utils.setErrorPrincipal(mensajeR, "error");
+                                }
+                            }
+                        }
+
+                        public void onError(Request request, Throwable exception) {
+                            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+
+                        }
+                    });
+
+                } catch (RequestException ex) {
+                    ex.getMessage();
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+
+                return respuesta;
+            }
+        });
+
+        //**************************************************
+        //*************CALCULAR TOTAL DE COMPRA ************
+        //**************************************************
+        lista1.getGrid().addEditorGridListener(new EditorGridListenerAdapter() {
+
+            @Override
+            public void onAfterEdit(GridPanel grid, Record record, String field, Object newValue, Object oldValue, int rowIndex, int colIndex) {
+                calcularSubTotal(grid, record, field, newValue, oldValue, rowIndex, colIndex);
+            }
+        });
+
+
+
+
+    }
+
+    private void calcularSubTotal(GridPanel grid, Record record, String field, Object newValue, Object oldValue, int rowIndex, int colIndex) {
+        String temp = newValue.toString();
+        Float old = new Float(oldValue.toString());
+       // Float talla14 = record.getAsFloat("14");
+        //Float talla15 = record.getAsFloat("15");
+        
+        Float totalca = new Float(0);
+        Integer totalc = new Integer(0);
+        Float totalpa = new Float(0);
+ Integer totalp = new Integer(0);
+
+        Float ne = old;
+        try {
+            ne = new Float(temp);
+        } catch (Exception e) {
+            com.google.gwt.user.client.Window.alert("atapadp  " + e.getMessage());
+            ne = old;
+        }
+     if (colIndex == 3) {
+            record.set("pares", 0);
+        // record.set("preciosus", ne);
+        }
+         if (colIndex == 4) {
+            record.set("unidades", 0);
+        // record.set("preciobs", ne);
+        }
+          if (colIndex == 5) {
+            record.set("oficina", 0);
+        }
+            if (colIndex == 6) {
+            record.set("oficina1", 0);
+        }
+        if (colIndex == 7) {
+            record.set("oficina2", 0);
+        }
+        if (colIndex == 8) {
+            record.set("oficina3", 0);
+        }
+        if (colIndex == 9) {
+            record.set("oficina4", 0);
+        }
+        if (colIndex == 10) {
+            record.set("oficina5", 0);
+        }
+        if (colIndex == 11) {
+            record.set("oficina6", 0);
+        }
+        if (colIndex == 12) {
+            record.set("oficina7", 0);
+        }
+        Integer talla14 = record.getAsInteger("14");
+        Float talla15 = record.getAsFloat("15");
+        record.commit();
+if ((contadorM.equalsIgnoreCase("1")) ) {
+if(record.getAsInteger("pares") !=0){
+ record.set("unidades", record.getAsInteger("pares")*2);
+ record.set("oficina", record.getAsInteger("unidades"));
+
+}
+}
+if ((contadorM.equalsIgnoreCase("2")) ) {
+if(record.getAsInteger("pares") !=0){
+ record.set("unidades", record.getAsInteger("pares")*2);
+ record.set("oficina", record.getAsInteger("unidades")/2);
+ record.set("oficina1", record.getAsInteger("unidades")/2);
+ }
+}
+if ((contadorM.equalsIgnoreCase("3")) ) {
+if(record.getAsInteger("pares") !=0){
+ record.set("unidades", record.getAsInteger("pares")*2);
+ record.set("oficina", record.getAsInteger("unidades")/2);
+ record.set("oficina1", record.getAsInteger("unidades")/1);
+ record.set("oficina2", record.getAsInteger("unidades")/1);
+}
+}
+if ((contadorM.equalsIgnoreCase("4")) ) {
+if(record.getAsInteger("pares") !=0){
+ record.set("unidades", record.getAsInteger("pares")*2);
+ record.set("oficina", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+ record.set("oficina1", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+ record.set("oficina2", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+record.set("oficina3", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+
+}
+}
+if ((contadorM.equalsIgnoreCase("5")) ) {
+if(record.getAsInteger("pares") !=0){
+ record.set("unidades", record.getAsInteger("pares")*2);
+ record.set("oficina", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+ record.set("oficina1", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+ record.set("oficina2", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+record.set("oficina3", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+record.set("oficina4", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+
+}
+}
+if ((contadorM.equalsIgnoreCase("6")) ) {
+    if(record.getAsInteger("pares") !=0){
+ record.set("unidades", record.getAsInteger("pares")*2);
+ record.set("oficina", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+ record.set("oficina1", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+ record.set("oficina2", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+record.set("oficina3", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+record.set("oficina4", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+record.set("oficina5", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+    }
+}
+if ((contadorM.equalsIgnoreCase("7")) ) {
+if(record.getAsInteger("pares") !=0){
+ record.set("unidades", record.getAsInteger("pares")*2);
+ record.set("oficina", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+ record.set("oficina1", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+ record.set("oficina2", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+record.set("oficina3", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+record.set("oficina4", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+record.set("oficina5", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+record.set("oficina6", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+
+}
+}
+if ((contadorM.equalsIgnoreCase("8")) ) {
+if(record.getAsInteger("pares") !=0){
+ record.set("unidades", record.getAsInteger("pares")*2);
+ record.set("oficina", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+ record.set("oficina1", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+ record.set("oficina2", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+record.set("oficina3", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+record.set("oficina4", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+record.set("oficina5", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+record.set("oficina6", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+record.set("oficina7", record.getAsInteger("unidades")/record.getAsInteger("unidades"));
+
+}
+}
+          for (int i = 0; i <
+                    grid.getStore().getRecords().length; i++) {
+                totalc += grid.getStore().getRecords()[i].getAsInteger("pares");
+                totalp += grid.getStore().getRecords()[i].getAsInteger("unidades");
+            }
+//        if ((opcion.equalsIgnoreCase("2")) || (opcion.equalsIgnoreCase("1")) || (opcion.equalsIgnoreCase("3")) || (opcion.equalsIgnoreCase("4"))) {
+//            record.commit();
+//            record.set("totalpares", talla14 + talla15 + talla16 + talla17 + talla18 + talla19 + talla20 + talla21 + talla22 + talla23 + talla24 + talla25 + talla26 + talla27 + talla28 + talla29 + talla30 + talla31 + talla32 + talla33 + talla34 + talla35 + talla36 + talla37 + talla38 + talla39 + talla40 + talla41 + talla42 + talla43 + talla44 + talla45);
+////            totalpa = talla33 + talla34 + talla35 + talla36 + talla37 + talla38 + talla39 + talla40 + talla41 + talla42 + talla43 + talla44 + talla45;
+////            totalca = totalpa / 12;
+////            record.set("totalcajas", totalca);
+//            for (int i = 0; i <
+//                    grid.getStore().getRecords().length; i++) {
+//                totalca += grid.getStore().getRecords()[i].getAsFloat("totalcajas");
+//                totalpa += grid.getStore().getRecords()[i].getAsFloat("totalpares");
+//
+//            }
+//        }
+        
+
+        tex_totalpares.setValue(totalp.toString());
+        //tex_totalpares.
+        tex_totalcaja.setValue(totalc.toString());
+
+    }
+
+    public void createPedido(String idmarca,String coleccion,String contador) {
+// public void createPedido(String idmarca,String coleccion,String contador,String idoficina,String idoficina1,String idoficina2,String idoficina3,String idoficina4,String idoficina5,String idoficina6,String idoficina7) {
+
+
+        String marca1 = tex_marca.getValueAsString();
+        String numeropedido1 = tex_numeropedido.getValueAsString();
+     //  String nuevomodelo = tex_modeloCP.getValueAsString();
+        String totalpares = tex_totalpares.getValueAsString();
+        String totalcaja = tex_totalcaja.getValueAsString();
+        String descripcion = tea_descripcion.getValueAsString();
+String fecha = DateUtil.format(dat_fecha.getValue(), "Y-m-d");
+
+//        Date date = dat_fecha.getValue();
+
+
+        Record[] records = lista1.getStore().getRecords();
+        JSONArray productos = new JSONArray();
+        JSONObject productoObject;
+
+        JSONObject compraObject = new JSONObject();
+        compraObject.put("idmarca", new JSONString(idmarca));
+        compraObject.put("marca", new JSONString(marca1));
+        compraObject.put("fecha", new JSONString(fecha));
+
+        //compraObject.put("nuevomodelo", new JSONString(nuevomodelo));
+        compraObject.put("coleccion", new JSONString(numeropedido1));
+        compraObject.put("totalpares", new JSONString(totalpares));
+        compraObject.put("totalunidades", new JSONString(totalcaja));
+        compraObject.put("descripcion", new JSONString(descripcion));
+    compraObject.put("contador", new JSONString(contador));
+
+        compraObject.put("idoficina", new JSONString(idoficinaM));
+        compraObject.put("idoficina1", new JSONString(idoficinaM1));
+        compraObject.put("idoficina2", new JSONString(idoficinaM2));
+        compraObject.put("idoficina3", new JSONString(idoficinaM3));
+        compraObject.put("idoficina4", new JSONString(idoficinaM4));
+        compraObject.put("idoficina5", new JSONString(idoficinaM5));
+        compraObject.put("idoficina6", new JSONString(idoficinaM6));
+        compraObject.put("idoficina7", new JSONString(idoficinaM7));
+
+        for (int i = 0; i < records.length; i++) {
+
+            if (contadorM.equalsIgnoreCase("1")) {
+                productoObject = new JSONObject();
+                productoObject.put("idmodelo", new JSONString(records[i].getAsString("idmodelo")));
+                productoObject.put("codigo", new JSONString(records[i].getAsString("codigo")));
+                productoObject.put("detalle", new JSONString(records[i].getAsString("detalle")));
+                productoObject.put("pares", new JSONString(records[i].getAsString("pares")));
+                productoObject.put("unidades", new JSONString(records[i].getAsString("unidades")));
+                productoObject.put("oficina", new JSONString(records[i].getAsString("oficina")));
+
+
+                productos.set(i, productoObject);
+                productoObject = null;
+
+            }
+            if (contadorM.equalsIgnoreCase("2")) {
+                productoObject = new JSONObject();
+                productoObject.put("idmuestra", new JSONString(records[i].getAsString("idmuestra")));
+                productoObject.put("codigo", new JSONString(records[i].getAsString("codigo")));
+               // productoObject.put("detalle", new JSONString(records[i].getAsString("detalle")));
+                productoObject.put("pares", new JSONString(records[i].getAsString("pares")));
+                productoObject.put("unidades", new JSONString(records[i].getAsString("unidades")));
+                productoObject.put("oficina", new JSONString(records[i].getAsString("oficina")));
+                 productoObject.put("oficina1", new JSONString(records[i].getAsString("oficina1")));
+                productos.set(i, productoObject);
+                productoObject = null;
+
+            }
+            if (contadorM.equalsIgnoreCase("3")) {
+                productoObject = new JSONObject();
+                productoObject.put("idmuestra", new JSONString(records[i].getAsString("idmuestra")));
+                productoObject.put("codigo", new JSONString(records[i].getAsString("codigo")));
+                productoObject.put("detalle", new JSONString(records[i].getAsString("detalle")));
+                productoObject.put("pares", new JSONString(records[i].getAsString("pares")));
+                productoObject.put("unidades", new JSONString(records[i].getAsString("unidades")));
+                productoObject.put("oficina", new JSONString(records[i].getAsString("oficina")));
+                productoObject.put("oficina1", new JSONString(records[i].getAsString("oficina1")));
+                productoObject.put("oficina2", new JSONString(records[i].getAsString("oficina2")));
+                productos.set(i, productoObject);
+                productoObject = null;
+            }
+            if (contadorM.equalsIgnoreCase("4")) {
+               productoObject = new JSONObject();
+                productoObject.put("idmuestra", new JSONString(records[i].getAsString("idmuestra")));
+                productoObject.put("codigo", new JSONString(records[i].getAsString("codigo")));
+                productoObject.put("detalle", new JSONString(records[i].getAsString("detalle")));
+                productoObject.put("pares", new JSONString(records[i].getAsString("pares")));
+                productoObject.put("unidades", new JSONString(records[i].getAsString("unidades")));
+                productoObject.put("oficina", new JSONString(records[i].getAsString("oficina")));
+                productoObject.put("oficina1", new JSONString(records[i].getAsString("oficina1")));
+                productoObject.put("oficina2", new JSONString(records[i].getAsString("oficina2")));
+                productoObject.put("oficina3", new JSONString(records[i].getAsString("oficina3")));
+
+                productos.set(i, productoObject);
+                productoObject = null;
+            }
+            if (contadorM.equalsIgnoreCase("5")) {
+               productoObject = new JSONObject();
+                productoObject.put("idmuestra", new JSONString(records[i].getAsString("idmuestra")));
+                productoObject.put("codigo", new JSONString(records[i].getAsString("codigo")));
+                productoObject.put("detalle", new JSONString(records[i].getAsString("detalle")));
+                productoObject.put("pares", new JSONString(records[i].getAsString("pares")));
+                productoObject.put("unidades", new JSONString(records[i].getAsString("unidades")));
+                productoObject.put("oficina", new JSONString(records[i].getAsString("oficina")));
+                productoObject.put("oficina1", new JSONString(records[i].getAsString("oficina1")));
+                productoObject.put("oficina2", new JSONString(records[i].getAsString("oficina2")));
+                productoObject.put("oficina3", new JSONString(records[i].getAsString("oficina3")));
+                productoObject.put("oficina4", new JSONString(records[i].getAsString("oficina3")));
+
+                productos.set(i, productoObject);
+                productoObject = null;
+            }
+            if (contadorM.equalsIgnoreCase("6")) {
+                productoObject = new JSONObject();
+                productoObject.put("idmuestra", new JSONString(records[i].getAsString("idmuestra")));
+                productoObject.put("codigo", new JSONString(records[i].getAsString("codigo")));
+                productoObject.put("detalle", new JSONString(records[i].getAsString("detalle")));
+                productoObject.put("pares", new JSONString(records[i].getAsString("pares")));
+                productoObject.put("unidades", new JSONString(records[i].getAsString("unidades")));
+                productoObject.put("oficina", new JSONString(records[i].getAsString("oficina")));
+               productoObject.put("oficina1", new JSONString(records[i].getAsString("oficina1")));
+                productoObject.put("oficina2", new JSONString(records[i].getAsString("oficina2")));
+                productoObject.put("oficina3", new JSONString(records[i].getAsString("oficina3")));
+                productoObject.put("oficina4", new JSONString(records[i].getAsString("oficina3")));
+                productoObject.put("oficina5", new JSONString(records[i].getAsString("oficina4")));
+
+                productos.set(i, productoObject);
+                productoObject = null;
+            }
+
+            if (contadorM.equalsIgnoreCase("7")) {
+               productoObject = new JSONObject();
+                productoObject.put("idmuestra", new JSONString(records[i].getAsString("idmuestra")));
+                productoObject.put("codigo", new JSONString(records[i].getAsString("codigo")));
+                productoObject.put("detalle", new JSONString(records[i].getAsString("detalle")));
+                productoObject.put("pares", new JSONString(records[i].getAsString("pares")));
+                productoObject.put("unidades", new JSONString(records[i].getAsString("unidades")));
+                productoObject.put("oficina", new JSONString(records[i].getAsString("oficina")));
+               productoObject.put("oficina1", new JSONString(records[i].getAsString("oficina1")));
+                productoObject.put("oficina2", new JSONString(records[i].getAsString("oficina2")));
+                productoObject.put("oficina3", new JSONString(records[i].getAsString("oficina3")));
+                productoObject.put("oficina4", new JSONString(records[i].getAsString("oficina3")));
+                productoObject.put("oficina5", new JSONString(records[i].getAsString("oficina4")));
+                productoObject.put("oficina6", new JSONString(records[i].getAsString("oficina6")));
+
+                productos.set(i, productoObject);
+                productoObject = null;
+            }
+
+            if (contadorM.equalsIgnoreCase("8")) {
+               productoObject = new JSONObject();
+                productoObject.put("idmuestra", new JSONString(records[i].getAsString("idmuestra")));
+                productoObject.put("codigo", new JSONString(records[i].getAsString("codigo")));
+                productoObject.put("detalle", new JSONString(records[i].getAsString("detalle")));
+                productoObject.put("pares", new JSONString(records[i].getAsString("pares")));
+                productoObject.put("unidades", new JSONString(records[i].getAsString("unidades")));
+                productoObject.put("oficina", new JSONString(records[i].getAsString("oficina")));
+                productoObject.put("oficina1", new JSONString(records[i].getAsString("oficina1")));
+                productoObject.put("oficina2", new JSONString(records[i].getAsString("oficina2")));
+                productoObject.put("oficina3", new JSONString(records[i].getAsString("oficina3")));
+                productoObject.put("oficina4", new JSONString(records[i].getAsString("oficina3")));
+                productoObject.put("oficina5", new JSONString(records[i].getAsString("oficina4")));
+                productoObject.put("oficina6", new JSONString(records[i].getAsString("oficina6")));
+                productoObject.put("oficina7", new JSONString(records[i].getAsString("oficina7")));
+                
+                productos.set(i, productoObject);
+                productoObject = null;
+            }
+         
+
+        }
+
+        JSONObject resultado = new JSONObject();
+        resultado.put("ingreso", compraObject);
+        resultado.put("calzados", productos);
+        String datos = "resultado=" + resultado.toString();
+        Utils.setErrorPrincipal("registrando datos", "cargar");
+        String url = "./php/Muestra.php?funcion=GuardarNuevoMuestra&" + datos;
+       // String url = "./php/Pedido.php?funcion=GuardarNuevoPedido&" + datos;
+
+        //com.google.gwt.user.client.Window.alert("zzzz" + url);
+        final Conector conec = new Conector(url, false, "GET");
+        // com.google.gwt.user.client.Window.alert("error 9999 " + conec.toString());
+        try {
+            conec.getRequestBuilder().sendRequest(datos, new RequestCallback() {
+                private EventObject e;
+
+                public void onResponseReceived(Request request, Response response) {
+                    String data = response.getText();
+                    JSONValue jsonValue = JSONParser.parse(data);
+                    JSONObject jsonObject;
+                    if ((jsonObject = jsonValue.isObject()) != null) {
+                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                        if (errorR.equalsIgnoreCase("true")) {
+                            Utils.setErrorPrincipal(mensajeR, "mensaje");
+
+                           
+                            
+                            closeTabCompraDirecta();
+                            closePanel();
+                                 String idventaG = Utils.getStringOfJSONObject(jsonObject, "resultado");
+                            String enlTemp = "funcion=muestraHTML&idmuestra=" + idventaG;
+                            verReporte(enlTemp);
+
+//                            Coleccion pan_compraDirecta = new Coleccion(Marca.this, idmarca, nombre);
+                          
+
+
+                        } else {
+                            //Window.alert(mensajeR);
+//                            com.google.gwt.user.client.Window.alert("error 1000");
+                            Utils.setErrorPrincipal(mensajeR, "error");
+                        }
+                    } else {
+//                        com.google.gwt.user.client.Window.alert("error 1001");
+                        Utils.setErrorPrincipal("Error en la respuesta del servidor", "error");
+                    }
+                }
+
+                public void onError(Request request, Throwable exception) {
+                    //Window.alert("Ocurrio un error al conectar con el servidor ");
+//                    com.google.gwt.user.client.Window.alert("error 1002");
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            });
+        } catch (RequestException ex) {
+            //Window.alert("Ocurrio un error al conectar con el servidor");
+//            com.google.gwt.user.client.Window.alert("error 1003");
+            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+        }
+    //
+    }
+
+    public void closePanel() {
+        this.destroy();
+    }
+      private void verReporte(String enlace) {
+        ReporteMediaCartaChorroWindow print = new ReporteMediaCartaChorroWindow(enlace);
+        print.show();
+    }
+
+    public void closeTabCompraDirecta() {
+       // this.remove("tab-" + COMPRA_DIRECTA_TABBED);
+       SM.panel.getTabPanel().remove("tab-" + COMPRA_DIRECTA_TABBED);
+       this.destroy();
+        }
+
+}

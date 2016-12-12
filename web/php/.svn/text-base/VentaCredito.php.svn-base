@@ -1,0 +1,93 @@
+<?php 
+session_name("balderrama");
+session_start();
+require_once("impl/VentaCredito.php");
+//require_once("impl/Empresa.php");
+include("impl/ClienteEmpresa.php");
+include("impl/Almacen.php");
+include("impl/Empresa.php");
+include("impl/Utils.php");
+include("bd/bd.php");
+require_once("impl/JSON.php");
+
+if(permitido("fun1000", $_SESSION['codigo'])==true)
+{
+    $funcion = $_GET['funcion'];
+    if($funcion == "ListarAlmacen"){
+       
+        ListarAlmacen($_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], "",false);
+    }
+	else if($funcion == "ListarVentasCredito")
+    {
+//        ListarVentasCredito($_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], false);
+ListarVentasCredito($_GET['callback'], $_GET['_dc'], false);
+
+ }else
+if($funcion == "listarventasporcliente")
+    {//$idcliente=$_GET['buscarcredito'];
+        listarventasporcliente($_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], false,  $_GET['idempresa'],$_GET['idcliente']);
+    } else
+    if($funcion == "BuscarEmpresaporCliente"){
+
+
+        BuscarEmpresaporCliente($_GET['callback'], $_GET['_dc'], $_GET['idempresa'],$_GET['idcliente'], false);
+    }
+    else
+if($funcion == "txNewUpdateVenta")
+    {
+          $resultado = $_GET['resultado'];
+    $json = new Services_JSON();
+    $datos = $json->decode($resultado);
+    //insertarventa($datos,false);
+    txNewUpdateVenta($datos,false);
+    }
+    else if($funcion == "validarcreditos"){
+
+    $resultado = $_GET['resultado'];
+    $json = new Services_JSON();
+    $datos = $json->decode($resultado);
+    $da = validarcreditos($datos, false);
+    $dev['mensaje'] = $da['mensaje'];
+    $dev['error'] = $da['error'];
+    $dev['resultado'] = $da['resultado'];
+    //eliminarproductos($productos,$_GET['callback'], $$_GET['dc'],'');
+
+}
+     else if($funcion == "confirmarcredito")
+    {
+
+//    $resultado = $_GET['resultado'];
+//    $json = new Services_JSON();
+//    $datos = $json->decode($resultado);
+//    $roles= $datos->resultado;
+//    $da = txConfirmaCredito($datos, $_GET['callback'], $_GET['_dc'], true);
+//    
+    $resultado = $_POST['resultado'];
+    $json = new Services_JSON();
+    $datos = $json->decode($resultado);
+    $categorias= $datos->resultado;
+    txConfirmaCredito($categorias, $_GET['callback'], $_GET['_dc'], false);
+    //txConfirmaCredito($datos, $_GET['callback'], $_GET['_dc'], true);
+    }
+
+     
+     else
+
+
+     {
+        echo "else";
+    }
+
+
+}
+
+
+else
+{
+    $dev['mensaje'] = "Ud no tiene privilegios para esta funcion";
+    $dev['error'] = "false";
+    $json = new Services_JSON();
+    $output = $json->encode($dev);
+    print($output);
+}
+?>

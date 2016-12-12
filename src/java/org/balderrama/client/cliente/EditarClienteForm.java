@@ -1,0 +1,528 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.cliente;
+
+import com.google.gwt.json.client.JSONString;
+import com.gwtext.client.core.Position;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.data.Store;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.Field;
+import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.form.event.TextFieldListenerAdapter;
+import org.balderrama.client.util.Conector;
+import org.balderrama.client.util.Utils;
+
+/**
+ *
+ * @author buggy
+ */
+class EditarClienteForm extends Window {
+
+    private final int ANCHO = 500;
+    private final int ALTO = 210;
+    private final AnchorLayoutData ANCHO_LAYOUT_DATA = new AnchorLayoutData("90%");
+    private final int WINDOW_PADDING = 5;
+    private FormPanel formPanelCliente;
+    private TextField tex_nombre;
+    private TextField tex_primerAp;
+    private TextField tex_segunAp;
+    private TextField tex_telefono;
+    private TextField tex_celular;
+    private TextField tex_direccion;
+    private TextField tex_item;
+    private TextField tex_nit;
+    private TextField tex_email;
+    private ComboBox com_comunidad;
+    private ComboBox com_tipo;
+    private ComboBox com_estado;
+    private Button but_aceptar;
+    private Button but_cancelar;
+    private String idcliente;
+    private String idalmacen;
+    private String nombre;
+    private String primerAp;
+    private String segundoAp;
+    private String telefono;
+    private String celular;
+    private String direccion;
+    private String item;
+    private String nit;
+    private String email;
+    private String comunidad;
+    private String tipo;
+    private String estado;
+    private String[] estados;
+    private Object[][] comunidadM;
+    private Object[][] tipoM;
+    private Store comunidadStore;
+    private Store tipoStore;
+    private ClienteDetalle padre;
+
+    public EditarClienteForm(String idCliente, ClienteDetalle padred) {
+        this.idcliente = idCliente;
+      //  this.idalmacen = idAlmacen;
+        this.padre = padred;
+        String nombreBoton1 = "Guardar";
+        String nombreBoton2 = "Cancelar";
+        String tituloTabla = "Registar nuevo Cliente";
+
+        boolean colapsado = false;
+        if (idCliente != null) {
+            nombreBoton1 = "Modificar";
+            tituloTabla = "Editar Cliente";
+            colapsado = true;
+        } else {
+            this.idcliente = "nuevo";
+        }
+        setId("win-Cliente");
+        setTitle(tituloTabla);
+        setWidth(ANCHO);
+        setMinWidth(ANCHO);
+        setLayout(new FitLayout());
+        setPaddings(WINDOW_PADDING);
+        setButtonAlign(Position.CENTER);
+        setCloseAction(Window.CLOSE);
+        setPlain(true);
+
+
+        but_aceptar = new Button(nombreBoton1);
+        but_cancelar = new Button(nombreBoton2);
+        addButton(but_aceptar);
+        addButton(but_cancelar);
+
+        formPanelCliente = new FormPanel();
+        formPanelCliente.setBaseCls("x-plain");
+        formPanelCliente.setLabelWidth(ANCHO - 400);
+        formPanelCliente.setUrl("save-form.php");
+        formPanelCliente.setWidth(ANCHO);
+        formPanelCliente.setHeight(ALTO);
+
+        tex_nombre = new TextField("Nombre", "nombre",200);
+        tex_nombre.setAllowBlank(false);
+        tex_primerAp = new TextField("Apellidos", "apellido",200);
+        tex_primerAp.setAllowBlank(false);
+        tex_telefono = new TextField("Telefono", "telefono",100);
+        tex_direccion = new TextField("Direccion", "direccion",150);
+        tex_nit = new TextField("NIT", "nit",100);
+        tex_item = new TextField("ITEM", "item",100);
+
+        com_comunidad = new ComboBox("Empresa", "empresas",200);
+        com_comunidad.setAllowBlank(false);
+        com_estado = new ComboBox("Estado", "estado",200);
+com_estado.setAllowBlank(false);
+        initCombos();
+
+        formPanelCliente.setLabelWidth(ANCHO - 400 - 5);
+
+
+
+
+        if (idCliente != null) {
+
+
+            String enlace = "php/ClienteDetalle.php?funcion=buscarclienteporid&idclienteempresa=" + idCliente;
+            Utils.setErrorPrincipal("Cargando parametros ", "cargar");
+            final Conector conec = new Conector(enlace, false);
+
+            try {
+                conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                    public void onResponseReceived(Request request, Response response) {
+                        String data = response.getText();
+                        JSONValue jsonValue = JSONParser.parse(data);
+                        JSONObject jsonObject;
+                        if ((jsonObject = jsonValue.isObject()) != null) {
+                            String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                            String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                            if (errorR.equalsIgnoreCase("true")) {
+                                Utils.setErrorPrincipal(mensajeR, "mensaje");
+                                JSONValue userV = jsonObject.get("resultado");
+                                JSONObject userO;
+                                if ((userO = userV.isObject()) != null) {
+
+                                    nombre = Utils.getStringOfJSONObject(userO, "nombre");
+                                    primerAp = Utils.getStringOfJSONObject(userO, "apellido");
+                                    telefono = Utils.getStringOfJSONObject(userO, "telefono");
+                                    direccion = Utils.getStringOfJSONObject(userO, "direccion");
+                                    nit = Utils.getStringOfJSONObject(userO, "nit");
+                                    email = Utils.getStringOfJSONObject(userO, "item");
+                                    comunidad = Utils.getStringOfJSONObject(userO, "idempresa");
+                                   
+                                    estado = Utils.getStringOfJSONObject(userO, "estado");
+                                    String comunidades = Utils.getStringOfJSONObject(userO, "empresas");
+                                    if (comunidades.equalsIgnoreCase("true")) {
+
+                                        comunidadM = Utils.getArrayOfJSONObject(userO, "empresaM", new String[]{"idempresa", "nombre"});
+                                        if (comunidadM != null) {
+                                            comunidadStore = new SimpleStore(new String[]{"idempresa", "nombre"}, comunidadM);
+                                            comunidadStore.load();
+                                            com_comunidad.setStore(comunidadStore);
+                                            com_comunidad.reset();
+                                            com_comunidad.setValue(comunidad);
+                                        }
+
+                                    }
+                              
+
+
+                                    initValues();
+                                } else {
+                                    Utils.setErrorPrincipal("No se recuperaron correctamente lo valores de usuario", "error");
+                                }
+
+                            } else {
+                                Utils.setErrorPrincipal(mensajeR, "error");
+                            }
+                        }
+                    }
+
+                    public void onError(Request request, Throwable exception) {
+                        Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                    }
+                });
+
+            } catch (RequestException ex) {
+                ex.getMessage();
+                Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+            }
+        } else {
+            String enlace = "php/ClienteDetalle.php?funcion=BuscarEmpresas";
+
+            //String enlace = "php/clientedetalle.php?funcion=buscarempresa";
+            Utils.setErrorPrincipal("Cargando parametros para el nuevo cliente", "cargar");
+            final Conector conec = new Conector(enlace, false);
+
+            try {
+                conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                    public void onResponseReceived(Request request, Response response) {
+                        String data = response.getText();
+                        JSONValue jsonValue = JSONParser.parse(data);
+                        JSONObject jsonObject;
+                        if ((jsonObject = jsonValue.isObject()) != null) {
+                            String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                            String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                            if (errorR.equalsIgnoreCase("true")) {
+                                Utils.setErrorPrincipal(mensajeR, "mensaje");
+                                JSONValue userV = jsonObject.get("resultado");
+                                JSONObject userO;
+                                if ((userO = userV.isObject()) != null) {
+
+                                    String comunidades = Utils.getStringOfJSONObject(userO, "empresas");
+                                    if (comunidades.equalsIgnoreCase("true")) {
+
+
+                                        comunidadM = Utils.getArrayOfJSONObject(userO, "empresaM", new String[]{"idempresa", "nombre"});
+                                        if (comunidadM != null) {
+                                            comunidadStore = new SimpleStore(new String[]{"idempresa", "nombre"}, comunidadM);
+                                            comunidadStore.load();
+                                            com_comunidad.setStore(comunidadStore);
+                                            com_comunidad.reset();
+                                          //  comunidad = comunidadM[0][0].toString();
+                                            com_comunidad.setValue("");
+                                        }
+
+                                    }
+                                    
+
+                                    initValues();
+                                } else {
+                                    Utils.setErrorPrincipal("No se recuperaron correctamente lo valores de usuario", "error");
+                                }
+
+                            } else {
+                                Utils.setErrorPrincipal(mensajeR, "error");
+                            }
+                        }
+                    }
+
+                    public void onError(Request request, Throwable exception) {
+                        Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                    }
+                });
+
+            } catch (RequestException ex) {
+                ex.getMessage();
+                Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+            }
+        }
+
+        formPanelCliente.add(tex_nombre);
+        formPanelCliente.add(tex_primerAp);
+        formPanelCliente.add(tex_telefono);
+        formPanelCliente.add(tex_direccion);
+        formPanelCliente.add(tex_nit);
+        formPanelCliente.add(tex_item);
+        formPanelCliente.add(com_comunidad);
+        
+        formPanelCliente.add(com_estado);
+
+
+
+        add(formPanelCliente);
+
+        initValidators();
+
+        addListeners();
+        addListenerskey();
+    }
+
+    private void addListenerskey() {
+
+            tex_nombre.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                  tex_primerAp.focus();}
+                }
+            });
+              tex_primerAp.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                  tex_telefono.focus();}
+                }
+            });
+              tex_telefono.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                  tex_direccion.focus();}
+                }
+            });
+              tex_direccion.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                  tex_nit.focus();}
+                }
+            });
+              tex_nit.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                  tex_item.focus();}
+                }
+            });
+              tex_item.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                  com_comunidad.focus();}
+                }
+            });
+              com_comunidad.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                  com_estado.focus();}
+                }
+            });
+              com_estado.addListener(new TextFieldListenerAdapter() {
+            @Override
+            public void onSpecialKey(Field field, EventObject e) {
+                if (e.getKey() == EventObject.ENTER) {
+                  GuardarNuevoCredito();}
+                }
+            });
+
+    }
+    private void initCombos() {
+        estados = new String[]{"ACTIVO", "INACTIVO", "OBSERVADO"};
+
+
+        com_comunidad.setValueField("idempresa");
+        com_comunidad.setDisplayField("nombre");
+        com_comunidad.setMinChars(1);
+        //com_comunidad.setFieldLabel("nombre");
+        com_comunidad.setMode(ComboBox.LOCAL);
+        com_comunidad.setEmptyText("Seleccione una empresa");
+        com_comunidad.setLoadingText("Buscando");
+        com_comunidad.setTypeAhead(true);
+        com_comunidad.setSelectOnFocus(true);
+        com_comunidad.setHideTrigger(true);
+
+
+
+
+
+
+        SimpleStore estadosStore = new SimpleStore("estados", estados);
+        estadosStore.load();
+        com_estado.setDisplayField("estados");
+        com_estado.setStore(estadosStore);
+     //   comunidad = comunidadM[0][0].toString();
+       com_estado.setValue("ACTIVO");
+       if (idcliente != null) {
+            com_comunidad.setDisabled(true);
+        } else {
+         com_comunidad.setDisabled(false);
+        }
+    }
+
+    private void initValidators() {
+
+
+
+        tex_nombre.setMaxLength(50);
+        tex_primerAp.setMaxLength(50);
+        tex_nit.setMaxLength(10);
+
+        tex_telefono.setMaxLength(12);
+        tex_direccion.setMaxLength(50);
+        tex_item.setMaxLength(20);
+
+    }
+
+    private void initValues() {
+        tex_nombre.setValue(nombre);
+        tex_primerAp.setValue(primerAp);
+        tex_telefono.setValue(telefono);
+        tex_direccion.setValue(direccion);
+        tex_nit.setValue(nit);
+        tex_item.setValue(item);
+        com_estado.setValue(estado);
+
+    }
+
+    private void addListeners() {
+        but_aceptar.addListener(new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+
+
+GuardarNuevoCredito();
+
+         
+            }
+        });
+
+        but_cancelar.addListener(new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                EditarClienteForm.this.destroy();
+                EditarClienteForm.this.close();
+            }
+        });
+
+    }
+
+      public void GuardarNuevoCredito() {
+             if (!idcliente.equalsIgnoreCase("nuevo")) {
+                    JSONObject usuarioSoU = new JSONObject();
+                    usuarioSoU.put("idclienteempresa", new JSONString(idcliente));
+                    usuarioSoU.put("nombre", new JSONString(tex_nombre.getText()));
+                    usuarioSoU.put("apellido", new JSONString(tex_primerAp.getText()));
+                    usuarioSoU.put("nit", new JSONString(tex_nit.getText()));
+                    usuarioSoU.put("telefono", new JSONString(tex_telefono.getText()));
+                    usuarioSoU.put("direccion", new JSONString(tex_direccion.getText()));
+                    usuarioSoU.put("idempresa", new JSONString(com_comunidad.getValue()));
+                  usuarioSoU.put("item", new JSONString(tex_item.getText()));
+
+                    usuarioSoU.put("estado", new JSONString(com_estado.getText()));
+                    String datos = "resultado=" + usuarioSoU.toString();
+                    String enlace = "php/ClienteDetalle.php?funcion=modificarcliente&" + datos;
+                    Utils.setErrorPrincipal("Guardando los cambios en usuario", "cargar");
+                    final Conector conec = new Conector(enlace, false, "GET");
+                    try {
+                        conec.getRequestBuilder().sendRequest(datos, new RequestCallback() {
+
+                            public void onResponseReceived(Request request, Response response) {
+
+                                String data = response.getText();
+                                JSONValue jsonValue = JSONParser.parse(data);
+                                JSONObject jsonObject;
+                                if ((jsonObject = jsonValue.isObject()) != null) {
+                                    String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                    String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                    if (errorR.equalsIgnoreCase("true")) {
+                                        padre.buscarSegunParametros();
+                                        Utils.setErrorPrincipal(mensajeR, "mensaje");
+
+                                        EditarClienteForm.this.destroy();
+                                        EditarClienteForm.this.close();
+
+                                    } else {
+                                        Utils.setErrorPrincipal(mensajeR, "error");
+                                    }
+                                }
+                            }
+
+                            public void onError(Request request, Throwable exception) {
+                                Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                            }
+                        });
+                    } catch (RequestException ex) {
+                        Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                    }
+                } else {
+                    JSONObject usuarioSoU = new JSONObject();
+                    usuarioSoU.put("idclienteempresa", new JSONString(idcliente));
+
+                    usuarioSoU.put("nombre", new JSONString(tex_nombre.getText()));
+                    usuarioSoU.put("apellido", new JSONString(tex_primerAp.getText()));
+                    usuarioSoU.put("nit", new JSONString(tex_nit.getText()));
+                    usuarioSoU.put("telefono", new JSONString(tex_telefono.getText()));
+                    usuarioSoU.put("direccion", new JSONString(tex_direccion.getText()));
+                    usuarioSoU.put("item", new JSONString(tex_item.getText()));
+
+                    usuarioSoU.put("idempresa", new JSONString(com_comunidad.getValue()));
+                    usuarioSoU.put("estado", new JSONString(com_estado.getText()));
+                    String datos = "resultado=" + usuarioSoU.toString();
+                    String enlace = "php/ClienteDetalle.php?funcion=insertnuevocliente&" + datos;
+                    Utils.setErrorPrincipal("Guardando los cambios para el nuevo cliente", "cargar");
+                    final Conector conec = new Conector(enlace, false, "GET");
+                    try {
+                        conec.getRequestBuilder().sendRequest(datos, new RequestCallback() {
+
+                            public void onResponseReceived(Request request, Response response) {
+                                String data = response.getText();
+                                JSONValue jsonValue = JSONParser.parse(data);
+                                JSONObject jsonObject;
+                                if ((jsonObject = jsonValue.isObject()) != null) {
+                                    String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                                    String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                                    if (errorR.equalsIgnoreCase("true")) {
+                                        padre.buscarSegunParametros();
+                                        Utils.setErrorPrincipal(mensajeR, "mensaje");
+                                        EditarClienteForm.this.destroy();
+                                        EditarClienteForm.this.close();
+                                    } else {
+//                                        Window.alert(mensajeR);
+                                        Utils.setErrorPrincipal(mensajeR, "error");
+                                    }
+                                }
+                            }
+
+                            public void onError(Request request, Throwable exception) {
+                                Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                            //Window.alert("Ocurrio un error al conectar con el servidor ");
+                            }
+                        });
+                    } catch (RequestException ex) {
+                        Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                    }
+                }
+
+
+      }
+}

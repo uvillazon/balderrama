@@ -1,0 +1,103 @@
+CREATE TABLE `itemventa` (
+  `iditemventa` varchar(20) NOT NULL,
+  `cantidad` decimal(10,2) NOT NULL,
+  `precio` decimal(10,2) NOT NULL,
+  `tipocambio` double NOT NULL,
+  `descuento` decimal(10,2) NOT NULL,
+  `descuentoporcentaje` int(3) NOT NULL,
+  `total` decimal(10,2) NOT NULL,
+  `numero` int(11) default NULL,
+  `idcalzado` varchar(20) default NULL,
+  `idventa` varchar(20) default NULL,
+  `idempleado` varchar(20) default NULL,
+  `idkardextienda` varchar(20) default NULL,
+  `saldo` int(11) default NULL,
+  PRIMARY KEY  (`iditemventa`),
+  KEY `idventa` (`idventa`),
+  KEY `itemventa_fk1` (`idempleado`),
+  KEY `idcalzado` (`idcalzado`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Volcar la base de datos para la tabla `itemventa`
+--
+
+INSERT INTO `itemventa` (`iditemventa`, `cantidad`, `precio`, `tipocambio`, `descuento`, `descuentoporcentaje`, `total`, `numero`, `idcalzado`, `idventa`, `idempleado`, `idkardextienda`, `saldo`) VALUES
+('id-ven-item-1', '1.00', '300.00', 0, '0.00', 0, '300.00', 1, 'cal-1', 'id-ven-1', '1009', 'kar-1', 0);
+
+
+
+CREATE TABLE `ventasdetalle` (
+  `idventadetalle` varchar(40) NOT NULL,
+  `numero` int(20) default NULL,
+  `nit` varchar(40) default NULL,
+  `nombrecliente` varchar(40) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `tipoventa` varchar(20) default NULL COMMENT ' CON-FACTURA= CF\r\nSIN-FACTURA = SF\r\nCON-TARJETA = CT',
+  `responsable` varchar(20) default NULL,
+  `credito` varchar(20) default NULL,
+  `totalbs` decimal(22,11) default NULL,
+  `cantidad` int(11) default NULL,
+  `idtienda` varchar(20) default NULL,
+  `descuento` decimal(22,11) default NULL,
+  PRIMARY KEY  (`idventadetalle`),
+  KEY `idtienda` (`idtienda`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
+
+--
+-- Volcar la base de datos para la tabla `ventasdetalle`
+--
+
+INSERT INTO `ventasdetalle` (`idventadetalle`, `numero`, `nit`, `nombrecliente`, `fecha`, `hora`, `tipoventa`, `responsable`, `credito`, `totalbs`, `cantidad`, `idtienda`, `descuento`) VALUES
+('id-ven-1', 1, '123', 'julio', '2010-10-10', NULL, 'SF', '1009', 'NO', '300.00000000000', 1, 'tie-1', '0.00000000000');
+
+
+
+CREATE TABLE `ventacreditodetalle` (
+  `idventacreditodetalle` varchar(40) NOT NULL,
+  `boleta` int(20) default NULL,
+  `montopapeleta` varchar(40) default NULL,
+  `idclienteempresa` varchar(40) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `montopapeleta` decimal(22,11) default NULL,
+  `montocredito` decimal(22,11) default NULL,
+  `cantidad` int(11) default NULL,
+  `idempresa` varchar(20) default NULL,
+  `idventa` varchar(20) default NULL,
+ `idempleado` varchar(20) default NULL,
+ `estado` varchar(20) default NULL,
+  
+ `saldo` int(11) default NULL,
+  PRIMARY KEY  (`idventacreditodetalle`),
+  KEY `idventa` (`idventa`),
+  KEY `ventacreditodetalle_fk1` (`idempresa`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+
+
+CREATE TABLE `devolucion` (
+ `iddevolucion` varchar(20) NOT NULL,
+  `iditemventa` varchar(20) NOT NULL,
+  `idcalzado` varchar(20) default NULL,
+  `idkardex` varchar(20) default NULL,
+  `codigo` char(25) default NULL,
+  `fecha` date default NULL,
+  `hora` time default NULL,
+  `responsable` varchar(20) default NULL,
+  `nit` varchar(20) default NULL,
+  `observacion` text,
+  `fechadevolucion` date default NULL,
+  `horadevolucion` time default NULL,
+  `montodevolucion` decimal(24,14) default NULL,
+  `fechareintegro` date default NULL,
+  `horareintegro` time default NULL,
+  `montoreintegro` decimal(24,14) default NULL,
+  `numero` int(11) default NULL,
+  `numerodocumento` varchar(30) default NULL,
+  `nombre` varchar(20) default NULL,
+  `tipo` varchar(1) NOT NULL,
+  PRIMARY KEY  (`idventa`),
+  KEY `fk_relationship_55` (`iditemventa`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;

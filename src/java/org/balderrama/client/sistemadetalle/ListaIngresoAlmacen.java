@@ -1,0 +1,630 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.sistemadetalle;
+
+/**
+ *
+ * @author miguel
+ */
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Component;
+import com.gwtext.client.widgets.MessageBox;
+import com.gwtext.client.widgets.PagingToolbar;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.QuickTipsConfig;
+import com.gwtext.client.widgets.ToolbarButton;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.event.PanelListenerAdapter;
+import com.gwtext.client.widgets.grid.ColumnConfig;
+import com.gwtext.client.widgets.grid.ColumnModel;
+import com.gwtext.client.widgets.grid.EditorGridPanel;
+import com.gwtext.client.widgets.grid.GridPanel;
+import com.gwtext.client.widgets.grid.event.GridCellListenerAdapter;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.ExtElement;
+import com.gwtext.client.widgets.grid.BaseColumnConfig;
+import com.gwtext.client.widgets.grid.CheckboxColumnConfig;
+import com.gwtext.client.widgets.grid.CheckboxSelectionModel;
+import com.gwtext.client.widgets.grid.RowNumberingColumnConfig;
+import com.gwtext.client.data.*;
+import com.gwtext.client.data.DataProxy;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.NumberField;
+import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.grid.GridEditor;
+import com.gwtext.client.widgets.grid.RowSelectionModel;
+import com.gwtext.client.widgets.grid.event.GridRowListenerAdapter;
+import org.balderrama.client.sistemadetalle.ColorPedido;
+import org.balderrama.client.sistemadetalle.MaterialPedido;
+import com.gwtext.client.widgets.grid.event.*;
+
+public class ListaIngresoAlmacen {
+
+    private EditorGridPanel grid;
+    private final int ANCHO = 400;
+    private final int ALTO = 430;
+    private ToolbarButton eliminarProducto;
+    protected ExtElement ext_element;
+    private CheckboxSelectionModel cbSelectionModel;
+    private Store store;
+    private ColumnConfig idColumn;
+    private BaseColumnConfig[] columns;
+    private ColumnModel columnModel;
+    protected String buscaCodigo;
+    protected String buscarNombre;
+    private ToolbarButton buscar;
+    private DataProxy dataProxy;
+    private JsonReader reader;
+    PagingToolbar pagingToolbar;
+    String selecionado = "";
+    private Panel panel;
+    private ColumnConfig codigoColumn;
+    private ColumnConfig precioColumn;
+    private ColumnConfig colorColumn;
+    private ColumnConfig materialColumn;
+    private ColumnConfig lineaColumn;
+    private ColumnConfig stylenameColumn;
+    private ColumnConfig clienteColumn;
+    private ColumnConfig vendedorColumn;
+    private ColumnConfig totalparesColumn;
+    private ColumnConfig totalcajasColumn;
+    private ColumnConfig talla1Column;
+    private ColumnConfig talla1mColumn;
+    private ColumnConfig talla2Column;
+    private ColumnConfig talla2mColumn;
+    private ColumnConfig talla3Column;
+    private ColumnConfig talla3mColumn;
+    private ColumnConfig talla4Column;
+    private ColumnConfig talla4mColumn;
+    private ColumnConfig talla5Column;
+    private ColumnConfig talla5mColumn;
+    private ColumnConfig talla6Column;
+    private ColumnConfig talla6mColumn;
+    private ColumnConfig talla7Column;
+    private ColumnConfig talla7mColumn;
+    private ColumnConfig talla8Column;
+    private ColumnConfig talla8mColumn;
+    private ColumnConfig talla9Column;
+    private ColumnConfig talla9mColumn;
+    private ColumnConfig talla10Column;
+    private ColumnConfig talla10mColumn;
+    private ColumnConfig talla11Column;
+    private ColumnConfig talla11mColumn;
+    private ColumnConfig talla12Column;
+    private ColumnConfig talla12mColumn;
+    private ColumnConfig talla14Column;
+    private ColumnConfig talla15Column;
+    private ColumnConfig talla16Column;
+    private ColumnConfig talla17Column;
+    private ColumnConfig talla18Column;
+    private ColumnConfig talla19Column;
+    private ColumnConfig talla20Column;
+    private ColumnConfig talla21Column;
+    private ColumnConfig talla22Column;
+    private ColumnConfig talla23Column;
+    private ColumnConfig talla24Column;
+    private ColumnConfig talla25Column;
+    private ColumnConfig talla26Column;
+    private ColumnConfig talla27Column;
+    private ColumnConfig talla28Column;
+    private ColumnConfig talla29Column;
+    private ColumnConfig talla30Column;
+    private ColumnConfig talla31Column;
+    private ColumnConfig talla32Column;
+    private ColumnConfig talla33Column;
+    private ColumnConfig talla34Column;
+    private ColumnConfig talla35Column;
+    private ColumnConfig talla36Column;
+    private ColumnConfig talla37Column;
+    private ColumnConfig talla38Column;
+    private ColumnConfig talla39Column;
+    private ColumnConfig talla40Column;
+    private ColumnConfig talla41Column;
+    private ColumnConfig talla42Column;
+    private ColumnConfig talla43Column;
+    private ColumnConfig talla44Column;
+    private ColumnConfig talla45Column;
+    private ColumnConfig precio1Column;
+    private ColumnConfig cantidadColumn;
+    private ColumnConfig totalColumn;
+    private ColumnConfig tipoventaColumn;
+    private ColorPedido colorpedido;
+    private MaterialPedido materialpedido;
+    private Object[][] clienteM;
+    private Object[][] vendedorM;
+    private Object[][] colorM;
+    private Object[][] materialM;
+    private final int WINDOW_PADDING = 5;
+    //variables para eliminar tuplas
+    Object[][] tipoventaA = new Object[][]{new Object[]{"tip-1000", "Por Unidad"}, new Object[]{"tip-1001", "Por Mayor"},};
+    String[] nombreComlumns = {"idproducto", "codigo", "proveedor", "nombre", "tipoventa", "precio", "precio2", "cantidad", "total"};
+    String[] nombreCaso1Columns = {"codigo", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "precio", "totalpares", "totalbs", "idmodelo"};
+    String[] nombreCaso2Columns = {"codigo", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "precio", "totalpares", "totalbs", "idmodelo"};
+    private RecordDef recordDef;
+
+    public void onModuleLoad1() {
+        panel = new Panel();
+        //panel.setId("panel-lista-productosproveedor");
+
+        dataProxy = new ScriptTagProxy("");
+        recordDef = new RecordDef(new FieldDef[]{
+                    new StringFieldDef(nombreCaso1Columns[0]),
+                    new StringFieldDef(nombreCaso1Columns[1]),
+                    new StringFieldDef(nombreCaso1Columns[2]),
+                    new StringFieldDef(nombreCaso1Columns[3]),
+                    new FloatFieldDef(nombreCaso1Columns[4]),
+                    new FloatFieldDef(nombreCaso1Columns[5]),
+                    new FloatFieldDef(nombreCaso1Columns[6]),
+                    new FloatFieldDef(nombreCaso1Columns[7]),
+                    new FloatFieldDef(nombreCaso1Columns[8]),
+                    new FloatFieldDef(nombreCaso1Columns[9]),
+                    new FloatFieldDef(nombreCaso1Columns[10]),
+                    new FloatFieldDef(nombreCaso1Columns[11]),
+                    new FloatFieldDef(nombreCaso1Columns[12]),
+                    new FloatFieldDef(nombreCaso1Columns[13]),
+                    new FloatFieldDef(nombreCaso1Columns[14]),
+                    new FloatFieldDef(nombreCaso1Columns[15]),
+                    new FloatFieldDef(nombreCaso1Columns[16]),
+                    new FloatFieldDef(nombreCaso1Columns[17]),
+                    new FloatFieldDef(nombreCaso1Columns[18]),
+                    new FloatFieldDef(nombreCaso1Columns[19]),
+                    new FloatFieldDef(nombreCaso1Columns[20]),
+                    new FloatFieldDef(nombreCaso1Columns[21]),
+                    new FloatFieldDef(nombreCaso1Columns[22]),
+                    new FloatFieldDef(nombreCaso1Columns[23]),
+                    new FloatFieldDef(nombreCaso1Columns[24]),
+                    new FloatFieldDef(nombreCaso1Columns[25]),
+                    new FloatFieldDef(nombreCaso1Columns[26]),
+                    new FloatFieldDef(nombreCaso1Columns[27]),
+                    new FloatFieldDef(nombreCaso1Columns[28]),
+                    new StringFieldDef(nombreCaso1Columns[29])
+                });
+        reader = new JsonReader(recordDef);
+        reader.setRoot("resultado");
+        reader.setTotalProperty("totalCount");
+        store = new Store(dataProxy, reader, true);
+        codigoColumn = new ColumnConfig("Codigo", nombreCaso1Columns[0], 100, true);
+        talla14Column = new ColumnConfig("14", nombreCaso1Columns[1], 30, true, null);
+        talla15Column = new ColumnConfig("15", nombreCaso1Columns[2], 30, true, null);
+        talla16Column = new ColumnConfig("16", nombreCaso1Columns[3], 30, true, null);
+        talla17Column = new ColumnConfig("17", nombreCaso1Columns[4], 30, true, null);
+        talla18Column = new ColumnConfig("18", nombreCaso1Columns[5], 30, true, null);
+        talla19Column = new ColumnConfig("19", nombreCaso1Columns[6], 30, true, null);
+        talla20Column = new ColumnConfig("20", nombreCaso1Columns[7], 30, true, null);
+        talla21Column = new ColumnConfig("21", nombreCaso1Columns[8], 30, true, null);
+        talla22Column = new ColumnConfig("22", nombreCaso1Columns[9], 30, true, null);
+        talla23Column = new ColumnConfig("23", nombreCaso1Columns[10], 30, true, null);
+        talla24Column = new ColumnConfig("24", nombreCaso1Columns[11], 30, true, null);
+        talla25Column = new ColumnConfig("25", nombreCaso1Columns[12], 30, true, null);
+        talla26Column = new ColumnConfig("26", nombreCaso1Columns[13], 30, true, null);
+        talla27Column = new ColumnConfig("27", nombreCaso1Columns[14], 30, true, null);
+        talla28Column = new ColumnConfig("28", nombreCaso1Columns[15], 30, true, null);
+        talla29Column = new ColumnConfig("29", nombreCaso1Columns[16], 30, true, null);
+        talla30Column = new ColumnConfig("30", nombreCaso1Columns[17], 30, true, null);
+        talla31Column = new ColumnConfig("31", nombreCaso1Columns[18], 30, true, null);
+        // talla31Column = new ColumnConfig("21", nombreCaso1Columns[10], 200, true, null);
+        talla32Column = new ColumnConfig("32", nombreCaso1Columns[19], 30, true, null);
+        talla33Column = new ColumnConfig("33", nombreCaso1Columns[20], 30, true, null);
+        talla34Column = new ColumnConfig("34", nombreCaso1Columns[21], 30, true, null);
+        talla35Column = new ColumnConfig("35", nombreCaso1Columns[22], 30, true, null);
+        talla36Column = new ColumnConfig("36", nombreCaso1Columns[23], 30, true, null);
+        talla37Column = new ColumnConfig("37", nombreCaso1Columns[24], 30, true, null);
+        talla38Column = new ColumnConfig("38", nombreCaso1Columns[25], 30, true, null);
+        precioColumn = new ColumnConfig("Precio", nombreCaso1Columns[26], 80, true, null);
+        totalparesColumn = new ColumnConfig("# Pares", nombreCaso1Columns[27], 80, true, null);
+        totalColumn = new ColumnConfig("Total Bolivianos", nombreCaso1Columns[28], 80, true, null);
+        idColumn = new ColumnConfig("Id modelo", nombreCaso1Columns[29], 80, true, null);
+
+
+
+        NumberField num_field1 = new NumberField();
+        num_field1.setAllowBlank(false);
+        num_field1.setAllowNegative(false);
+        //num_field3.setMaxValue(1000);
+
+        NumberField num_field2 = new NumberField();
+        num_field2.setAllowBlank(false);
+        num_field2.setAllowNegative(false);
+
+        NumberField num_field3 = new NumberField();
+        num_field3.setAllowBlank(false);
+        num_field3.setAllowNegative(false);
+
+        NumberField num_field4 = new NumberField();
+        num_field4.setAllowBlank(false);
+        num_field4.setAllowNegative(false);
+
+
+        //num_field4.setMaxValue(1000);
+
+        talla14Column.setEditor(new GridEditor(metodoFeli()));
+        talla15Column.setEditor(new GridEditor(metodoFeli()));
+        talla16Column.setEditor(new GridEditor(metodoFeli()));
+        talla17Column.setEditor(new GridEditor(metodoFeli()));
+        talla18Column.setEditor(new GridEditor(metodoFeli()));
+        talla19Column.setEditor(new GridEditor(metodoFeli()));
+        talla20Column.setEditor(new GridEditor(metodoFeli()));
+        talla21Column.setEditor(new GridEditor(metodoFeli()));
+        talla22Column.setEditor(new GridEditor(metodoFeli()));
+        talla23Column.setEditor(new GridEditor(metodoFeli()));
+        talla24Column.setEditor(new GridEditor(metodoFeli()));
+        talla25Column.setEditor(new GridEditor(metodoFeli()));
+        talla26Column.setEditor(new GridEditor(metodoFeli()));
+        talla27Column.setEditor(new GridEditor(metodoFeli()));
+        talla28Column.setEditor(new GridEditor(metodoFeli()));
+        talla29Column.setEditor(new GridEditor(metodoFeli()));
+        talla30Column.setEditor(new GridEditor(metodoFeli()));
+        talla31Column.setEditor(new GridEditor(metodoFeli()));
+        talla32Column.setEditor(new GridEditor(metodoFeli()));
+        talla33Column.setEditor(new GridEditor(metodoFeli()));
+        talla34Column.setEditor(new GridEditor(metodoFeli()));
+        talla35Column.setEditor(new GridEditor(metodoFeli()));
+        talla36Column.setEditor(new GridEditor(metodoFeli()));
+        talla37Column.setEditor(new GridEditor(metodoFeli()));
+        talla38Column.setEditor(new GridEditor(metodoFeli()));
+//        precioColumn.setEditor(new GridEditor(metodoFeli()));
+//        totalparesColumn.setEditor(new GridEditor(metodoFeli()));
+//        totalColumn.setEditor(new GridEditor(metodoFeli()));
+
+
+        cbSelectionModel = new CheckboxSelectionModel();
+        columns = new BaseColumnConfig[]{new RowNumberingColumnConfig(),
+                    new CheckboxColumnConfig(cbSelectionModel),
+                    codigoColumn,
+                    talla14Column,
+                    talla15Column,
+                    talla16Column,
+                    talla17Column,
+                    talla18Column,
+                    talla19Column,
+                    talla20Column,
+                    talla21Column,
+                    talla22Column,
+                    talla23Column,
+                    talla24Column,
+                    talla25Column,
+                    talla26Column,
+                    talla27Column,
+                    talla28Column,
+                    talla29Column,
+                    talla30Column,
+                    talla31Column,
+                    talla32Column,
+                    talla33Column,
+                    talla34Column,
+                    talla35Column,
+                    talla36Column,
+                    talla37Column,
+                    talla38Column,
+                    precioColumn,
+                    totalparesColumn,
+                    totalColumn
+                };
+
+        columnModel = new ColumnModel(columns);
+
+        grid = new EditorGridPanel();
+        //grid.setId("grid-lista-productosproveedor");
+        grid.setWidth("100%");
+        grid.setHeight(ALTO);
+        grid.setTitle("Lista de Calzados");
+        grid.setStore(store);
+        grid.setColumnModel(columnModel);
+        grid.setTrackMouseOver(true);
+        grid.setLoadMask(true);
+        grid.setSelectionModel(new RowSelectionModel());
+        grid.setSelectionModel(cbSelectionModel);
+        grid.setFrame(true);
+        grid.setStripeRows(true);
+        grid.setIconCls("grid-icon");
+        grid.setAutoScroll(true);
+        grid.setClicksToEdit(1);
+
+        eliminarProducto = new ToolbarButton("Quitar");
+        eliminarProducto.setEnableToggle(true);
+        QuickTipsConfig tipsConfig2 = new QuickTipsConfig();
+        tipsConfig2.setText("Quitar producto(s)");
+        //tipsConfig.setTitle("Tip Title");
+        eliminarProducto.setTooltip(tipsConfig2);
+
+        pagingToolbar = new PagingToolbar(store);
+        pagingToolbar.setPageSize(100);
+        pagingToolbar.setDisplayInfo(false);
+        pagingToolbar.setDisplayMsg("Mostrando {0} - {1} de {2}");
+        pagingToolbar.setEmptyMsg("No topics to display");
+        pagingToolbar.addSeparator();
+        pagingToolbar.addButton(eliminarProducto);
+
+        grid.setBottomToolbar(pagingToolbar);
+
+//        aniadirListenersBuscador();
+//
+//        aniadirListenersBuscadoresText();
+
+        aniadirListenersProducto();
+        panel.add(grid);
+    }
+
+    public void onModuleLoad2() {
+        panel = new Panel();
+        //panel.setId("panel-lista-productosproveedor");
+
+        dataProxy = new ScriptTagProxy("");
+        recordDef = new RecordDef(new FieldDef[]{
+                    new StringFieldDef(nombreCaso2Columns[0]),
+                    new StringFieldDef(nombreCaso2Columns[1]),
+                    new StringFieldDef(nombreCaso2Columns[2]),
+                    new StringFieldDef(nombreCaso2Columns[3]),
+                    new FloatFieldDef(nombreCaso2Columns[4]),
+                    new FloatFieldDef(nombreCaso2Columns[5]),
+                    new FloatFieldDef(nombreCaso2Columns[6]),
+                    new FloatFieldDef(nombreCaso2Columns[7]),
+                    new FloatFieldDef(nombreCaso2Columns[8]),
+                    new FloatFieldDef(nombreCaso2Columns[9]),
+                    new FloatFieldDef(nombreCaso2Columns[10]),
+                    new FloatFieldDef(nombreCaso2Columns[11]),
+                    new FloatFieldDef(nombreCaso2Columns[12]),
+                    new FloatFieldDef(nombreCaso2Columns[13]),
+                    new FloatFieldDef(nombreCaso2Columns[14]),
+                    new FloatFieldDef(nombreCaso2Columns[15]),
+                    new FloatFieldDef(nombreCaso2Columns[16]),
+                    new StringFieldDef(nombreCaso2Columns[17])
+//                    new FloatFieldDef(nombreCaso2Columns[17]),
+//                    new FloatFieldDef(nombreCaso2Columns[18])
+                //new FloatFieldDef(nombreCaso2Columns[19])
+                });
+        reader = new JsonReader(recordDef);
+        reader.setRoot("resultado");
+        reader.setTotalProperty("totalCount");
+        store = new Store(dataProxy, reader, true);
+        codigoColumn = new ColumnConfig("Codigo", nombreCaso2Columns[0], 100, true);
+        talla33Column = new ColumnConfig("33", nombreCaso2Columns[1], 30, true, null);
+        talla34Column = new ColumnConfig("34", nombreCaso2Columns[2], 30, true, null);
+        talla35Column = new ColumnConfig("35", nombreCaso2Columns[3], 30, true, null);
+        talla36Column = new ColumnConfig("36", nombreCaso2Columns[4], 30, true, null);
+        talla37Column = new ColumnConfig("37", nombreCaso2Columns[5], 30, true, null);
+        talla38Column = new ColumnConfig("38", nombreCaso2Columns[6], 30, true, null);
+        talla39Column = new ColumnConfig("39", nombreCaso2Columns[7], 30, true, null);
+        talla40Column = new ColumnConfig("40", nombreCaso2Columns[8], 30, true, null);
+        talla41Column = new ColumnConfig("41", nombreCaso2Columns[9], 30, true, null);
+        talla42Column = new ColumnConfig("42", nombreCaso2Columns[10], 30, true, null);
+        talla43Column = new ColumnConfig("43", nombreCaso2Columns[11], 30, true, null);
+        talla44Column = new ColumnConfig("44", nombreCaso2Columns[12], 30, true, null);
+        talla45Column = new ColumnConfig("45", nombreCaso2Columns[13], 30, true, null);
+
+        precioColumn = new ColumnConfig("Precio", nombreCaso2Columns[14], 200, true, null);
+        totalparesColumn = new ColumnConfig("# Pares", nombreCaso2Columns[15], 200, true, null, "nombre");
+        totalColumn = new ColumnConfig("Total Bolivianos", nombreCaso2Columns[16], 200, true, null, "nombre");
+        idColumn = new ColumnConfig("Id modelo", nombreCaso2Columns[17], 100, true);
+
+
+
+
+
+
+        //num_field4.setMaxValue(1000);
+        talla33Column.setEditor(new GridEditor(metodoFeli()));
+        talla34Column.setEditor(new GridEditor(metodoFeli()));
+        talla35Column.setEditor(new GridEditor(metodoFeli()));
+        talla36Column.setEditor(new GridEditor(metodoFeli()));
+        talla37Column.setEditor(new GridEditor(metodoFeli()));
+        talla38Column.setEditor(new GridEditor(metodoFeli()));
+        talla39Column.setEditor(new GridEditor(metodoFeli()));
+        talla40Column.setEditor(new GridEditor(metodoFeli()));
+        talla41Column.setEditor(new GridEditor(metodoFeli()));
+        talla42Column.setEditor(new GridEditor(metodoFeli()));
+        talla43Column.setEditor(new GridEditor(metodoFeli()));
+        talla44Column.setEditor(new GridEditor(metodoFeli()));
+        talla45Column.setEditor(new GridEditor(metodoFeli()));
+
+//        precioColumn.setEditor(new GridEditor(metodoFeli()));
+//        totalparesColumn.setEditor(new GridEditor(metodoFeli()));
+
+
+
+        cbSelectionModel = new CheckboxSelectionModel();
+        columns = new BaseColumnConfig[]{new RowNumberingColumnConfig(),
+                    new CheckboxColumnConfig(cbSelectionModel),
+                    codigoColumn,
+                    talla33Column,
+                    talla34Column,
+                    talla35Column,
+                    talla36Column,
+                    talla37Column,
+                    talla38Column,
+                    talla39Column,
+                    talla40Column,
+                    talla41Column,
+                    talla42Column,
+                    talla43Column,
+                    talla44Column,
+                    talla45Column,
+                    precioColumn,
+                    totalparesColumn,
+                    totalColumn
+                };
+
+        columnModel = new ColumnModel(columns);
+
+        grid = new EditorGridPanel();
+        //grid.setId("grid-lista-productosproveedor");
+        grid.setWidth("100%");
+        grid.setHeight(ALTO);
+        grid.setTitle("Lista de Calzados");
+        grid.setStore(store);
+        grid.setColumnModel(columnModel);
+        grid.setTrackMouseOver(true);
+        grid.setLoadMask(true);
+        grid.setSelectionModel(new RowSelectionModel());
+        grid.setSelectionModel(cbSelectionModel);
+        grid.setFrame(true);
+        grid.setStripeRows(true);
+        grid.setIconCls("grid-icon");
+        grid.setAutoScroll(true);
+        grid.setClicksToEdit(1);
+
+        eliminarProducto = new ToolbarButton("Quitar");
+        eliminarProducto.setEnableToggle(true);
+        QuickTipsConfig tipsConfig2 = new QuickTipsConfig();
+        tipsConfig2.setText("Quitar producto(s)");
+        //tipsConfig.setTitle("Tip Title");
+        eliminarProducto.setTooltip(tipsConfig2);
+
+        pagingToolbar = new PagingToolbar(store);
+        pagingToolbar.setPageSize(100);
+        pagingToolbar.setDisplayInfo(false);
+        pagingToolbar.setDisplayMsg("Mostrando {0} - {1} de {2}");
+        pagingToolbar.setEmptyMsg("No topics to display");
+        pagingToolbar.addSeparator();
+        pagingToolbar.addButton(eliminarProducto);
+
+        grid.setBottomToolbar(pagingToolbar);
+
+//        aniadirListenersBuscador();
+//
+//        aniadirListenersBuscadoresText();
+
+        aniadirListenersProducto();
+        panel.add(grid);
+    }
+
+    public NumberField metodoFeli() {
+
+
+        NumberField num_field1 = new NumberField();
+        num_field1.setAllowBlank(false);
+        num_field1.setAllowNegative(false);
+        num_field1.setAllowDecimals(false);
+
+        return num_field1;
+    }
+
+    public EditorGridPanel getGrid() {
+        return grid;
+    }
+
+    public void setGrid(EditorGridPanel grid) {
+        this.grid = grid;
+    }
+
+    public Panel getPanel() {
+        return panel;
+    }
+
+    private void aniadirListenersProducto() {
+        //**************************************************
+        //***********ELIMINAR PRODUCTO
+        //**************************************************
+
+        eliminarProducto.addListener(new ButtonListenerAdapter() {
+
+            private boolean procederAEliminar;
+            int repeat = 0;
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                Record[] records = cbSelectionModel.getSelections();
+                if (records.length == 1) {
+                    selecionado = records[0].getAsString("idproducto");
+                    grid.stopEditing();
+                    store.remove(cbSelectionModel.getSelected());
+
+                    grid.startEditing(0, 0);
+                } else {
+                    MessageBox.alert("No hay producto selecionado para eliminar y/o selecciono mas de uno.");
+                }
+
+                eliminarProducto.setPressed(false);
+            }
+        });
+
+
+
+        //**************************************************
+        //*********** LISTENERS DE LA TABLA
+        //**************************************************
+        grid.addListener(
+                new PanelListenerAdapter() {
+
+                    @Override
+                    public void onRender(Component component) {
+                        store.load(0, 100);
+                    }
+                });
+        grid.addGridCellListener(
+                new GridCellListenerAdapter() {
+
+                    @Override
+                    public void onCellClick(GridPanel grid, int rowIndex, int colIndex, EventObject e) {
+//                        if (grid.getColumnModel().getDataIndex(colIndex).equals("indoor")) {
+//                            Record record = grid.getStore().getAt(rowIndex);
+//                            record.set("indoor", !record.getAsBoolean("indoor"));
+//                        }
+                        if (grid.getColumnModel().getDataIndex(colIndex).equals("indoor") && e.getTarget(".checkbox", 1) != null) {
+                            Record record = grid.getStore().getAt(rowIndex);
+                            record.set("indoor", !record.getAsBoolean("indoor"));
+                        }
+
+                        if (grid.getColumnModel().getDataIndex(colIndex).equals("color")) {
+                            //Record record = grid.getStore().getAt(rowIndex);
+                            //record.set("indoor", !record.getAsBoolean("indoor"));
+//                            colorpedido = new ColorPedido(colorM);
+//                            colorpedido.show();
+
+                        }
+                        if (grid.getColumnModel().getDataIndex(colIndex).equals("material")) {
+                            //Record record = grid.getStore().getAt(rowIndex);
+                            //record.set("indoor", !record.getAsBoolean("indoor"));
+//                            materialpedido = new MaterialPedido(materialM);
+//                            materialpedido.show();
+
+                        }
+
+                    }
+                });
+        grid.addGridRowListener(new GridRowListenerAdapter() {
+
+            @Override
+            public void onRowDblClick(GridPanel grid, int rowIndex, EventObject e) {
+//                Record rs = grid.getStore().getRecordAt(rowIndex);
+//                quitarEsteItem(rs);
+            }
+        });
+    }
+
+    private void quitarEsteItem(Record quitar) {
+
+        store.remove(quitar);
+        grid.setStore(store);
+        grid.startEditing(0, 0);
+    }
+
+    public RecordDef getRecordDef() {
+        return recordDef;
+    }
+
+    public void LimpiarGrid() {
+        store.removeAll();
+
+        grid.setStore(store);
+        grid.reconfigure(store, columnModel);
+
+
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public Record[] getRecords() {
+        Record[] records = cbSelectionModel.getSelections();
+        return records;
+    }
+
+    public ColumnModel getColumnModel() {
+        return columnModel;
+    }
+}

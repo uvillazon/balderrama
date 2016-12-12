@@ -1,0 +1,267 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.emergentes;
+
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Position;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.form.Label;
+import com.gwtext.client.widgets.grid.CheckboxSelectionModel;
+import com.gwtext.client.widgets.TabPanel;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import org.balderrama.client.util.Conector;
+import org.balderrama.client.util.Utils;
+import org.balderrama.client.MainEntryPoint;
+import org.balderrama.client.util.KMenu;
+import com.gwtext.client.widgets.MessageBox;
+import org.balderrama.client.Cobros.PanelCobrosEmpresa;
+import org.balderrama.client.pedido.Pedido;
+
+/**
+ *
+ * @author buggy
+ */
+public class SeleccionEmpresa extends Window {
+
+    private final int ANCHO = 300;
+    private final int ALTO = 90;
+    private final AnchorLayoutData ANCHO_LAYOUT_DATA = new AnchorLayoutData("90%");
+    private final int WINDOW_PADDING = 5;
+    private FormPanel formPanel;
+    private ComboBox com_tienda;
+    private ComboBox com_marca;
+    private Label label = new Label("2");
+    private Panel formpanel1;
+    private Button but_aceptarP;
+    private Button but_cancelarP;
+    private String almacenC;
+    private String tipoC;
+    private Object[][] tiendaM;
+    private Object[][] marcaM;
+    CheckboxSelectionModel cbSelectionModel;
+    private boolean nuevo;
+    //para crear un nuevo tab
+    public TabPanel tap_panel;
+    public KMenu padre;
+    public MainEntryPoint panel;
+    Pedido ped;
+
+    public SeleccionEmpresa(Object[][] marca, KMenu kmenu) {
+        //public IngresoAlmacenForm(KMenu kmenu,MainEntryPoint pan) {
+        //com.google.gwt.user.client.Window.alert("Cuantas veces");
+
+        // this.padre = padre
+        padre = kmenu;
+        //  panel=pan;
+
+        marcaM = marca;
+        //kmenu = menu;
+        String tituloTabla = "Buscar Empresa";
+        this.setClosable(true);
+//        this.setId("TPfun1607");
+//        setIconCls("tab-icon");
+//        setAutoScroll(false);
+
+        this.setId("TPfun16071");
+        setIconCls("tab-icon");
+        setAutoScroll(false);
+        setTitle(tituloTabla);
+        setAutoWidth(true);
+        setAutoHeight(true);
+        setLayout(new FitLayout());
+        setPaddings(WINDOW_PADDING);
+        setButtonAlign(Position.CENTER);
+
+        setCloseAction(Window.CLOSE);
+        //setPlain(true);
+        onModuleLoad();
+
+    }
+
+    public void onModuleLoad() {
+
+        //setId("win-Clientes");
+
+        String nombreBoton1 = "Buscar";
+        String nombreBoton2 = "Cancelar";
+
+        formPanel = new FormPanel();
+        formPanel.setBaseCls("x-plain");
+        //formPanel.setLabelWidth(ANCHO - 400);
+
+        but_aceptarP = new Button(nombreBoton1, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                GuardarEditarCliente(e);
+//                            IngresoAlmacen ing=new IngresoAlmacen(IngresoAlmacenForm.this);
+//                            padre.seleccionarOpcion(null,"fun5099",e, ing);
+//
+//                            IngresoAlmacenForm.this.close();
+//                            IngresoAlmacenForm.this.setModal(false);
+            }
+        });
+        but_cancelarP = new Button(nombreBoton2, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                SeleccionEmpresa.this.destroy();
+                SeleccionEmpresa.this.close();
+
+            }
+        });
+//        formpanel1 = new Panel();
+//        formpanel1.setWidth(50);
+//        formpanel1.setHeight(50);
+//        label.setHeight(50);
+//        label.setWidth(50);
+        //formpanel1.add(label);
+
+
+        com_marca = new ComboBox("Empresa", "empresas", 200);
+        //com_tipoC.setPosition(50, 50);
+
+        // formPanel.setLabelWidth(ANCHO - 400 - 5);
+
+
+        //formPanel.add(formpanel1);
+        formPanel.add(com_marca);
+        addButton(but_aceptarP);
+        addButton(but_cancelarP);
+        add(formPanel);
+        initCombos();
+
+    }
+
+    private void initCombos() {
+
+
+        com_marca.setValueField("idempresa");
+        com_marca.setDisplayField("nombre");
+        com_marca.setMinChars(1);
+        com_marca.setFieldLabel("nombre");
+        com_marca.setMode(ComboBox.LOCAL);
+        com_marca.setEmptyText("Seleccione una empresa");
+        com_marca.setLoadingText("Buscando");
+        com_marca.setTypeAhead(true);
+        com_marca.setSelectOnFocus(true);
+        com_marca.setHideTrigger(true);
+
+        SimpleStore cotegoriaStore = new SimpleStore(new String[]{"idempresa", "nombre"}, marcaM);
+        cotegoriaStore.load();
+        com_marca.setStore(cotegoriaStore);
+
+
+
+
+    }
+
+    public Button getBut_aceptar() {
+        return but_aceptarP;
+    }
+
+    public Button getBut_cancelar() {
+        return but_cancelarP;
+    }
+
+    public void GuardarEditarCliente(EventObject e) {
+
+final String idempresa = com_marca.getValue();
+     //   String idmarca = com_marca.getValue();
+        String enlace = "php/Cobros.php?funcion=BuscarEmpresaCobradorClienteTienda&idempresa=" + idempresa;
+
+        //  String enlace = "php/Marca.php?funcion=BuscarClienteVendedorColorMaterialModeloPorMarca&idmarca=" + idmarca;
+        Utils.setErrorPrincipal("Cargando parametros de empresa", "cargar");
+        final Conector conec = new Conector(enlace, false);
+        {
+            try {
+                conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                    private EventObject e;
+
+                    public void onResponseReceived(Request request, Response response) {
+                        String data = response.getText();
+                        JSONValue jsonValue = JSONParser.parse(data);
+                        JSONObject jsonObject;
+                        if ((jsonObject = jsonValue.isObject()) != null) {
+                            String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                            String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                            if (errorR.equalsIgnoreCase("true")) {
+                                Utils.setErrorPrincipal(mensajeR, "mensaje");
+
+                                JSONValue marcaV = jsonObject.get("resultado");
+                                JSONObject marcaO;
+                                if ((marcaO = marcaV.isObject()) != null) {
+                                    //Object[][] clientes = Utils.getArrayOfJSONObject(marcaO, "clienteM", new String[]{"idcliente", "codigo", "nombre", "item"});
+                                    Object[][] vendedores = Utils.getArrayOfJSONObject(marcaO, "empleadoM", new String[]{"idempleado", "nombre"});
+                                    Object[][] colores = Utils.getArrayOfJSONObject(marcaO, "tiendaM", new String[]{"idtienda", "nombre"});
+                                    //Object[][] materiales = Utils.getArrayOfJSONObject(marcaO, "creditoM", new String[]{"idpagocredito", "idcliente", "monto"});
+                                    // Object[][] modelos = Utils.getArrayOfJSONObject(marcaO, "modeloM", new String[]{"idmodelo", "codigo"});
+                                   // String idempresa = Utils.getStringOfJSONObject(marcaO, "idempresa");
+                                    String codigo = Utils.getStringOfJSONObject(marcaO, "codigo");
+                                    String nombre = Utils.getStringOfJSONObject(marcaO, "nombre");
+                                    String direccion = Utils.getStringOfJSONObject(marcaO, "direccion");
+                                    String telefono = Utils.getStringOfJSONObject(marcaO, "telefono");
+                                    String responsable = Utils.getStringOfJSONObject(marcaO, "responsable");
+                                    String comision = Utils.getStringOfJSONObject(marcaO, "comision");
+                                    String ciudad = Utils.getStringOfJSONObject(marcaO, "ciudad");
+                                    String planilla = Utils.getStringOfJSONObject(marcaO, "planilla");
+
+
+
+//                                    PanelCobrosEmpresa pan_compraDirecta = new PanelCobrosEmpresa(idempresa, codigo, nombre, direccion, telefono, responsable, comision, ciudad, planilla, vendedores, colores, SeleccionEmpresa.this);
+//                                    padre.seleccionarOpcion(null, "fun7000", e, pan_compraDirecta);
+                                    SeleccionEmpresa.this.clear();
+                                    SeleccionEmpresa.this.close();
+//
+                                 Utils.setErrorPrincipal("Se cargaron los parametros Correctamente" + idempresa, "mensaje");
+                                } else {
+                                    MessageBox.alert("No Hay datos en la consulta");
+                                }
+                            }
+                        } else {
+                        }
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+
+                    public void onError(Request request, Throwable exception) {
+                        throw new UnsupportedOperationException("Not supported yet.");
+                    }
+                });
+
+            } catch (RequestException ea) {
+                ea.getMessage();
+                MessageBox.alert("Ocurrio un error al conectarse con el SERVIDOR");
+            }
+
+        }
+
+
+
+
+
+    }
+    public int redondedo(float f) {
+        int aux = (int) f;
+        if (aux < f) {
+            aux = aux + 1;
+        }
+        return aux;
+    }
+}

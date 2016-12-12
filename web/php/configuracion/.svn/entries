@@ -1,0 +1,40 @@
+9
+
+dir
+22
+svn://200.58.77.254/balderrama/web/php/configuracion
+svn://200.58.77.254/balderrama
+
+
+
+2011-03-27T14:45:56.218750Z
+3
+ubaldo
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+fc753435-7f7b-df4c-9fd1-531ddd3dfafa
+
+kernel
+dir
+
+bambino
+dir
+
+admin
+dir
+
+surtido
+dir
+

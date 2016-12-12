@@ -1,0 +1,979 @@
+<?php
+
+function Registrarreversionplanilla($idempresa,$planilla, $return)
+{
+
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+  // $proforma = $resultado->venta;
+$emitida="1";
+$fecha = date("Y-m-d");
+ $hora = date("H:i:s");
+
+$sql1= "SELECT
+             idplanillaemitida,idclienteempresa,ventasmes,pares,total,meses,pago1,cobro1,cobro2,cobro3,cobro4,cobro5,cobro6,cobro7,pago2,pago3,pago4,pago5,pago6,pago7
+            FROM
+              planillaemitida
+            WHERE
+              idempresa = '$idempresa' AND no_planilla='$planilla' AND emitido='1' ";
+$result1 = findBySqlReturnCampoUnique($sql1, true, true, "idclienteempresa");
+  $idclienteempresa = $result1['resultado'];
+$result2 = findBySqlReturnCampoUnique($sql1, true, true, "total");
+  $saldototal = $result2['resultado'];
+  $result222 = findBySqlReturnCampoUnique($sql1, true, true, "ventasmes");
+  $ventasmes = $result222['resultado'];
+  $result2222 = findBySqlReturnCampoUnique($sql1, true, true, "pares");
+  $pares = $result2222['resultado'];
+$result3 = findBySqlReturnCampoUnique($sql1, true, true, "meses");
+  $tiempo = $result3['resultado'];
+  $result4 = findBySqlReturnCampoUnique($sql1, true, true, "pago1");
+  $pago11 = $result4['resultado'];
+  $result5 = findBySqlReturnCampoUnique($sql1, true, true, "pago2");
+  $pago22 = $result5['resultado'];
+  $result6 = findBySqlReturnCampoUnique($sql1, true, true, "pago3");
+  $pago33 = $result6['resultado'];
+  $result7 = findBySqlReturnCampoUnique($sql1, true, true, "pago4");
+  $pago44 = $result7['resultado'];
+  $result8 = findBySqlReturnCampoUnique($sql1, true, true, "pago5");
+  $pago55 = $result8['resultado'];
+$result9 = findBySqlReturnCampoUnique($sql1, true, true, "pago6");
+  $pago66 = $result9['resultado'];
+$result10 = findBySqlReturnCampoUnique($sql1, true, true, "pago7");
+  $pago77 = $result10['resultado'];
+$result11 = findBySqlReturnCampoUnique($sql1, true, true, "cobro1");
+  $cobro1 = $result11['resultado'];
+  $result12 = findBySqlReturnCampoUnique($sql1, true, true, "cobro2");
+  $cobro2 = $result12['resultado'];
+  $result13 = findBySqlReturnCampoUnique($sql1, true, true, "cobro3");
+  $cobro3 = $result13['resultado'];
+  $result14 = findBySqlReturnCampoUnique($sql1, true, true, "cobro4");
+  $cobro4 = $result14['resultado'];
+  $result15 = findBySqlReturnCampoUnique($sql1, true, true, "cobro5");
+  $cobro5 = $result15['resultado'];
+  $result16 = findBySqlReturnCampoUnique($sql1, true, true, "cobro6");
+  $cobro6 = $result16['resultado'];
+  $result17 = findBySqlReturnCampoUnique($sql1, true, true, "cobro7");
+  $cobro7 = $result17['resultado'];
+
+//echo $sql1;
+//echo $idclienteempresa;
+ //   $clientes = getTablaToArrayOfSQL($sql1);
+//echo $clientes;
+
+$emitida='1';
+  //  for($i=0;$i<count($clientes);$i++){
+   //     $cliente = $clientes[$i];
+ $sql[] = "DELETE FROM planillaemitida WHERE idempresa = '$idempresa' AND no_planilla='$planilla'";
+   // $sql[] = "UPDATE planillaemitida SET emitido='$emitida' ,fechaemitida='$fecha' WHERE idempresa = '$idempresa' AND no_planilla='$planilla' AND emitido='0'";
+
+
+     //      }
+$numeroC = findUltimoID("movimientoplanilla", "numero", true);
+                $numero1 = $numeroC['resultado'] +1;
+
+$sql[] = getSqlNewMovimientoplanilla($numero1, $idplanillaemitida, $planilla, $idempresa, $fecha, "reversion", "1", $tiempo, $saldototal, "SS", "V",  false);
+    $numeroPla = findUltimoID("planillaemitida", "numero", true);
+                $numeropla = $numeroPla['resultado'] +1;
+                $idplanillaemitida="pe-".$numeropla;
+
+ $planillaanterior= split("/",$planilla);
+ //$idsCAr = split("/", $mesplanilla);
+$mesplani=$planillaanterior[0];
+$anioplani=$planillaanterior[1];
+
+$anio = date("Y");
+    $mes = date("m");
+    $mes_actual = $mes."/".$anio;
+
+    if($anioplani == $anio) {
+ $mes1p=$mesplani +1;
+ $mes1="0".$mes1p."/".$anio;
+    $mesp=$mesplani+2;
+ $mes2="0".$mesp."/".$anio;
+    $mesp2=$mesplani+3;
+ $mes3="0".$mesp2."/".$anio;
+    $mesp4=$mesplani+4;
+ $mes4="0".$mesp4."/".$anio;
+    $mesp5=$mesplani+5;
+ $mes5="0".$mesp5."/".$anio;
+    $mesp6=$mesplani+6;
+ $mes6="0".$mesp6."/".$anio;
+    $mesp7=$mesplani+7;
+ $mes7="0".$mesp7."/".$anio;
+    }
+    $mesplanilla=$mes1;
+$pago1=$pago11+$pago22-$cobro1;
+$pago2=$pago33-$cobro2;
+$pago3=$pago44-$cobro3;
+$pago4=$pago55-$cobro4;
+$pago5=$pago66-$cobro5;
+$pago6=$pago77-$cobro6;
+$pago7="0.00";
+
+$sql[] = getSqlNewPlanillaemitida($idplanillaemitida, $mesplanilla, $idempresa, $idclienteempresa, $fechaemitida, $fechamodifica, $fechareimpresion, $hora,$ventasmes,$pares, $mes1, $pago1, "0.00", $mes2, $pago2, "0.00", $mes3, $pago3, "0.00", $mes4, $pago4, "0.00", $mes5, $pago5, "0.00", $mes6, $pago6, "0.00", $mes7, $pago7, "0.00",$saldototal, $emitido, $tiempo, "P",$numeropla, false);
+$sql[] = "UPDATE empresas SET  mes_planillla= '$mesplanilla'WHERE idempresa='$idempresa' AND estado='Activo'";
+
+$respuesta=$idempresa;
+
+
+          //  MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+
+       $dev['mensaje'] = "Se emitio correctamente";
+        $dev['error'] = "true";
+        $dev['resultado'] = $respuesta;
+        //$dev['resultado'] = $planilla;
+
+    }
+    else
+    {
+        $dev['mensaje'] = "La planilla puede haber sido ya emitida, intente la reimpresion";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+
+
+}
+
+function buscarplanillaempresaanterior($empresa,$callback, $_dc, $return= 'true'){
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+$numeroC = findUltimoIDCondicion("movimientoplanilla", "numero","idempresa",$idempresa, true);
+    $numero = $numeroC['resultado'];
+$sql1 = "SELECT MAX(c.numero) AS ultimo
+  FROM movimientoplanilla c WHERE c.tiporegistro='E' AND c.idempresa= '$empresa'";
+$result1 = findBySqlReturnCampoUnique($sql1, true, true, "ultimo");
+    $numplanilla = $result1['resultado'];
+    $sql = "SELECT c.no_planilla AS planilla,c.idempresa
+  FROM movimientoplanilla c WHERE c.numero= '$numplanilla'";
+$result1 = findBySqlReturnCampoUnique($sql, true, true, "planilla");
+    $numplanilla = $result1['resultado'];
+
+    //echo $numplanilla;
+    //echo $sql;
+    if($empresa != null)
+    {
+        if($link=new BD)
+        {
+            if($link->conectar())
+            {
+                if($re = $link->consulta($sql))
+                {
+                    if($fi = mysql_fetch_array($re))
+                    {
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{mysql_field_name($re, $i)}= $fi[$i];
+
+                        }
+
+
+                        $dev['mensaje'] = "Existen resultados";
+                        $dev['error']   = "true";
+                        $dev['resultado'] = $value;
+                    }
+                    else
+                    {
+                        $dev['mensaje'] = "No se encontro datos en la consulta";
+                        $dev['error']   = "false";
+                        $dev['resultado'] = "";
+                    }
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No se pudo conectar a la BD";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "El codigo de usuario es nulo";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    $dev['totalCount'] = 1;
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+function buscarplanillaempresa($empresa,$callback, $_dc, $return= 'true'){
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+
+    $sql = "SELECT
+  c.idempresa,
+  c.mes_planillla AS planilla
+  FROM empresas c WHERE c.idempresa= '$empresa'";
+  //  echo $sql;
+    if($empresa != null)
+    {
+        if($link=new BD)
+        {
+            if($link->conectar())
+            {
+                if($re = $link->consulta($sql))
+                {
+                    if($fi = mysql_fetch_array($re))
+                    {
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{mysql_field_name($re, $i)}= $fi[$i];
+
+                        }
+
+
+                        $dev['mensaje'] = "Existen resultados";
+                        $dev['error']   = "true";
+                        $dev['resultado'] = $value;
+                    }
+                    else
+                    {
+                        $dev['mensaje'] = "No se encontro datos en la consulta";
+                        $dev['error']   = "false";
+                        $dev['resultado'] = "";
+                    }
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No se pudo conectar a la BD";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "El codigo de usuario es nulo";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    $dev['totalCount'] = 1;
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+function RecorrerPlanilla($productos,$return)
+{
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $error = "";
+     $estado='validado';
+    // echo $productos;
+$fecha = date("Y-m-d");
+    for($i = 0; $i< count($productos); $i++)
+    {
+        $producto = $productos[$i];
+        $idplanillaemitida = $producto->idplanillaemitida;
+        $idclienteempresa = $producto->idclienteempresa;
+        $meses = $producto->meses;
+        $pago11 = $producto->mes1;
+        $pago22 = $producto->mes2;
+        $pago3suma = $producto->mes3;
+        $saldototal = $producto->total;
+  // echo $pago11;
+//echo $idempresa;
+    $sql1= "SELECT
+              no_planilla,idempresa,idclienteempresa,idplanillaemitida,pago1,pago2,pago3,pago4,pago5,pago6,pago7
+            FROM
+              planillaemitida
+            WHERE
+              idplanillaemitida = '$idplanillaemitida' AND idclienteempresa='$idclienteempresa'";
+    $result1 = findBySqlReturnCampoUnique($sql1, true, true, "idempresa");
+    $idempresa = $result1['resultado'];
+    $result2 = findBySqlReturnCampoUnique($sql1, true, true, "idplanillaemitida");
+    $idplanillaemitida = $result2['resultado'];
+    $result3 = findBySqlReturnCampoUnique($sql1, true, true, "no_planilla");
+    $mesplanilla = $result3['resultado'];
+ $resultp1 = findBySqlReturnCampoUnique($sql1, true, true, "pago1");
+    $pago1 = $resultp1['resultado'];
+    $resultp2 = findBySqlReturnCampoUnique($sql1, true, true, "pago2");
+    $pago2 = $resultp2['resultado'];
+    $resultp3 = findBySqlReturnCampoUnique($sql1, true, true, "pago3");
+    $pago3 = $resultp3['resultado'];
+    $resultp4 = findBySqlReturnCampoUnique($sql1, true, true, "pago4");
+    $pago4 = $resultp4['resultado'];
+    $resultp5 = findBySqlReturnCampoUnique($sql1, true, true, "pago5");
+    $pago5 = $resultp5['resultado'];
+    $resultp6 = findBySqlReturnCampoUnique($sql1, true, true, "pago6");
+    $pago6 = $resultp6['resultado'];
+    $resultp7 = findBySqlReturnCampoUnique($sql1, true, true, "pago7");
+    $pago7 = $resultp7['resultado'];
+
+
+//$sql[] = "UPDATE planillaemitida SET pago1='$pago11',pago2='$pago22',pago3='$pagofin3',pago4='$pago4',pago5='$pago5',pago6='$pago6',pago7='$pago7',meses='$meses',fechamodifica='$fecha' WHERE idplanillaemitida='$idplanillaemitida' AND no_planilla = '$mesplanilla' AND idempresa='$idempresa' AND idclienteempresa='$idclienteempresa' AND emitido='1' ";
+$sql[] = "UPDATE planillaemitida SET pago1='0.00',pago2='$pago11',pago3='$pago2',pago4='$pago3',pago5='$pago4',pago6='$pago5',pago7='$pago6',meses='$meses',fechamodifica='$fecha' WHERE idplanillaemitida='$idplanillaemitida' AND no_planilla = '$mesplanilla' AND idempresa='$idempresa' AND idclienteempresa='$idclienteempresa'";
+
+
+
+    }
+     //MostrarConsulta($sql);
+     if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se recorrio el credito";
+        $dev['error'] = "true";
+        $dev['resultado'] = "";
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error ";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+
+function UnirPlanilla($productos,$return)
+{
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $error = "";
+     $estado='validado';
+    // echo $productos;
+$fecha = date("Y-m-d");
+    for($i = 0; $i< count($productos); $i++)
+    {
+        $producto = $productos[$i];
+        $idplanillaemitida = $producto->idplanillaemitida;
+        $idclienteempresa = $producto->idclienteempresa;
+        $meses = $producto->meses;
+        $pago11 = $producto->mes1;
+        $pago22 = $producto->mes2;
+        $pago3suma = $producto->mes3;
+        $saldototal = $producto->total;
+  // echo $pago11;
+//echo $idempresa;
+//echo $idplanillaemitida;
+$mesplani=$idplanillaemitida[0];
+//$anioplani=$idplanillaemitida[1];
+echo $mesplani;
+//echo $anioplani;
+
+    $sql1= "SELECT
+              no_planilla,idempresa,idclienteempresa,idplanillaemitida,pago1,pago2,pago3,pago4,pago5,pago6,pago7
+            FROM
+              planillaemitida
+            WHERE
+              idplanillaemitida = '$idplanillaemitida' AND idclienteempresa='$idclienteempresa'";
+    $result1 = findBySqlReturnCampoUnique($sql1, true, true, "idempresa");
+    $idempresa = $result1['resultado'];
+    $result2 = findBySqlReturnCampoUnique($sql1, true, true, "idplanillaemitida");
+    $idplanillaemitida = $result2['resultado'];
+    $result3 = findBySqlReturnCampoUnique($sql1, true, true, "no_planilla");
+    $mesplanilla = $result3['resultado'];
+ $resultp1 = findBySqlReturnCampoUnique($sql1, true, true, "pago1");
+    $pago1 = $resultp1['resultado'];
+    $resultp2 = findBySqlReturnCampoUnique($sql1, true, true, "pago2");
+    $pago2 = $resultp2['resultado'];
+    $resultp3 = findBySqlReturnCampoUnique($sql1, true, true, "pago3");
+    $pago3 = $resultp3['resultado'];
+    $resultp4 = findBySqlReturnCampoUnique($sql1, true, true, "pago4");
+    $pago4 = $resultp4['resultado'];
+    $resultp5 = findBySqlReturnCampoUnique($sql1, true, true, "pago5");
+    $pago5 = $resultp5['resultado'];
+    $resultp6 = findBySqlReturnCampoUnique($sql1, true, true, "pago6");
+    $pago6 = $resultp6['resultado'];
+    $resultp7 = findBySqlReturnCampoUnique($sql1, true, true, "pago7");
+    $pago7 = $resultp7['resultado'];
+
+
+$dmes3=$saldototal-($pago1+$pago2);
+$cuota=$saldototal/$meses;
+$tiempo=$meses;
+$tiempomenos=$tiempo-2;
+$cantidadcuota1= $pago3suma/$tiempomenos;
+$modulo=$saldototal % $meses;
+if($tiempo== "1")
+{
+$pago3="0.00";
+$pago4="0.00";
+$pago5="0.00";
+$pago6="0.00";
+$pago7="0.00";
+}
+if($tiempo== "2")
+{
+$pago3="0.00";
+$pago4="0.00";
+$pago5="0.00";
+$pago6="0.00";
+$pago7="0.00";
+}
+
+if($tiempo== "3")
+{
+$pago3=$cantidadcuota1 + $modulo;
+$pago4="0.00";
+$pago5="0.00";
+$pago6="0.00";
+$pago7="0.00";
+}
+if($tiempo== "4")
+{
+$pago3=$cantidadcuota1+ $modulo;
+$pago4=$cantidadcuota1;
+$pago5="0.00";
+$pago6="0.00";
+$pago7="0.00";
+}
+if($tiempo== "5")
+{
+$pago3=$cantidadcuota1+ $modulo;
+$pago4=$cantidadcuota1;
+$pago5=$cantidadcuota1;
+$pago6="0.00";
+$pago7="0.00";
+}
+if($tiempo== "6")
+{
+$pago3=$cantidadcuota1+ $modulo ;
+$pago4=$cantidadcuota1;
+$pago5=$cantidadcuota1;
+$pago6=$cantidadcuota1;
+$pago7="0.00";
+}
+if($tiempo== "7")
+{
+$pago3=$cantidadcuota1 +$modulo;
+$pago4=$cantidadcuota1;
+$pago5=$cantidadcuota1;
+$pago6=$cantidadcuota1;
+$pago7=$cantidadcuota1;
+}
+//echo $modulo;
+$pagos=$pago11+$pago22+$pago3+$pago4+$pago5+$pago6+$pago7;
+$pagoss=$pagos*$tiempo;
+$pagos2=$pagoss % $tiempo;
+//$diferencia=$dmes3-$pagos;
+//echo $saldototal;//200
+//echo $pagos;//203
+$diferencia= $pagos-$saldototal;
+//echo $mod1;
+$mod2=$pago3 % $tiempo;
+
+$pagofin3=$pago3-$diferencia -$pagos2;
+$sql[] = "UPDATE planillaemitida SET pago1='$pago11',pago2='$pago22',pago3='$pagofin3',pago4='$pago4',pago5='$pago5',pago6='$pago6',pago7='$pago7',meses='$meses',fechamodifica='$fecha' WHERE idplanillaemitida='$idplanillaemitida' AND no_planilla = '$mesplanilla' AND idempresa='$idempresa' AND idclienteempresa='$idclienteempresa' AND emitido='1' ";
+    }
+     MostrarConsulta($sql);
+
+
+       if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se valido correctamente";
+        $dev['error'] = "true";
+        $dev['resultado'] = "";
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error ";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+
+
+function Registraremisionplanilla($idempresa,$planilla, $return)
+{
+
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+  // $proforma = $resultado->venta;
+$emitida="1";
+$fecha = date("Y-m-d");
+ $hora = date("H:i:s");
+
+$sql1= "SELECT 
+             idplanillaemitida,idclienteempresa,ventasmes,pares,total,meses,pago1,cobro1,cobro2,cobro3,cobro4,cobro5,cobro6,cobro7,pago2,pago3,pago4,pago5,pago6,pago7
+            FROM
+              planillaemitida
+            WHERE
+              idempresa = '$idempresa' AND no_planilla='$planilla' AND emitido='0' ";
+$result1 = findBySqlReturnCampoUnique($sql1, true, true, "idclienteempresa");
+  $idclienteempresa = $result1['resultado'];
+$result2 = findBySqlReturnCampoUnique($sql1, true, true, "total");
+  $saldototal = $result2['resultado'];
+  $result222 = findBySqlReturnCampoUnique($sql1, true, true, "ventasmes");
+  $ventasmes = $result222['resultado'];
+  $result2222 = findBySqlReturnCampoUnique($sql1, true, true, "pares");
+  $pares = $result2222['resultado'];
+$result3 = findBySqlReturnCampoUnique($sql1, true, true, "meses");
+  $tiempo = $result3['resultado'];
+  $result4 = findBySqlReturnCampoUnique($sql1, true, true, "pago1");
+  $pago11 = $result4['resultado'];
+  $result5 = findBySqlReturnCampoUnique($sql1, true, true, "pago2");
+  $pago22 = $result5['resultado'];
+  $result6 = findBySqlReturnCampoUnique($sql1, true, true, "pago3");
+  $pago33 = $result6['resultado'];
+  $result7 = findBySqlReturnCampoUnique($sql1, true, true, "pago4");
+  $pago44 = $result7['resultado'];
+  $result8 = findBySqlReturnCampoUnique($sql1, true, true, "pago5");
+  $pago55 = $result8['resultado'];
+$result9 = findBySqlReturnCampoUnique($sql1, true, true, "pago6");
+  $pago66 = $result9['resultado'];
+$result10 = findBySqlReturnCampoUnique($sql1, true, true, "pago7");
+  $pago77 = $result10['resultado'];
+$result11 = findBySqlReturnCampoUnique($sql1, true, true, "cobro1");
+  $cobro1 = $result11['resultado'];
+  $result12 = findBySqlReturnCampoUnique($sql1, true, true, "cobro2");
+  $cobro2 = $result12['resultado'];
+  $result13 = findBySqlReturnCampoUnique($sql1, true, true, "cobro3");
+  $cobro3 = $result13['resultado'];
+  $result14 = findBySqlReturnCampoUnique($sql1, true, true, "cobro4");
+  $cobro4 = $result14['resultado'];
+  $result15 = findBySqlReturnCampoUnique($sql1, true, true, "cobro5");
+  $cobro5 = $result15['resultado'];
+  $result16 = findBySqlReturnCampoUnique($sql1, true, true, "cobro6");
+  $cobro6 = $result16['resultado'];
+  $result17 = findBySqlReturnCampoUnique($sql1, true, true, "cobro7");
+  $cobro7 = $result17['resultado'];
+
+//echo $sql1;
+//echo $idclienteempresa;
+ //   $clientes = getTablaToArrayOfSQL($sql1);
+//echo $clientes;
+
+$emitida='1';
+  //  for($i=0;$i<count($clientes);$i++){
+   //     $cliente = $clientes[$i];
+
+    $sql[] = "UPDATE planillaemitida SET emitido='$emitida' ,fechaemitida='$fecha' WHERE idempresa = '$idempresa' AND no_planilla='$planilla' AND emitido='0'";
+
+ 
+     //      }
+$numeroC = findUltimoID("movimientoplanilla", "numero", true);
+                $numero1 = $numeroC['resultado'] +1;
+
+$sql[] = getSqlNewMovimientoplanilla($numero1, $idplanillaemitida, $planilla, $idempresa, $fecha, "emision", "1", $tiempo, $saldototal, "SS", "E",  false);
+    $numeroPla = findUltimoID("planillaemitida", "numero", true);
+                $numeropla = $numeroPla['resultado'] +1;
+                $idplanillaemitida="pe-".$numeropla;
+ 
+ $planillaanterior= split("/",$planilla);
+ //$idsCAr = split("/", $mesplanilla);
+$mesplani=$planillaanterior[0];
+$anioplani=$planillaanterior[1];
+
+$anio = date("Y");
+    $mes = date("m");
+    $mes_actual = $mes."/".$anio;
+
+    if($anioplani == $anio) {
+ $mes1p=$mesplani +1;
+ $mes1="0".$mes1p."/".$anio;
+    $mesp=$mesplani+2;
+ $mes2="0".$mesp."/".$anio;
+    $mesp2=$mesplani+3;
+ $mes3="0".$mesp2."/".$anio;
+    $mesp4=$mesplani+4;
+ $mes4="0".$mesp4."/".$anio;
+    $mesp5=$mesplani+5;
+ $mes5="0".$mesp5."/".$anio;
+    $mesp6=$mesplani+6;
+ $mes6="0".$mesp6."/".$anio;
+    $mesp7=$mesplani+7;
+ $mes7="0".$mesp7."/".$anio;
+    }
+    $mesplanilla=$mes1;
+$pago1=$pago11+$pago22-$cobro1;
+$pago2=$pago33-$cobro2;
+$pago3=$pago44-$cobro3;
+$pago4=$pago55-$cobro4;
+$pago5=$pago66-$cobro5;
+$pago6=$pago77-$cobro6;
+$pago7="0.00";
+
+$sql[] = getSqlNewPlanillaemitida($idplanillaemitida, $mesplanilla, $idempresa, $idclienteempresa, $fechaemitida, $fechamodifica, $fechareimpresion, $hora,$ventasmes,$pares, $mes1, $pago1, "0.00", $mes2, $pago2, "0.00", $mes3, $pago3, "0.00", $mes4, $pago4, "0.00", $mes5, $pago5, "0.00", $mes6, $pago6, "0.00", $mes7, $pago7, "0.00",$saldototal, $emitido, $tiempo, "P",$numeropla, false);
+$sql[] = "UPDATE empresas SET  mes_planillla= '$mesplanilla'WHERE idempresa='$idempresa' AND estado='Activo'";
+
+$respuesta=$idempresa;
+
+
+          //  MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+
+       $dev['mensaje'] = "Se emitio correctamente";
+        $dev['error'] = "true";
+        $dev['resultado'] = $respuesta;
+        //$dev['resultado'] = $planilla;
+
+    }
+    else
+    {
+        $dev['mensaje'] = "La planilla puede haber sido ya emitida, intente la reimpresion";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+
+
+}
+
+
+function modificarplanilla($productos,$return)
+{
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $error = "";
+     $estado='validado';
+    // echo $productos;
+$fecha = date("Y-m-d");
+    for($i = 0; $i< count($productos); $i++)
+    {
+        $producto = $productos[$i];
+        $idplanillaemitida = $producto->idplanillaemitida;
+        $idclienteempresa = $producto->idclienteempresa;
+        $meses = $producto->meses;
+        $pago11 = $producto->mes1;
+        $pago22 = $producto->mes2;
+        $pago3suma = $producto->mes3;
+        $saldototal = $producto->total;
+  // echo $pago11;
+//echo $idempresa;
+    $sql1= "SELECT
+              no_planilla,idempresa,idclienteempresa,idplanillaemitida
+            FROM
+              planillaemitida
+            WHERE
+              idplanillaemitida = '$idplanillaemitida' AND idclienteempresa='$idclienteempresa'";
+    $result1 = findBySqlReturnCampoUnique($sql1, true, true, "idempresa");
+    $idempresa = $result1['resultado'];
+    $result2 = findBySqlReturnCampoUnique($sql1, true, true, "idplanillaemitida");
+    $idplanillaemitida = $result2['resultado'];
+    $result3 = findBySqlReturnCampoUnique($sql1, true, true, "no_planilla");
+    $mesplanilla = $result3['resultado'];
+
+$dmes3=$saldototal-($pago1+$pago2);
+$cuota=$saldototal/$meses;
+//$pago3suma;
+
+$tiempo=$meses;
+$tiempomenos=$tiempo-2;
+$cantidadcuota1= $pago3suma/$tiempomenos;
+//$modulo=$cantidadcuota1 % $tiempomenos;
+$modulo=$saldototal % $meses;
+//$totales=$saldototal-($cantidadcuota1*$tiempo);
+////echo $totales;
+//if ($modulo1 <= "1"){
+//$modulo="0";
+//}else{
+//    $modulo=$modulo1-1;
+//}
+//echo $modulo;
+if($tiempo== "1")
+{
+$pago3="0.00";
+$pago4="0.00";
+$pago5="0.00";
+$pago6="0.00";
+$pago7="0.00";
+}
+if($tiempo== "2")
+{
+$pago3="0.00";
+$pago4="0.00";
+$pago5="0.00";
+$pago6="0.00";
+$pago7="0.00";
+}
+
+if($tiempo== "3")
+{
+$pago3=$cantidadcuota1 + $modulo;
+$pago4="0.00";
+$pago5="0.00";
+$pago6="0.00";
+$pago7="0.00";
+}
+if($tiempo== "4")
+{
+$pago3=$cantidadcuota1+ $modulo;
+$pago4=$cantidadcuota1;
+$pago5="0.00";
+$pago6="0.00";
+$pago7="0.00";
+}
+if($tiempo== "5")
+{
+$pago3=$cantidadcuota1+ $modulo;
+$pago4=$cantidadcuota1;
+$pago5=$cantidadcuota1;
+$pago6="0.00";
+$pago7="0.00";
+}
+if($tiempo== "6")
+{
+$pago3=$cantidadcuota1+ $modulo ;
+$pago4=$cantidadcuota1;
+$pago5=$cantidadcuota1;
+$pago6=$cantidadcuota1;
+$pago7="0.00";
+}
+if($tiempo== "7")
+{
+$pago3=$cantidadcuota1 +$modulo;
+$pago4=$cantidadcuota1;
+$pago5=$cantidadcuota1;
+$pago6=$cantidadcuota1;
+$pago7=$cantidadcuota1;
+}
+//echo $modulo;
+$pagos=$pago11+$pago22+$pago3+$pago4+$pago5+$pago6+$pago7;
+$pagoss=$pagos*$tiempo;
+$pagos2=$pagoss % $tiempo;
+//$diferencia=$dmes3-$pagos;
+//echo $saldototal;//200
+//echo $pagos;//203
+$diferencia= $pagos-$saldototal;
+//echo $mod1;
+$mod2=$pago3 % $tiempo;
+
+$pagofin3=$pago3-$diferencia -$pagos2;
+$sql[] = "UPDATE planillaemitida SET pago1='$pago11',pago2='$pago22',pago3='$pagofin3',pago4='$pago4',pago5='$pago5',pago6='$pago6',pago7='$pago7',meses='$meses',fechamodifica='$fecha' WHERE idplanillaemitida='$idplanillaemitida' AND no_planilla = '$mesplanilla' AND idempresa='$idempresa' AND idclienteempresa='$idclienteempresa' AND emitido='1' ";
+$numeroC = findUltimoID("movimientoplanilla", "numero", true);
+                $numero1 = $numeroC['resultado'] +1;
+
+$sql[] = getSqlNewMovimientoplanilla($numero1, $idplanillaemitida, $mesplanilla, $idempresa, $fecha, "modificacion", "1", $tiempo, $saldototal, "SS", "M",  false);
+
+
+
+
+    }
+    //sumas totales
+
+
+
+    //  MostrarConsulta($sql);
+
+
+       if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se valido correctamente";
+        $dev['error'] = "true";
+        $dev['resultado'] = "";
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error ";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+
+
+function BuscarClienteplanilla($idclientempresa,$planilla,$return=false){
+
+    //    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+//    $categorias = ListarTraspasoporId('', '', '', '', '', '',"$idtraspaso",true);
+//    if($categorias['error'] == true)
+//    {
+//        $value['material'] = "true";
+//        $value['materialM'] = $categorias['resultado'];
+//    }
+//$iddestino = $_SESSION['idtienda'];
+//echo $idclientempresa;
+    $sql ="
+SELECT
+  ma.idclienteempresa,ma.no_planilla AS planilla
+FROM
+  `planillacredito` ma
+WHERE
+   ma.idclienteempresa= '$idclientempresa'
+
+";
+     $value['idclienteempresa'] = $idclientempresa;
+      $value['planilla'] = $planilla;
+// t.idtienda =ma.idtienda AND ma.tiendadestino= '$iddestino' AND ma.idtraspaso = '$idtraspaso'
+
+ // echo $sql;
+    if($idclienteempresa != null)
+    {
+        if($link=new BD)
+        {
+            if($link->conectar())
+            {
+                if($re = $link->consulta($sql))
+                {
+                    if($fi = mysql_fetch_array($re))
+                    {
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            if(mysql_field_type($re, $i) == "real")
+                            {
+                                $value{mysql_field_name($re, $i)}= redondear($fi[$i]);
+                            }
+                            else
+                            {
+                                $value{mysql_field_name($re, $i)}= $fi[$i];
+                            }
+                        }
+                        $dev['mensaje'] = "Existen resultados";
+                        $dev['error']   = "true";
+                        $dev['resultado'] = $value;
+                    }
+                    else
+                    {
+                        $dev['mensaje'] = "No se encontro datos en la consulta";
+                        $dev['error']   = "false";
+                        $dev['resultado'] = "";
+                    }
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No se pudo conectar a la BD";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "El codigo de producto es nulo";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+
+    $dev['mensaje'] = "Se cargo el formulario de Marca";
+    $dev['error']   = "true";
+    $dev['resultado'] = $value;
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+
+?>

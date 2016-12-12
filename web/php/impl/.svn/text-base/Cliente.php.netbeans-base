@@ -1,0 +1,835 @@
+<?php
+function ListarCliente($start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    //    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+    $sql ="
+SELECT
+  tc.nombre AS tipo,
+  CONCAT(cl.codigo,'/', ciu.codigo) AS codigo,
+  cl.fax,
+  UPPER(cl.estado) AS estado,
+  cl.direccion,
+  cl.telefono,
+  cl.nombre,
+  cl.idcliente,
+  ciu.nombre AS ciudad
+FROM
+  clientes cl,
+  tipo_clientes tc,
+  `ciudades` ciu
+WHERE
+  cl.idtipocliente = tc.idtipocliente AND
+  cl.idciudad = ciu.idciudad
+
+";
+    //    echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $dev['totalCount'] = mysql_num_rows($re);
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+
+function ListarClientePedido($start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    //    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+    $sql ="
+SELECT
+  cli.idcliente,
+  CONCAT(cli.codigo,'/',ciu.codigo) AS codigo
+FROM
+  `clientes` cli,
+  `ciudades` ciu
+WHERE
+  cli.idciudad = ciu.idciudad
+
+
+";
+    //    echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $dev['totalCount'] = mysql_num_rows($re);
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+
+function ListarTipoCliente($start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    //    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+    $sql ="
+SELECT
+  tcl.nombre,
+  tcl.descripcion,
+  tcl.numero,
+  tcl.idtipocliente
+FROM
+  `tipo_clientes` tcl
+
+";
+    //    echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $dev['totalCount'] = mysql_num_rows($re);
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function BuscarCiudadTipo($callback, $_dc, $where = '', $return = false){
+
+
+
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+    $almacen = ListarCiudad("", "", "", "", "", "", "", true);
+    if($almacen["error"]==false){
+        $dev['mensaje'] = "No se pudo encontrar almacenes";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+
+    }
+    $tipo = ListarTipoCliente("", "", "", "", "", "", "", true);
+    if($tipo['error']==false){
+        $dev['mensaje'] = "No se pudo encontrar Tipos";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+
+    if(($almacen["error"]==true)&&($tipo["error"]==true)){
+        $dev['mensaje'] = "Todo Ok";
+        $dev['error']   = "true";
+        $value["ciudadM"] = $almacen['resultado'];
+        $value["tipoM"] = $tipo['resultado'];
+        $dev["resultado"] = $value;
+    }
+
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function BuscarCiudadTipoPorCliente($idcliente,$callback, $_dc, $return = false){
+
+
+
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+
+    $almacen = ListarCiudad("", "", "", "", "", "", "", true);
+    if($almacen["error"]==false){
+        $dev['mensaje'] = "No se pudo encontrar almacenes";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+
+    }
+    $tipo = ListarTipoCliente("", "", "", "", "", "", "", true);
+    if($tipo['error']==false){
+        $dev['mensaje'] = "No se pudo encontrar Tipos";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+
+    if(($almacen["error"]==true)&&($tipo["error"]==true)){
+
+        $value["ciudadM"] = $almacen['resultado'];
+        $value["tipoM"] = $tipo['resultado'];
+
+    }
+    $sql ="
+SELECT
+   cli.idcliente,
+  cli.idtipocliente,
+  cli.nombre,
+  cli.apellido,
+  cli.telefono,
+  cli.direccion,
+  cli.estado,
+  cli.mail,
+  cli.fax,
+  cli.codigo,
+  cli.idciudad,
+  cli.numero
+FROM
+  `clientes` cli
+WHERE
+  cli.idcliente = '$idcliente';
+
+";
+    if($idcliente != null)
+    {
+        if($link=new BD)
+        {
+            if($link->conectar())
+            {
+                if($re = $link->consulta($sql))
+                {
+                    if($fi = mysql_fetch_array($re))
+                    {
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            if(mysql_field_type($re, $i) == "real")
+                            {
+                                $value{mysql_field_name($re, $i)}= redondear($fi[$i]);
+                            }
+                            else
+                            {
+                                $value{mysql_field_name($re, $i)}= $fi[$i];
+                            }
+                        }
+                        $dev['mensaje'] = "Existen resultados";
+                        $dev['error']   = "true";
+                        $dev['resultado'] = $value;
+                    }
+                    else
+                    {
+                        $dev['mensaje'] = "No se encontro datos en la consulta";
+                        $dev['error']   = "false";
+                        $dev['resultado'] = "";
+                    }
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No se pudo conectar a la BD";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "El codigo de producto es nulo";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+
+
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+
+function getSqlUpdateClientes($idcliente,$idtipocliente,$codigo,$nombre,$telefono,$direccion,$mail,$fax,$numero,$estado,$apellido,$idciudad, $return){
+    $setC[0]['campo'] = 'codigo';
+    $setC[0]['dato'] = $codigo;
+    $setC[1]['campo'] = 'nombre';
+    $setC[1]['dato'] = $nombre;
+    $setC[2]['campo'] = 'telefono';
+    $setC[2]['dato'] = $telefono;
+    $setC[3]['campo'] = 'direccion';
+    $setC[3]['dato'] = $direccion;
+    $setC[4]['campo'] = 'mail';
+    $setC[4]['dato'] = $mail;
+    $setC[5]['campo'] = 'fax';
+    $setC[5]['dato'] = $fax;
+    $setC[6]['campo'] = 'numero';
+    $setC[6]['dato'] = $numero;
+    $setC[7]['campo'] = 'estado';
+    $setC[7]['dato'] = $estado;
+    $setC[8]['campo'] = 'apellido';
+    $setC[8]['dato'] = $apellido;
+
+    $set = generarSetsUpdate($setC);
+    $wher[0]['campo'] = 'idcliente';
+    $wher[0]['dato'] = $idcliente;
+
+
+    $where = generarWhereUpdate($wher);
+    return "UPDATE clientes SET ".$set." WHERE ".$where;
+
+}
+
+
+function GuardarEditarCliente($idcliente){
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+    $codigo = strtoupper($_GET['codigo']);
+    $codigoA = validarText($codigo, true);
+    if($codigoA['error']==false){
+        $dev['mensaje'] = "Error en el codigo del Cliente: ".$codigoA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $codigoB = TamanoPermitido($codigo, 6);
+    if($codigoB['error']==false){
+        $dev['mensaje'] = "error en el campo Codigo :".$codigoB['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $codigoC = verificarValidarTextUnicoEdit("idcliente", $idcliente, true, "clientes", "codigo", $codigo);
+    if($codigoC['error']==false){
+        $dev['mensaje'] = "error en el campo Codigo :".$codigoC['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $ciudad = $_GET['ciudad'];
+    $almacenA = validarText($ciudad, true);
+    if($almacenA['error']==false){
+        $dev['mensaje'] = "Error en el almacen: ".$almacenA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $tipo =$_GET['tipo'];
+    $tipoA = validarText($tipo, true);
+    if($tipoA['error']==false){
+        $dev['mensaje'] = "Error en el almacen: ".$tipoA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    //    $idcliente=$_GET['idcliente'];
+    $nombre = strtoupper($_GET['nombre']);
+    $almacen = $_GET['almacen'];
+
+    $telefono =$_GET['telefono'];
+    $fax=$_GET['fax'];
+    $direccion=strtoupper($_GET['direccion']);
+    $estado=$_GET['estado'];
+    $email=$_GET['email'];
+    $apellido = $_GET['apellido'];
+    $sql[] = getSqlUpdateClientes($idcliente,$tipo,$codigo,$nombre,$telefono,$direccion,$email,$fax,$numero,$estado,$apellido,$ciudad, $return);
+//    $sql[] = getSqlUpdateClientes($idcliente,$tipo,$almacen,$nombre, $telefono, $direccion, $estado, $email, $fax, $numero, $codigo, false);
+
+//        MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se guardaron y actualizaron correctamente los datos";
+        $dev['error'] = "true";
+        $dev['resultado'] = "";
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al actualizar o guardar los datos";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+
+function getSqlNewClientes($idcliente, $idtipocliente, $codigo, $nombre, $telefono, $direccion, $mail, $fax, $numero, $estado, $apellido, $idciudad, $return){
+    $setC[0]['campo'] = 'idcliente';
+    $setC[0]['dato'] = $idcliente;
+    $setC[1]['campo'] = 'idtipocliente';
+    $setC[1]['dato'] = $idtipocliente;
+    $setC[2]['campo'] = 'codigo';
+    $setC[2]['dato'] = $codigo;
+    $setC[3]['campo'] = 'nombre';
+    $setC[3]['dato'] = $nombre;
+    $setC[4]['campo'] = 'telefono';
+    $setC[4]['dato'] = $telefono;
+    $setC[5]['campo'] = 'direccion';
+    $setC[5]['dato'] = $direccion;
+    $setC[6]['campo'] = 'mail';
+    $setC[6]['dato'] = $mail;
+    $setC[7]['campo'] = 'fax';
+    $setC[7]['dato'] = $fax;
+    $setC[8]['campo'] = 'numero';
+    $setC[8]['dato'] = $numero;
+    $setC[9]['campo'] = 'estado';
+    $setC[9]['dato'] = $estado;
+    $setC[10]['campo'] = 'apellido';
+    $setC[10]['dato'] = $apellido;
+    $setC[11]['campo'] = 'idciudad';
+    $setC[11]['dato'] = $idciudad;
+    $sql2 = generarInsertValues($setC);
+    return "INSERT INTO clientes ".$sql2;
+}
+
+
+
+
+function InsertarNuevoCliente(){
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+    $codigo = strtoupper($_GET['codigo']);
+    $codigoA = validarText($codigo, true);
+    if($codigoA['error']==false){
+        $dev['mensaje'] = "Error en el codigo de almacen: ".$codigoA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $codigoA1 = verificarValidarText($codigo, false, "clientes", "codigo");
+    if($codigoA1['error']==false){
+        $dev['mensaje'] = "Error en el campo CODIGO: ".$codigoA1['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $codigoB = TamanoPermitido($codigo, 6);
+    if($codigoB['error']==false){
+        $dev['mensaje'] = "error en el campo Codigo :".$codigoB['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $nombre = strtoupper($_GET['nombre']);
+    $nombreA = validarText($nombre, true);
+    if($nombreA['error']==false){
+        $dev['mensaje'] = "error en el campo nombre :".$nombreA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $apellido = $_GET['apellido'];
+    $ciudad = $_GET['ciudad'];
+    $almacenA = validarText($ciudad, true);
+    if($almacenA['error']==false){
+        $dev['mensaje'] = "Error en el almacen: ".$almacenA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $tipo =$_GET['tipo'];
+    $tipoA = validarText($tipo, true);
+    if($tipoA['error']==false){
+        $dev['mensaje'] = "Error en el almacen: ".$tipoA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $telefono =$_GET['telefono'];
+    $fax=$_GET['fax'];
+    $direccion=strtoupper($_GET['direccion']);
+    $estado='ACTIVO';
+    $email=$_GET['email'];
+    $numeroA = findUltimoID("clientes", "numero", true);
+    $numero = $numeroA['resultado']+1;
+
+
+    $idcliente = 'cli-'.$numero;
+    $sql[] = getSqlNewClientes($idcliente, $tipo, $codigo, $nombre, $telefono, $direccion, $email, $fax, $numero, $estado, $apellido, $ciudad, $return);
+    //    $sql[] = getSqlNewClientes($idcliente, $tipo, $ciudad, $nombre,$apellido, $telefono, $direccion, $estado, $email, $fax, $numero, $codigo, false);
+
+
+    //    $numeroT = findUltimoID("tiendas", "numero", true);
+    //    $numerot = $numeroT['resultado']+1;
+    //
+    //
+    //    $idtienda = 'tie-'.$numerot;
+    //    $responsable = "usr-1000";
+    //
+    //    $sql[] = getSqlNewTiendas($idtienda, $almacen, $codigo, $nombre, $responsable, $direccion, $telefono, $email, $numerot, $estado, $idcliente,$fax, $return);
+    //    //        MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se guardaron y actualizaron correctamente los datos";
+        $dev['error'] = "true";
+        $dev['resultado'] = "";
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al actualizar o guardar los datos";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+
+function getSqlDeleteClientes($idclientes){
+    return "DELETE FROM clientes WHERE idcliente = '$idclientes'";
+}
+
+function EliminarCliente($idcliente,$callback, $_dc, $return= 'true'){
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $idclienteA = validarText($idcliente, true);
+    if($idclienteA['error']==false){
+        $dev['mensaje'] = "No puede eliminar este Cliente. Esta siendo utilizado en algunos valores";
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+
+    $sql[] = getSqlDeleteClientes($idcliente);
+
+    //            MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se Elimino el Cliente correctamente";
+        $dev['error'] = "true";
+        $dev['resultado'] = "";
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al elminar un Cliente";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+
+}
+?>

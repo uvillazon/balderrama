@@ -1,0 +1,351 @@
+<?php
+function ListarGastosMayores($start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    //    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+    $sql ="
+SELECT
+  idtipogasto,nombre,tipogasto,detalle
+FROM
+  tipogasto
+WHERE
+ tipogasto = 'E'
+
+";
+    //    echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $dev['totalCount'] = mysql_num_rows($re);
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+
+function ListarGastosMenores($start, $limit, $sort, $dir, $callback, $_dc, $where = '', $return = false){
+
+    if($start == null)
+    {
+        $start = 0;
+    }
+    if($limit == null)
+    {
+        $limit = 100;
+    }
+    if($sort != null)
+    {
+        $order = "ORDER BY $sort ";
+        if($dir != null)
+        {
+            $order .= " $dir ";
+        }
+    }
+    //    $dev['totalCount'] = 0;
+    $dev['mensaje'] = "";
+    $dev['error']   = "";
+    $dev['resultado'] = "";
+    $sql ="
+SELECT
+  idtipogasto,nombre,tipogasto,detalle
+FROM
+  tipogasto
+WHERE
+ tipogasto = 'T'
+";
+    //    echo $sql;
+    if($link=new BD)
+    {
+        if($link->conectar())
+        {
+            if($re = $link->consulta($sql))
+            {
+
+                if($fi = mysql_fetch_array($re))
+                {
+                    $dev['totalCount'] = mysql_num_rows($re);
+                    $ii = 0;
+                    do{
+
+                        for($i = 0; $i< mysql_num_fields($re); $i++)
+                        {
+                            $value{$ii}{mysql_field_name($re, $i)}= $fi[$i];
+
+                        }
+
+                        $ii++;
+                    }while($fi = mysql_fetch_array($re));
+                    $dev['mensaje'] = "Existen resultados";
+                    $dev['error']   = "true";
+                    $dev['resultado'] = $value;
+
+                }
+                else
+                {
+                    $dev['mensaje'] = "No se encontro datos en la consulta";
+                    $dev['error']   = "false";
+                    $dev['resultado'] = "";
+                }
+            }
+            else
+            {
+                $dev['mensaje'] = "No existe un usuario con estos datos";
+                $dev['error']   = "false";
+                $dev['resultado'] = "";
+            }
+        }
+        else
+        {
+            $dev['mensaje'] = "No se pudo conectar a la BD";
+            $dev['error']   = "false";
+            $dev['resultado'] = "";
+        }
+    }
+    else
+    {
+        $dev['mensaje'] = "No se pudo crear la conexion a la BD";
+        $dev['error']   = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+
+        if($callback == null || $callback == "")
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            print($output);
+        }
+        else
+        {
+            $json = new Services_JSON();
+            $output = $json->encode($dev);
+            $output = substr($output, 1);
+            $output = "$callback({".$output.");";
+            print($output);
+        }
+
+
+    }
+}
+function GuardarNuevoTiposGastosDetalle(){
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+
+    $nombre = strtoupper($_GET['nombre']);
+    $nombreA = validarText($nombre, true);
+    if($nombreA['error']==false){
+        $dev['mensaje'] = "error en el campo nombre :".$nombreA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $direccion=strtoupper($_GET['detalle']);
+    $numeroA = findUltimoID("tipogasto", "idtipogasto", true);
+    $numero = $numeroA['resultado']+1;
+
+
+    $idcliente = $numero;
+	$tipogasto='T';
+    $sql[] = getSqlNewTipoGastos($idcliente, $nombre,$tipogasto,$direccion, false);
+
+
+    //    $numeroT = findUltimoID("tiendas", "numero", true);
+    //    $numerot = $numeroT['resultado']+1;
+    //
+    //
+    //    $idtienda = 'tie-'.$numerot;
+    //    $responsable = "usr-1000";
+    //
+    //    $sql[] = getSqlNewTiendas($idtienda, $almacen, $codigo, $nombre, $responsable, $direccion, $telefono, $email, $numerot, $estado, $idcliente,$fax, $return);
+    //    //        MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se guardaron y actualizaron correctamente los datos";
+        $dev['error'] = "true";
+        $dev['resultado'] = "";
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al actualizar o guardar los datos";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+
+function GuardarNuevoTiposGastos(){
+    $dev['mensaje'] = "";
+    $dev['error'] = "false";
+    $dev['resultado'] = "";
+    
+    $nombre = strtoupper($_GET['nombre']);
+    $nombreA = validarText($nombre, true);
+    if($nombreA['error']==false){
+        $dev['mensaje'] = "error en el campo nombre :".$nombreA['mensaje'];
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+        exit;
+    }
+    $direccion=strtoupper($_GET['detalle']);
+    $numeroA = findUltimoID("tipogasto", "idtipogasto", true);
+    $numero = $numeroA['resultado']+1;
+
+
+    $idcliente = $numero;
+	$tipogasto='E';
+    $sql[] = getSqlNewTipoGastos($idcliente, $nombre,$tipogasto,$direccion, false);
+
+
+    //    $numeroT = findUltimoID("tiendas", "numero", true);
+    //    $numerot = $numeroT['resultado']+1;
+    //
+    //
+    //    $idtienda = 'tie-'.$numerot;
+    //    $responsable = "usr-1000";
+    //
+    //    $sql[] = getSqlNewTiendas($idtienda, $almacen, $codigo, $nombre, $responsable, $direccion, $telefono, $email, $numerot, $estado, $idcliente,$fax, $return);
+    //    //        MostrarConsulta($sql);
+    if(ejecutarConsultaSQLBeginCommit($sql))
+    {
+        $dev['mensaje'] = "Se guardaron y actualizaron correctamente los datos";
+        $dev['error'] = "true";
+        $dev['resultado'] = "";
+    }
+    else
+    {
+        $dev['mensaje'] = "Ocurrio un error al actualizar o guardar los datos";
+        $dev['error'] = "false";
+        $dev['resultado'] = "";
+    }
+    if($return == true)
+    {
+        return $dev;
+    }
+    else
+    {
+        $json = new Services_JSON();
+        $output = $json->encode($dev);
+        print($output);
+    }
+}
+function getSqlNewTipoGastos($idcliente, $nombre,$tipogasto,$detalle, $return){
+    $setC[0]['campo'] = 'idtipogasto';
+    $setC[0]['dato'] = $idcliente;
+    $setC[1]['campo'] = 'nombre';
+    $setC[1]['dato'] = $nombre;
+    $setC[2]['campo'] = 'tipogasto';
+    $setC[2]['dato'] = $tipogasto;
+    $setC[3]['campo'] = 'detalle';
+    $setC[3]['dato'] = $detalle;
+    
+
+    $sql2 = generarInsertValues($setC);
+    return "INSERT INTO tipogasto ".$sql2;
+}
+
+
+?>

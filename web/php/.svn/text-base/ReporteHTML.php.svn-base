@@ -1,0 +1,257 @@
+<?php
+session_name("balderrama");
+session_start();
+include("impl/Reporte.php");
+include("impl/Utils.php");
+include("bd/bd.php");
+require_once("impl/JSON.php");
+//error_reporting(0);
+$dev['mensaje'] = "";
+$dev['error']   = "";
+$dev['resultado'] = "";
+//if(permitido("fun1024", $_SESSION['codigo'])==true)nofunciona//reportecuentaproveedorHTML
+//{
+$funcion = $_GET['funcion'];
+$idventa = $_GET['idventa'];
+$idcompra = $_GET['idcompra'];
+if($funcion == "planillaemitidaHTML")
+{
+    planillaemitidaHTML($_GET['idempresa'],$_GET['planilla'], false);
+
+}else
+if($funcion == "planillareemitidaHTML")
+{
+    planillareemitidaHTML($_GET['idempresa'],$_GET['planilla'], false);
+
+}else
+if($funcion == "reportematerialHTML")
+{//hooooo
+    reporteMaterial($_GET['idmaterial'],false);
+
+}else
+
+if($funcion == "reportemarcaProductoHTML")
+{//hooooo
+    reporteMarcaProductos($_GET['idmarca'],false);
+
+}
+if($funcion == "reportecoleccionHTML")
+{
+    //reporteBalanceGeneral(false);
+    reporteColeccion($_GET['idcoleccion'],false);
+}
+else
+if($funcion == "reporteAlmacenHTML")
+{
+    reporteAlmacen($_GET['idalmacen'], false);
+
+}
+else
+if($funcion == "reportesclienteHTML")
+{
+    reportesclienteHTML($_GET['idempresa'], false);
+
+}else
+if($funcion == "reporteEmpresaHTML")
+{
+    reporteEmpresaHTML($_GET['idempresa'], false);
+
+}else
+if($funcion == "reportekardexHTML")
+{
+    reporteKardex($_GET['idproducto'],$_GET['idalmacen'], false);
+
+}
+else if($funcion == "reporteclienteHTML")
+{
+    reporteCliente($_GET['idcliente'], false);
+
+}
+else if($funcion == "reportecreditoHTML")
+    {
+        reporteClienteCredito2($_GET['idcredito'], false);
+
+    }
+
+    else if($funcion == "detalleColeccionHTML")
+    {
+        detalleColeccion($_GET['idcoleccion'], false);
+
+    }
+
+ else if($funcion == "detalleModeloHTML")
+    {
+        detalleModelo($_GET['idmarca'], false);
+
+    }
+
+
+else if($funcion == "reporteclientecreditoHTML")
+{
+    reporteClienteCredito($_GET['idcliente'], false);
+
+} 
+else if($funcion == "reporteproveedorHTML")
+{
+    reporteProveedor($_GET['idproveedor'], false);
+
+}
+else if($funcion == "reporteempleadoHTML")
+{
+    reporteEmpleadoHTML($_GET['idempleado'],false);
+}
+else if($funcion == "reporteboletaempleadoHTML")
+{
+    reporteBoletaEmpleadoHTML($_GET['idempleado'],false);
+}
+else if($funcion == "DetalleIngresoHTML")
+{
+    DetalleIngresoHTML($_GET['idingreso'], false);
+
+}
+if($funcion == "egresoHTML")
+    {
+        generarEgreso($_GET['idegreso'], false);
+
+    }
+else if($funcion == "reporteentregaventaHTML")
+{
+    reporteEntregaventa($_GET['identrega'], false);
+
+}
+else if($funcion == "reporteentregacompraHTML")
+{
+    reporteEntregacompra($_GET['idcompra'], false);
+
+}
+
+else if($funcion == "reportecuentaproveedorHTML")
+{
+    reportecuentaproveedorHTML($_GET['idproveedor'], false);
+
+}
+else  if($funcion == "reporteproducto")
+{
+    reporteProducto($_GET['idproducto'],$_SESSION['idalmacen'], false);
+
+}
+else  if($funcion == "reporteproformaHTML")
+{
+    reporteProforma($_GET['idproforma'], false);
+
+}
+
+else 
+if($funcion == "compraconcuentaHTML")
+{//hooooo
+    compraconcuentaHTML($_GET['idcompra'], false);
+
+}
+else
+if($funcion == "reportealmacenHTML")
+{
+    reportealmacenHTML($_GET['idalmacen'], false);
+}
+
+else
+if($funcion == "ArqueoDiarioHTML")
+{
+    
+    arqueoDiarioHTML($_GET['idalmacen'],$_GET['fecha'],$_GET['efec_bs'],$_GET['efec_sus'],false);
+    
+}
+else if($funcion == "reporteEntregaItemsHTML")
+{
+    reporteEntregaItemsHTML($_GET['identregacompra'], false);
+}
+
+
+else if($funcion == "reporteventasdiarias")
+{
+    reporteVentaDiaria($_GET['idalmacen'],false);//falta terminar
+} 
+else if($funcion == "reporteventaHTML")
+{
+    reporteVentaHTML($_GET['idventadetalle'], false);
+}
+else  if($funcion == "reporteEntrega")
+{
+    reporteEntregaHTML($_GET['identrega'], false);
+}
+else if($funcion == "reporteGeneralModelo")
+{
+    reporteGeneralModelo(false);
+}
+
+else if($funcion == "reportestokHTML")
+{
+    reporteStok( false);
+}
+
+else if($funcion == "reportecajeroHTML")
+{
+    reporteCajero($_GET['idusuario'],$_GET['fechaInicio'],$_GET['fechaFin'],false);
+}
+else if($funcion == "reporteProductoVendido")
+{
+    reporteProductoVendido(false);
+}
+else if($funcion == "clienteDeuda")
+{
+    
+    clienteDeuda($_GET['idcliente'],false);
+
+}
+ else if($funcion == "reporteEstadodeResultados")
+{
+    reporteEstadodeResultados( false);
+}
+else if($funcion == "ventasTotales")
+{
+
+    reporteVentasTotales($_GET['almacenV'],$_GET['fechainiV'],$_GET['fechafinV'],false);
+
+}
+
+else if($funcion == "comprasTotales")
+{
+
+    reporteComprasTotales($_GET['almacenV'],$_GET['fechainiV'],$_GET['fechafinV'],false);
+
+}
+
+else if($funcion == "clientesTotales")
+{
+
+    reporteClientesTotales($_GET['almacenV'],$_GET['fechainiV'],$_GET['fechafinV'],false);
+
+}
+else if($funcion == "reportemuestraHTML")
+{
+
+    reporteMuestra($_GET['idmuestra'],false);
+
+}
+else if($funcion == "reportelineaHTML")
+{
+
+    reporteLinea($_GET['idlinea'],false);
+
+}
+else if($funcion =="CodigoBarraIngresoHTML")
+{
+    CodigoBarraIngreso($_GET['idingreso'],false);
+}
+else if($funcion =="AdicionCodigoBarraIngresoHTML")
+{
+    AdicionCodigoBarraIngreso($_GET['idingreso'],false);
+}
+else if($funcion =="CodigoBarraIngresoAlmacenHTML")
+{
+    CodigoBarraIngresoAlmacen($_GET['idingreso'],false);
+}
+else  if($funcion == "AdicionDetalleIngresoHTML")
+{
+    AdicionDetalleIngresoHTML($_GET['idingreso'], false);
+}
+?>

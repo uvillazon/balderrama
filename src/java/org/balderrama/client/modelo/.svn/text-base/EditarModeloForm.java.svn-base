@@ -1,0 +1,477 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.balderrama.client.modelo;
+
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
+import com.gwtext.client.core.EventObject;
+import com.gwtext.client.core.Position;
+import com.gwtext.client.data.Record;
+import com.gwtext.client.data.SimpleStore;
+import com.gwtext.client.widgets.Button;
+import com.gwtext.client.widgets.Window;
+import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.form.Checkbox;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+import com.gwtext.client.widgets.form.ComboBox;
+import com.gwtext.client.widgets.form.Field;
+import com.gwtext.client.widgets.form.FieldSet;
+import com.gwtext.client.widgets.form.FormPanel;
+import com.gwtext.client.widgets.form.Hidden;
+import com.gwtext.client.widgets.form.TextArea;
+import com.gwtext.client.widgets.form.TextField;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import com.gwtext.client.widgets.layout.HorizontalLayout;
+import com.gwtext.client.widgets.layout.VerticalLayout;
+import com.gwtext.client.widgets.form.event.ComboBoxListenerAdapter;
+import com.gwtext.client.widgets.layout.AnchorLayoutData;
+import com.gwtext.client.widgets.layout.FitLayout;
+import org.balderrama.client.marca.Marca;
+import org.balderrama.client.util.Conector;
+import org.balderrama.client.util.Utils;
+
+/**
+ *
+ * @author buggy
+ */
+public class EditarModeloForm extends Window {
+
+    private final int ANCHO = 500;
+    private final int ALTO = 300;
+    private final AnchorLayoutData ANCHO_LAYOUT_DATA = new AnchorLayoutData("90%");
+    private final int WINDOW_PADDING = 5;
+    private FormPanel formPanel;
+    private TextField tex_modelo;
+    private TextField tex_style;
+    private TextField tex_marca;
+    private TextArea text_detalle;
+    private ComboBox com_linea;
+    private ComboBox com_coleccion;
+    private TextField tex_imagen;
+    private Hidden hid_idmarca;
+    private Button but_aceptarP;
+    private Button but_cancelarP;
+    private String idmodeloL;
+    private String nombreL;
+    private String styleL;
+    private String descripcionL;
+    private String nombreC;
+    private String idlinea;
+    private String codigoC;
+    private String direccionC;
+    private String marcaC;
+    private String coleccionC;
+    private Object[][] lineaM;
+    private Object[][] marcaM;
+    private Object[][] coleccionM;
+    private boolean nuevo;
+    private Modelo padre;
+    private Marca padre1;
+    private String marca;
+    private String linea;
+    private String idcoleccion;
+    private String idmarca;
+    private String detalleL;
+    private String imagenL;
+
+    public EditarModeloForm(String idmodelo, String idmarca, String idcoleccion, String marca, String style, Object[][] linea, Object[][] coleccion, Marca padre1) {
+        this.idmodeloL = idmodelo;
+        this.styleL = null;
+        this.nombreL = null;
+        this.descripcionL = null;
+        this.lineaM = linea;
+        this.marca = marca;
+        this.idcoleccion = idcoleccion;
+//        this.marcaM = marca;
+        this.coleccionM = coleccion;
+
+
+        this.padre1 = padre1;
+
+        String nombreBoton1 = "Guardar";
+        String nombreBoton2 = "Cancelar";
+        String tituloTabla = "Registar nueva Modelo";
+
+        if (idmodeloL != null) {
+            nombreBoton1 = "Modificar";
+            tituloTabla = "Editar Modelo";
+            nuevo = false;
+        } else {
+            
+            nuevo = true;
+
+        }
+
+        setId("win-Colecciones");
+        but_aceptarP = new Button(nombreBoton1, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                if (nuevo == false) {
+                    GuardarEditarModelo();
+                } else {
+                    GuardarNuevoModelo();
+                }
+            }
+        });
+        but_cancelarP = new Button(nombreBoton2, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                EditarModeloForm.this.close();
+                EditarModeloForm.this.setModal(false);
+            //formulario = null;
+            }
+        });
+
+        setTitle(tituloTabla);
+        setAutoWidth(true);
+        setAutoHeight(true);
+        setLayout(new FitLayout());
+        setPaddings(WINDOW_PADDING);
+        setButtonAlign(Position.CENTER);
+        addButton(but_aceptarP);
+        addButton(but_cancelarP);
+
+        setCloseAction(Window.CLOSE);
+        setPlain(true);
+        formPanel = new FormPanel();
+        formPanel.setBaseCls("x-plain");
+
+        tex_modelo = new TextField("Modelo", "modelo", 50);
+        tex_modelo.setMaxLength(6);
+        tex_style = new TextField("StyleName", "stylename", 200);
+        com_coleccion = new ComboBox("Coleccion", "idcoleccion", 150);
+//        com_coleccion.setReadOnly(true);
+        text_detalle = new TextArea("Detalle", "detalle");
+        com_linea = new ComboBox("Linea", "idlinea", 150);
+        tex_marca = new TextField("Marca", "marca", 150);
+        tex_marca.setReadOnly(true);
+        tex_imagen = new TextField("Path Imagen", "imagen");
+        hid_idmarca = new Hidden("idmarca", idmarca);
+//        com_coleccionC = new ComboBox("Coleccion", "coleccion");
+
+
+
+
+
+
+
+        formPanel.add(tex_marca);
+        formPanel.add(com_coleccion);
+        formPanel.add(com_linea);
+        formPanel.add(tex_modelo);
+        formPanel.add(tex_style);
+        formPanel.add(tex_imagen);
+        formPanel.add(text_detalle);
+        formPanel.add(hid_idmarca);
+
+//        initcrearFielsets();
+
+        add(formPanel);
+
+        initValues();
+        initCombos();
+    }
+
+    public EditarModeloForm(String idmodelo, String idmarca, String marca, String idlinea, String idcoleccion, String codigoL, String detalle, String imagen, Object[][] estilo, Object[][] coleccion, Modelo padre) {
+        //com.google.gwt.user.client.Window.alert("Cuantas veces");
+        this.idmodeloL = idmodelo;
+        this.styleL = codigoL;
+
+        this.descripcionL = descripcionL;
+        this.lineaM = estilo;
+        this.linea = idlinea;
+        this.idcoleccion = idcoleccion;
+        this.marca = marca;
+        this.idmarca = idmarca;
+        this.detalleL = detalle;
+        this.imagenL = imagen;
+        this.coleccionM = coleccion;
+
+
+        this.padre = padre;
+
+        String nombreBoton1 = "Guardar";
+        String nombreBoton2 = "Cancelar";
+        String tituloTabla = "Registar nueva Modelo";
+
+        if (idmodeloL != null) {
+            nombreBoton1 = "Modificar";
+            tituloTabla = "Editar Modelo";
+            nuevo = false;
+        } else {
+           
+            nuevo = true;
+
+        }
+
+        setId("win-Modelos");
+        but_aceptarP = new Button(nombreBoton1, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                if (nuevo == false) {
+                    GuardarEditarModelo();
+                } else {
+                    GuardarNuevoModelo();
+                }
+            }
+        });
+        but_cancelarP = new Button(nombreBoton2, new ButtonListenerAdapter() {
+
+            @Override
+            public void onClick(Button button, EventObject e) {
+                EditarModeloForm.this.close();
+                EditarModeloForm.this.setModal(false);
+            //formulario = null;
+            }
+        });
+
+        setTitle(tituloTabla);
+        setWidth(ANCHO);
+        setMinWidth(ANCHO);
+        setLayout(new FitLayout());
+        setPaddings(WINDOW_PADDING);
+        setButtonAlign(Position.CENTER);
+        addButton(but_aceptarP);
+        addButton(but_cancelarP);
+
+        setCloseAction(Window.CLOSE);
+        setPlain(true);
+        formPanel = new FormPanel();
+        formPanel.setBaseCls("x-plain");
+        formPanel.setLabelWidth(ANCHO - 400);
+        formPanel.setWidth(ANCHO);
+        formPanel.setHeight(ALTO);
+
+        tex_modelo = new TextField("Modelo", "modelo");
+        tex_style = new TextField("StyleName", "stylename");
+        com_coleccion = new ComboBox("Coleccion", "coleccion");
+//        com_coleccion.setReadOnly(true);
+        text_detalle = new TextArea("Detalle", "detalle");
+        com_linea = new ComboBox("Linea", "linea");
+        tex_marca = new TextField("Marca", "marca");
+        tex_marca.setReadOnly(true);
+        tex_imagen = new TextField("Imagen", "imagen");
+//        com_coleccionC = new ComboBox("Coleccion", "coleccion");
+
+
+
+
+
+
+        formPanel.setLabelWidth(ANCHO - 400 - 5);
+        formPanel.add(tex_modelo, ANCHO_LAYOUT_DATA);
+        formPanel.add(tex_style, ANCHO_LAYOUT_DATA);
+        formPanel.add(tex_marca, ANCHO_LAYOUT_DATA);
+        formPanel.add(com_coleccion, ANCHO_LAYOUT_DATA);
+        formPanel.add(com_linea, ANCHO_LAYOUT_DATA);
+        formPanel.add(tex_imagen, ANCHO_LAYOUT_DATA);
+        formPanel.add(text_detalle, ANCHO_LAYOUT_DATA);
+//        formPanel.add(com_proveedorM, ANCHO_LAYOUT_DATA);
+//        formPanel.add(com_categoriaM, ANCHO_LAYOUT_DATA);
+        initcrearFielsets();
+
+        add(formPanel);
+
+        initValues();
+        initCombos();
+    }
+
+    private void initcrearFielsets() {
+
+        Panel root = new Panel();
+        root.setBaseCls("x-plain");
+        root.setId("root");
+        root.setAutoScroll(true);
+
+        root.setWidth(ANCHO - 30);
+        root.setHeight(ALTO - 50);
+
+        //    FieldSet field = new FieldSet("Numero de Tallas");
+
+//        field.setLayout(new HorizontalLayout(10));
+//        field.setId("hola");
+        int auxFilas = 0;
+        //float auxCantFilasF = tallasM.length / 10;
+
+        int auxCantFilas = 0;
+        //auxCantFilas = redondedo(auxCantFilasF);
+        Checkbox manager1;
+
+
+        //funcS = conec.getObjects(cadS, null);
+        ////auxCantFilas = (int) Math.floor(funcS.length/4);
+        Panel pan_checks = null;
+
+    }
+
+    private void initCombos() {
+
+       
+
+        com_linea.setValueField("idlinea");
+        com_linea.setDisplayField("codigo");
+        com_linea.setForceSelection(true);
+        com_linea.setMinChars(1);
+        com_linea.setMode(ComboBox.LOCAL);
+        //com_linea.setTriggerAction(ComboBox.ALL);
+        com_linea.setEmptyText("Seleccione una Linea");
+        com_linea.setLoadingText("Buscando");
+        com_linea.setTypeAhead(true);
+        com_linea.setSelectOnFocus(true);
+        com_linea.setHideTrigger(true);
+       // com_linea.setReadOnly(true);
+        SimpleStore estiloStore = new SimpleStore(new String[]{"idlinea", "codigo"}, lineaM);
+        estiloStore.load();
+        com_linea.setStore(estiloStore);
+
+        com_coleccion.setValueField("idcoleccion");
+        com_coleccion.setDisplayField("codigo");
+        com_coleccion.setForceSelection(false);
+        com_coleccion.setMinChars(1);
+        com_coleccion.setMode(ComboBox.LOCAL);
+       // com_coleccion.setTriggerAction(ComboBox.ALL);
+        com_coleccion.setEmptyText("Seleccione una Coleccion");
+        com_coleccion.setLoadingText("Buscando");
+        com_coleccion.setTypeAhead(false);
+        com_coleccion.setSelectOnFocus(false);
+        com_coleccion.setHideTrigger(true);
+        com_coleccion.setReadOnly(true);
+        SimpleStore estiloStore1 = new SimpleStore(new String[]{"idcoleccion", "codigo"}, coleccionM);
+        estiloStore1.load();
+        com_coleccion.setStore(estiloStore1);
+
+    }
+
+    private void initValues() {
+        tex_modelo.setValue(idmodeloL);
+        tex_marca.setValue(marca);
+        text_detalle.setValue(detalleL);
+        tex_style.setValue(styleL);
+        tex_imagen.setValue(imagenL);
+        com_coleccion.setValue(idcoleccion);
+        com_linea.setValue(linea);
+
+
+    }
+  private void limpiardatos() {
+        tex_marca.setValue(marca);
+        com_coleccion.setValue(idcoleccion);
+        com_linea.setValue(linea);
+
+        text_detalle.setValue("");
+        tex_style.setValue("");
+        tex_imagen.setValue("");
+       tex_modelo.setValue("");
+
+
+    }
+    public Button getBut_aceptar() {
+        return but_aceptarP;
+    }
+
+    public Button getBut_cancelar() {
+        return but_cancelarP;
+    }
+
+    public void GuardarNuevoModelo() {
+        String cadena = "php/Modelo.php?funcion=GuardarNuevoModelo";
+        cadena = cadena + "&" + formPanel.getForm().getValues();
+        final Conector conec = new Conector(cadena, false);
+        Utils.setErrorPrincipal("Guardando el nuevo modelo", "guardar");
+        try {
+            conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                public void onResponseReceived(Request request, Response response) {
+                    String data = response.getText();
+                    JSONValue jsonValue = JSONParser.parse(data);
+                    JSONObject jsonObject;
+
+                    if ((jsonObject = jsonValue.isObject()) != null) {
+                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                        if (errorR.equalsIgnoreCase("true")) {
+                            Utils.setErrorPrincipal(mensajeR, "mensaje");
+                            limpiardatos();
+                           // close();
+
+                  //          padre.reload();
+                        } else {
+                            Utils.setErrorPrincipal(mensajeR, "error");
+                        }
+
+                    }
+
+                }
+
+                public void onError(Request request, Throwable exception) {
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            });
+
+        } catch (RequestException ex) {
+            ex.getMessage();
+            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+        }
+
+    }
+
+    public void GuardarEditarModelo() {
+        String cadena = "php/Linea.php?funcion=GuardarEditarModelo&idmodelo=" + idmodeloL;
+        cadena =
+                cadena + "&" + formPanel.getForm().getValues();
+        final Conector conec = new Conector(cadena, false);
+        Utils.setErrorPrincipal("Actualizando los cambios en Linea", "guardar");
+        try {
+            conec.getRequestBuilder().sendRequest(null, new RequestCallback() {
+
+                public void onResponseReceived(Request request, Response response) {
+                    String data = response.getText();
+                    JSONValue jsonValue = JSONParser.parse(data);
+                    JSONObject jsonObject;
+
+                    if ((jsonObject = jsonValue.isObject()) != null) {
+                        String errorR = Utils.getStringOfJSONObject(jsonObject, "error");
+                        String mensajeR = Utils.getStringOfJSONObject(jsonObject, "mensaje");
+                        if (errorR.equalsIgnoreCase("true")) {
+                            Utils.setErrorPrincipal(mensajeR, "mensaje");
+                            close();
+
+                            padre.reload();
+                        } else {
+                            Utils.setErrorPrincipal(mensajeR, "error");
+                        }
+
+                    }
+                }
+
+                public void onError(Request request, Throwable exception) {
+                    Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+                }
+            });
+
+        } catch (RequestException ex) {
+            ex.getMessage();
+            Utils.setErrorPrincipal("Ocurrio un error al conectar con el servidor", "error");
+        }
+    }
+
+    public int redondedo(float f) {
+        int aux = (int) f;
+        if (aux < f) {
+            aux = aux + 1;
+        }
+        return aux;
+    }
+}

@@ -1,0 +1,108 @@
+<?php 
+session_name("balderrama");
+session_start();
+
+require_once("impl/Modelo.php");
+include("impl/Marca.php");
+include("impl/Linea.php");
+include("impl/Coleccion.php");
+include("impl/Utils.php");
+include("bd/bd.php");
+require_once("impl/JSON.php");
+
+if(permitido("fun1000", $_SESSION['codigo'])==true)
+{
+    $funcion = $_GET['funcion'];
+    if($funcion == "ListaModelo")
+    {
+        $band = false;
+        if($_GET['buscarmodelo'] != null)
+        {
+            if($band == false) {
+                $extras .= " mo.codigo LIKE '%".$_GET['buscarmodelo']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND mo.codigo LIKE '%".$_GET['buscarmodelo']."%'";
+            }
+        }
+        if($_GET['buscarcoleccion'] != null)
+        {
+            if($band == false) {
+                $extras .= " co.idcoleccion LIKE '".$_GET['buscarcoleccion']."'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND co.idcoleccion  LIKE '".$_GET['buscarcoleccion']."'";
+            }
+        }
+        if($_GET['buscarlinea'] != null)
+        {
+            if($band == false) {
+                $extras .= " li.idlinea LIKE '".$_GET['buscarlinea']."' ";
+                $band = true;
+            }
+            else {
+                $extras .= " AND li.idlinea LIKE '".$_GET['buscarlinea']."'";
+            }
+        }
+        if($_GET['buscarmarca'] != null)
+        {
+            if($band == false) {
+                $extras .= " ma.idmarca LIKE '".$_GET['buscarmarca']."' ";
+                $band = true;
+            }
+            else {
+                $extras .= " AND ma.idmarca LIKE '".$_GET['buscarmarca']."'";
+            }
+        }
+
+        ListarModelo($_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], $extras, false);
+    }
+    else if($funcion =="BuscarLineaColeccionMarca"){
+        $idmarca = $_GET['idmarca'];
+        BuscarLineaColeccionMarca($idmarca,false);
+
+
+    }
+    else if($funcion =="BuscarMarcaColeccionLinea"){
+
+        BuscarMarcaColeccionLinea(false);
+
+
+    }
+    else if($funcion =="BuscarLineaColeccionMarcaPorId"){
+        $idmarca = $_GET['idmodelo'];
+        BuscarLineaColeccionMarcaPorId($idmarca,false);
+    }
+    else if($funcion =="GuardarNuevoModelo"){
+        GuardarNuevoModelo();
+
+    }
+    else if($funcion =="GuardarEditarModelo"){
+        GuardarEditarModelo($_GET['idmodelo']);
+    }
+    else if($funcion =="EliminarModelo"){
+        $idmarca =$_GET['idmodelo'];
+        EliminarModelo($idmarca, $_GET['callback'],$_GET['_dc'],false);
+    }
+    else if($funcion =="EliminarModeloDependencia"){
+        $idmarca =$_GET['idmodelo'];
+        EliminarModeloDependencia($idmarca, $_GET['callback'],$_GET['_dc'],false);
+    }
+    else{
+        echo "else";
+    }
+
+
+}
+else
+{
+    $dev['mensaje'] = "Ud no tiene privilegios para esta funcion";
+    $dev['error'] = "false";
+    $json = new Services_JSON();
+    $output = $json->encode($dev);
+    print($output);
+}
+
+?>

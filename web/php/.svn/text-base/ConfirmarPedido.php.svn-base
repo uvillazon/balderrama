@@ -1,0 +1,227 @@
+<?php 
+session_name("balderrama");
+session_start();
+include("impl/Utils.php");
+include("bd/bd.php");
+require_once("impl/JSON.php");
+require_once("impl/ConfirmarPedido.php");
+require_once("impl/DetallePedido.php");
+require_once("impl/KardexAlmacen.php");
+require_once("impl/Pedidos.php");
+
+
+
+if(permitido("fun1001", $_SESSION['codigo'])==true)
+{
+    $funcion = $_GET['funcion'];
+if($funcion == "ListarIngresosAlmacen"){
+        $band = false;
+        $idpedido = $_GET['idpedido'];
+        $extra .="det.idpedido = '$idpedido'";
+        if($_GET['buscarnumeropedido'] != null)
+        {
+            if($band == false) {
+                $extras .= " pe.numeropedido LIKE '%".$_GET['buscarnumeropedido']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND lin.codigo LIKE '%".$_GET['buscarnumeropedido']."%'";
+            }
+        }
+         if($_GET['buscarfecha'] != null)
+        {
+            if($band == false) {
+                $extras .= " pe.fecha LIKE '%".$_GET['buscarfecha']."%' ";
+                $band = true;
+            }
+            else {
+                $extras .= " AND pe.fecha LIKE '%".$_GET['buscarfecha']."%'";
+            }
+        }
+        if($_GET['buscarmarca'] != null)
+        {
+            if($band == false) {
+                $extras .= " mo.codigo LIKE '%".$_GET['buscarmodelo']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND mo.codigo LIKE '%".$_GET['buscarmodelo']."%'";
+            }
+        }
+        if($_GET['buscarestado'] != null)
+        {
+            if($band == false) {
+                $extras .= " pe.estado LIKE '%".$_GET['buscarestado']."%' ";
+                $band = true;
+            }
+            else {
+                $extras .= " AND pe.estado LIKE '%".$_GET['buscarestado']."%'";
+            }
+        }
+        ListarIngresosAlmacen($_GET['idmarca'],$_GET['codigo'],$_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], $extras, false);
+    }
+
+    else
+     if($funcion == "ListarPedidosConfirmados"){
+        $band = false;
+        $idpedido = $_GET['idpedido'];
+        $extra .="det.idpedido = '$idpedido'";
+        if($_GET['buscarnumeroproforma'] != null)
+        {
+            if($band == false) {
+                $extras .= " pe.numeroproforma LIKE '%".$_GET['buscarnumeroproforma']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND pe.numeroproforma LIKE '%".$_GET['buscarnumeroproforma']."%'";
+            }
+        }
+         
+        if($_GET['buscarmarca'] != null)
+        {
+            if($band == false) {
+                $extras .= " ma.nombre LIKE '%".$_GET['buscarmarca']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND ma.nombre LIKE '%".$_GET['buscarmarca']."%'";
+            }
+        }
+        if($_GET['buscarestado'] != null)
+        {
+            if($band == false) {
+                $extras .= " pe.estado LIKE '%".$_GET['buscarestado']."%' ";
+                $band = true;
+            }
+            else {
+                $extras .= " AND pe.estado LIKE '%".$_GET['buscarestado']."%'";
+            }
+        }
+
+        ListarPedidosConfirmados($_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], $extras, false);
+    }
+
+    else
+    if($funcion == "ListarDetallePedido"){
+        $idpedido = $_GET['idpedido'];
+
+        ListarDetallePedido($_GET['star'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'],$idpedido, false);
+    }
+    else if ($funcion == "CargarConfirmarPedido"){
+        $idpedido = $_GET['idpedido'];
+        CargarConfirmarPedido($_GET['callback'], $_GET['_dc'], $idpedido, false);
+
+    }
+
+    else if($funcion == "GuardarPedidoConfirmado"){
+        $resultado = $_GET['resultado'];
+        $json = new Services_JSON();
+        $datos = $json->decode($resultado);
+        GuardarPedidoConfirmado($_GET['callback'], $_GET['_dc'], $datos, false);
+
+    }
+    else if($funcion == "GuardarPedidoFacturado"){
+        $resultado = $_GET['resultado'];
+        $json = new Services_JSON();
+        $datos = $json->decode($resultado);
+        GuardarPedidoFacturado($_GET['callback'], $_GET['_dc'], $datos, false);
+
+    }
+     else if($funcion == "GuardarPedidoAlmacen"){
+        $resultado = $_GET['resultado'];
+        $json = new Services_JSON();
+        $datos = $json->decode($resultado);
+        GuardarPedidoAlmacen($_GET['callback'], $_GET['_dc'], $datos, false);
+
+    }
+     else if($funcion == "GuardarPedidoDesglozado"){
+        $resultado = $_GET['resultado'];
+        $json = new Services_JSON();
+        $datos = $json->decode($resultado);
+
+        GuardarPedidoDesglozado($_GET['callback'], $_GET['_dc'], $resultado, false);
+
+    }else if($funcion == "ListarDetallePedidoConfirmado"){
+        $idconfirmarpedido = $_GET['idconfirmarpedido'];
+
+        ListarDetallePedidoConfirmado($_GET['star'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'],$idconfirmarpedido, false);
+    }
+    else if($funcion == "ListarDetallePedidoRegistrado"){
+        $idfacturapedido = $_GET['idfacturapedido'];
+
+        ListarDetallePedidoRegistrado($_GET['star'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'],$idfacturapedido, false);
+    }
+     else if ($funcion == "CargarFacturarPedido"){
+        $idconfirmarpedido = $_GET['idconfirmarpedido'];
+        CargarFacturarPedido($_GET['callback'], $_GET['_dc'], $idconfirmarpedido, false);
+
+    }
+    else if ($funcion == "CargarRegistrarPedido"){
+        $idfacturapedido = $_GET['idfacturapedido'];
+        CargarRegistrarPedido($_GET['callback'], $_GET['_dc'], $idfacturapedido, false);
+
+    } else
+
+    if($funcion == "ListarPedidosFacturados"){
+        $band = false;
+        $idpedido = $_GET['idpedido'];
+        $extra .="det.idpedido = '$idpedido'";
+        if($_GET['buscarnumeropedido'] != null)
+        {
+            if($band == false) {
+                $extras .= " pe.numeropedido LIKE '%".$_GET['buscarnumeropedido']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND lin.codigo LIKE '%".$_GET['buscarnumeropedido']."%'";
+            }
+        }
+         if($_GET['buscarfecha'] != null)
+        {
+            if($band == false) {
+                $extras .= " pe.fecha LIKE '%".$_GET['buscarfecha']."%' ";
+                $band = true;
+            }
+            else {
+                $extras .= " AND pe.fecha LIKE '%".$_GET['buscarfecha']."%'";
+            }
+        }
+        if($_GET['buscarmarca'] != null)
+        {
+            if($band == false) {
+                $extras .= " ma.nombre LIKE '%".$_GET['buscarmarca']."%'";
+                $band = true;
+            }
+            else {
+                $extras .= " AND ma.nombre LIKE '%".$_GET['buscarmarca']."%'";
+            }
+        }
+        if($_GET['buscarestado'] != null)
+        {
+            if($band == false) {
+                $extras .= " pe.estado LIKE '%".$_GET['buscarestado']."%' ";
+                $band = true;
+            }
+            else {
+                $extras .= " AND pe.estado LIKE '%".$_GET['buscarestado']."%'";
+            }
+        }
+
+        ListarPedidosFacturados($_GET['start'], $_GET['limit'], $_GET['sort'], $_GET['dir'], $_GET['callback'], $_GET['_dc'], $extras, false);
+    }
+
+    else{
+        echo "else";
+    }
+
+
+}
+else
+{
+    $dev['mensaje'] = "Ud no tiene privilegios para esta funcion";
+    $dev['error'] = "false";
+    $json = new Services_JSON();
+    $output = $json->encode($dev);
+    print($output);
+}
+?>

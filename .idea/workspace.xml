@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e152940e-094f-48f6-9e15-55e534cb3a22" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/php/Empleado.php" afterPath="$PROJECT_DIR$/web/php/Empleado.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/php/Session.php" afterPath="$PROJECT_DIR$/web/php/Session.php" />
+    </list>
+    <ignored path="balderrama.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <ignored path=".idea/dataSources.local.xml" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="balderrama" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="Almacen.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/php/Almacen.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="119">
+              <caret line="7" column="30" selection-start-line="7" selection-start-column="30" selection-end-line="7" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Utils.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/php/impl/Utils.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="5" selection-start-line="0" selection-start-column="5" selection-end-line="0" selection-end-column="5" />
+              <folding>
+                <marker date="1481601910924" expanded="true" signature="315:459" placeholder="SELECT num.i... numeropedido" />
+                <marker date="1481601910924" expanded="true" signature="6974:7022" placeholder="SELECT ${$ca... ${$tabla}" />
+                <marker date="1481601910924" expanded="true" signature="7657:7705" placeholder="SELECT ${$ca... ${$tabla}" />
+                <marker date="1481601910924" expanded="true" signature="8466:8538" placeholder="SELECT ${$ca... ${$tabla}" />
+                <marker date="1481601910924" expanded="true" signature="9212:9284" placeholder="SELECT ${$ca... ${$tabla}" />
+                <marker date="1481601910924" expanded="true" signature="10089:10186" placeholder="SELECT ${$ca... ${$tabla}" />
+                <marker date="1481601910924" expanded="true" signature="10861:10958" placeholder="SELECT ${$ca... ${$tabla}" />
+                <marker date="1481601910924" expanded="true" signature="12402:12456" placeholder="SELECT ${$ca... ${$tabla}" />
+                <marker date="1481601910924" expanded="true" signature="19540:19754" placeholder="SELECT u.idu... usuario" />
+                <marker date="1481601910924" expanded="true" signature="23066:23122" placeholder="SELECT ${$ca... ${$tabla}" />
+                <marker date="1481601910924" expanded="true" signature="24905:24939" placeholder="SELECT MAX($... ${$tabla}" />
+                <marker date="1481601910924" expanded="true" signature="26769:26837" placeholder="SELECT MAX($... ${$tabla}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Session.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/web/php/Session.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="476">
+              <caret line="28" column="48" selection-start-line="28" selection-start-column="48" selection-end-line="28" selection-end-column="48" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Anio.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/php/Anio.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="4" column="30" selection-start-line="4" selection-start-column="30" selection-end-line="4" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Calzado.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/php/Calzado.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="136">
+              <caret line="8" column="30" selection-start-line="8" selection-start-column="30" selection-end-line="8" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CargaLector.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/php/CargaLector.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="119">
+              <caret line="7" column="30" selection-start-line="7" selection-start-column="30" selection-end-line="7" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CargarArchivo.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/php/CargarArchivo.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="5" column="30" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="30" />
+              <folding>
+                <marker date="1481601644551" expanded="true" signature="1973:2001" placeholder="DELETE FROM " />
+                <marker date="1481601644551" expanded="true" signature="11593:11623" placeholder="INSERT INTO detalles_proforma... " />
+                <marker date="1481601644551" expanded="true" signature="20091:20120" placeholder="INSERT INTO proforma_archivo... " />
+                <marker date="1481601644551" expanded="true" signature="20543:20624" placeholder="SELECT * FRO... proforma_archivo" />
+                <marker date="1481601644551" expanded="true" signature="39085:39166" placeholder="SELECT * FRO... proforma_archivo" />
+                <marker date="1481601644551" expanded="true" signature="53286:53367" placeholder="SELECT * FRO... proforma_archivo" />
+                <marker date="1481601644551" expanded="true" signature="76086:76167" placeholder="SELECT * FRO... proforma_archivo" />
+                <marker date="1481601644551" expanded="true" signature="84419:84500" placeholder="SELECT * FRO... proforma_archivo" />
+                <marker date="1481601644551" expanded="true" signature="92665:92746" placeholder="SELECT * FRO... proforma_archivo" />
+                <marker date="1481601644551" expanded="true" signature="101243:101324" placeholder="SELECT * FRO... proforma_archivo" />
+                <marker date="1481601644551" expanded="true" signature="114278:114359" placeholder="SELECT * FRO... proforma_archivo" />
+                <marker date="1481601644551" expanded="true" signature="125765:125846" placeholder="SELECT * FRO... proforma_archivo" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CargarColoresCategoriasSubcategorias.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/php/CargarColoresCategoriasSubcategorias.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="204">
+              <caret line="12" column="36" selection-start-line="12" selection-start-column="36" selection-end-line="12" selection-end-column="36" />
+              <folding>
+                <marker date="1481601641869" expanded="true" signature="2248:2314" placeholder="SELECT p.cod... producto" />
+                <marker date="1481601641869" expanded="true" signature="3846:3920" placeholder="SELECT c.idc... categoria" />
+                <marker date="1481601641869" expanded="true" signature="4498:4616" placeholder="SELECT s.ids... subcategoria" />
+                <marker date="1481601641869" expanded="true" signature="5475:5534" placeholder="SELECT p.idp... pais" />
+                <marker date="1481601641869" expanded="true" signature="5992:6054" placeholder="SELECT m.idm... marca" />
+                <marker date="1481601641869" expanded="true" signature="6514:6579" placeholder="SELECT u.idu... unidad" />
+                <marker date="1481601641869" expanded="true" signature="8444:8519" placeholder="UPDATE produ... " />
+                <marker date="1481601641869" expanded="true" signature="8884:8948" placeholder="SELECT a.ida... almacen" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CargarDatos.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/php/CargarDatos.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="119">
+              <caret line="7" column="30" selection-start-line="7" selection-start-column="30" selection-end-line="7" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CargarDatosListar.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/web/php/CargarDatosListar.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="204">
+              <caret line="12" column="36" selection-start-line="12" selection-start-column="36" selection-end-line="12" selection-end-column="36" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/web/php/Session.php" />
+        <option value="$PROJECT_DIR$/web/php/Empleado.php" />
+        <option value="$PROJECT_DIR$/web/php/CargarDatosListar.php" />
+        <option value="$PROJECT_DIR$/web/php/CargarDatos.php" />
+        <option value="$PROJECT_DIR$/web/php/CargarArchivo.php" />
+        <option value="$PROJECT_DIR$/web/php/CargarColoresCategoriasSubcategorias.php" />
+        <option value="$PROJECT_DIR$/web/php/CargaLector.php" />
+        <option value="$PROJECT_DIR$/web/php/Calzado.php" />
+        <option value="$PROJECT_DIR$/web/php/Anio.php" />
+        <option value="$PROJECT_DIR$/web/php/Almacen.php" />
+        <option value="$PROJECT_DIR$/web/php/impl/Utils.php" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" />
+  <component name="JsBuildToolPackageJson" detection-done="true" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1616" />
+    <option name="height" value="876" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="balderrama" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="balderrama" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="balderrama" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="balderrama" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="balderrama" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="web" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="balderrama" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="balderrama" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="web" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="php" />
+              <option name="myItemType" value="com.jetbrains.php.projectView.PhpTreeStructureProvider$1" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e152940e-094f-48f6-9e15-55e534cb3a22" name="Default" comment="" />
+      <created>1481599435868</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1481599435868</updated>
+      <workItem from="1481599438265" duration="2493000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="2493000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
+    <editor active="false" />
+    <layout>
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/web/php/Empleado.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="10" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/php/Cargo.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="26" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/php/CargarDatosListar.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="36" selection-start-line="12" selection-start-column="36" selection-end-line="12" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/php/CargarDatos.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="30" selection-start-line="7" selection-start-column="30" selection-end-line="7" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/php/CargarArchivo.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="30" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="30" />
+          <folding>
+            <marker date="1481601644551" expanded="true" signature="1973:2001" placeholder="DELETE FROM " />
+            <marker date="1481601644551" expanded="true" signature="11593:11623" placeholder="INSERT INTO detalles_proforma... " />
+            <marker date="1481601644551" expanded="true" signature="20091:20120" placeholder="INSERT INTO proforma_archivo... " />
+            <marker date="1481601644551" expanded="true" signature="20543:20624" placeholder="SELECT * FRO... proforma_archivo" />
+            <marker date="1481601644551" expanded="true" signature="39085:39166" placeholder="SELECT * FRO... proforma_archivo" />
+            <marker date="1481601644551" expanded="true" signature="53286:53367" placeholder="SELECT * FRO... proforma_archivo" />
+            <marker date="1481601644551" expanded="true" signature="76086:76167" placeholder="SELECT * FRO... proforma_archivo" />
+            <marker date="1481601644551" expanded="true" signature="84419:84500" placeholder="SELECT * FRO... proforma_archivo" />
+            <marker date="1481601644551" expanded="true" signature="92665:92746" placeholder="SELECT * FRO... proforma_archivo" />
+            <marker date="1481601644551" expanded="true" signature="101243:101324" placeholder="SELECT * FRO... proforma_archivo" />
+            <marker date="1481601644551" expanded="true" signature="114278:114359" placeholder="SELECT * FRO... proforma_archivo" />
+            <marker date="1481601644551" expanded="true" signature="125765:125846" placeholder="SELECT * FRO... proforma_archivo" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/php/CargarColoresCategoriasSubcategorias.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="36" selection-start-line="12" selection-start-column="36" selection-end-line="12" selection-end-column="36" />
+          <folding>
+            <marker date="1481601641869" expanded="true" signature="2248:2314" placeholder="SELECT p.cod... producto" />
+            <marker date="1481601641869" expanded="true" signature="3846:3920" placeholder="SELECT c.idc... categoria" />
+            <marker date="1481601641869" expanded="true" signature="4498:4616" placeholder="SELECT s.ids... subcategoria" />
+            <marker date="1481601641869" expanded="true" signature="5475:5534" placeholder="SELECT p.idp... pais" />
+            <marker date="1481601641869" expanded="true" signature="5992:6054" placeholder="SELECT m.idm... marca" />
+            <marker date="1481601641869" expanded="true" signature="6514:6579" placeholder="SELECT u.idu... unidad" />
+            <marker date="1481601641869" expanded="true" signature="8444:8519" placeholder="UPDATE produ... " />
+            <marker date="1481601641869" expanded="true" signature="8884:8948" placeholder="SELECT a.ida... almacen" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/php/CargaLector.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="30" selection-start-line="7" selection-start-column="30" selection-end-line="7" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/php/Calzado.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="30" selection-start-line="8" selection-start-column="30" selection-end-line="8" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/php/Anio.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="30" selection-start-line="4" selection-start-column="30" selection-end-line="4" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/php/Almacen.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="30" selection-start-line="7" selection-start-column="30" selection-end-line="7" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/php/impl/Utils.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="5" selection-start-line="0" selection-start-column="5" selection-end-line="0" selection-end-column="5" />
+          <folding>
+            <marker date="1481601910924" expanded="true" signature="315:459" placeholder="SELECT num.i... numeropedido" />
+            <marker date="1481601910924" expanded="true" signature="6974:7022" placeholder="SELECT ${$ca... ${$tabla}" />
+            <marker date="1481601910924" expanded="true" signature="7657:7705" placeholder="SELECT ${$ca... ${$tabla}" />
+            <marker date="1481601910924" expanded="true" signature="8466:8538" placeholder="SELECT ${$ca... ${$tabla}" />
+            <marker date="1481601910924" expanded="true" signature="9212:9284" placeholder="SELECT ${$ca... ${$tabla}" />
+            <marker date="1481601910924" expanded="true" signature="10089:10186" placeholder="SELECT ${$ca... ${$tabla}" />
+            <marker date="1481601910924" expanded="true" signature="10861:10958" placeholder="SELECT ${$ca... ${$tabla}" />
+            <marker date="1481601910924" expanded="true" signature="12402:12456" placeholder="SELECT ${$ca... ${$tabla}" />
+            <marker date="1481601910924" expanded="true" signature="19540:19754" placeholder="SELECT u.idu... usuario" />
+            <marker date="1481601910924" expanded="true" signature="23066:23122" placeholder="SELECT ${$ca... ${$tabla}" />
+            <marker date="1481601910924" expanded="true" signature="24905:24939" placeholder="SELECT MAX($... ${$tabla}" />
+            <marker date="1481601910924" expanded="true" signature="26769:26837" placeholder="SELECT MAX($... ${$tabla}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/php/Session.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="28" column="48" selection-start-line="28" selection-start-column="48" selection-end-line="28" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

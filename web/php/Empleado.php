@@ -8,7 +8,6 @@ include("impl/Utils.php");
 include("bd/bd.php");
 require_once("impl/JSON.php");
 require_once("Session.php");
-
 $session = new Session();
 if(permitido("fun1001", $session->codigo)==true)
 {
